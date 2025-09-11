@@ -11,6 +11,7 @@ class NewsController extends Controller
     public function index()
     {
         $news = News::where('status', 'published')
+            ->with(['tags', 'categories', 'user'])
             ->orderBy('published_at', 'desc')
             ->orderBy('created_at', 'desc')
             ->get()
@@ -36,6 +37,24 @@ class NewsController extends Controller
                     'year' => $item->published_at ? date('Y', strtotime($item->published_at)) : date('Y'),
                     'created_at' => $item->published_at ?: $item->created_at,
                     'updated_at' => $item->updated_at,
+                    'tags' => $item->tags->map(function ($tag) {
+                        return [
+                            'id' => $tag->id,
+                            'name' => $tag->name,
+                            'slug' => $tag->slug
+                        ];
+                    }),
+                    'categories' => $item->categories->map(function ($category) {
+                        return [
+                            'id' => $category->id,
+                            'name' => $category->name,
+                            'slug' => $category->slug
+                        ];
+                    }),
+                    'author' => $item->user ? [
+                        'id' => $item->user->id,
+                        'name' => $item->user->name
+                    ] : null
                 ];
             });
 
