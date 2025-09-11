@@ -57,31 +57,65 @@ Route::get('/auth/user', [AuthController::class, 'user'])->middleware('auth:sanc
 Route::post('/auth/forgot-password', [AuthController::class, 'forgotPassword']);
 Route::post('/auth/reset-password', [AuthController::class, 'resetPassword']);
 
-// Route untuk gambar dinamis
+// Route untuk gambar dinamis - support both public images and storage images
 Route::get('/images/{filename}', function ($filename) {
-    $path = public_path('images/' . $filename);
-
-    if (!file_exists($path)) {
-        \Log::warning("Image file not found: {$path}");
-        // Return default image instead of 404
-        $defaultPath = public_path('images/about/about-img.jpg');
-        if (file_exists($defaultPath)) {
-            $file = file_get_contents($defaultPath);
-            $type = mime_content_type($defaultPath);
-            return response($file, 200)
-                ->header('Content-Type', $type)
-                ->header('Cache-Control', 'public, max-age=31536000');
-        }
-        abort(404, "Image not found: {$filename}");
+    // First try to find in public/images directory
+    $publicPath = public_path('images/' . $filename);
+    
+    if (file_exists($publicPath)) {
+        $file = file_get_contents($publicPath);
+        $type = mime_content_type($publicPath);
+        
+        return response($file, 200)
+            ->header('Content-Type', $type)
+            ->header('Cache-Control', 'public, max-age=31536000')
+            ->header('Access-Control-Allow-Origin', '*')
+            ->header('Access-Control-Allow-Methods', 'GET, OPTIONS')
+            ->header('Access-Control-Allow-Headers', 'Content-Type');
     }
-
-    $file = file_get_contents($path);
-    $type = mime_content_type($path);
-
-    return response($file, 200)
-        ->header('Content-Type', $type)
-        ->header('Cache-Control', 'public, max-age=31536000')
-        ->header('Access-Control-Allow-Origin', '*')
-        ->header('Access-Control-Allow-Methods', 'GET, OPTIONS')
-        ->header('Access-Control-Allow-Headers', 'Content-Type');
+    
+    // If not found in public, try storage directory
+    $storagePath = storage_path('app/public/' . $filename);
+    
+    if (file_exists($storagePath)) {
+        $file = file_get_contents($storagePath);
+        $type = mime_content_type($storagePath);
+        
+        return response($file, 200)
+            ->header('Content-Type', $type)
+            ->header('Cache-Control', 'public, max-age=31536000')
+            ->header('Access-Control-Allow-Origin', '*')
+            ->header('Access-Control-Allow-Methods', 'GET, OPTIONS')
+            ->header('Access-Control-Allow-Headers', 'Content-Type');
+    }
+    
+    // If still not found, try to get from storage disk
+    if (\Storage::disk('public')->exists($filename)) {
+        $file = \Storage::disk('public')->get($filename);
+        $type = \Storage::disk('public')->mimeType($filename);
+        
+        return response($file, 200)
+            ->header('Content-Type', $type)
+            ->header('Cache-Control', 'public, max-age=31536000')
+            ->header('Access-Control-Allow-Origin', '*')
+            ->header('Access-Control-Allow-Methods', 'GET, OPTIONS')
+            ->header('Access-Control-Allow-Headers', 'Content-Type');
+    }
+    
+    \Log::warning("Image file not found: {$filename}");
+    
+    // Return default image instead of 404
+    $defaultPath = public_path('images/blog/blog-img1.jpg');
+    if (file_exists($defaultPath)) {
+        $file = file_get_contents($defaultPath);
+        $type = mime_content_type($defaultPath);
+        return response($file, 200)
+            ->header('Content-Type', $type)
+            ->header('Cache-Control', 'public, max-age=31536000')
+            ->header('Access-Control-Allow-Origin', '*')
+            ->header('Access-Control-Allow-Methods', 'GET, OPTIONS')
+            ->header('Access-Control-Allow-Headers', 'Content-Type');
+    }
+    
+    abort(404, "Image not found: {$filename}");
 })->where('filename', '.*');
