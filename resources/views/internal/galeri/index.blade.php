@@ -120,7 +120,7 @@
             </div>
             <div class="modal fade text-start" id="tambahModal" tabindex="-1" aria-labelledby="myModalLabel18"
                 aria-hidden="true">
-                <div class="modal-dialog modal-dialog-centered modal-xl">
+                <div class="modal-dialog modal-dialog-centered modal-lg">
                     <div class="modal-content">
                         <div class="modal-header">
                             <h4 class="modal-title" id="modal-judul">Tambah Galeri</h4>
@@ -148,21 +148,21 @@
                                                 <div class="tab-pane fade show active" id="navs-top-home"
                                                     role="tabpanel">
                                                     <div class="row">
-                                                        <div class="col-xl-6 mb-6">
+                                                        <div class="col-xl-4 mb-6">
                                                             <label class="form-label" for="title">Title</label>
                                                             <input type="text" class="form-control" id="title"
                                                                 placeholder="Masukkan judul galeri" name="title"
                                                                 aria-label="Title" />
                                                             <div class="text-danger small" id="title-error"></div>
                                                         </div>
-                                                        <div class="col-xl-6 mb-6">
+                                                        <div class="col-xl-4 mb-6">
                                                             <label class="form-label" for="subtitle">Subtitle</label>
                                                             <input type="text" class="form-control" id="subtitle"
                                                                 placeholder="Masukkan subtitle galeri" name="subtitle"
                                                                 aria-label="Subtitle" />
                                                             <div class="text-danger small" id="subtitle-error"></div>
                                                         </div>
-                                                        <div class="col-xl-6 mb-6">
+                                                        <div class="col-xl-4 mb-6">
                                                             <label class="form-label"
                                                                 for="kategori_galeri_id">Kategori</label>
                                                             <select id="kategori_galeri_id" class="form-select select2"
@@ -175,19 +175,19 @@
                                                             </select>
                                                         </div>
                                                         <div class="col-xl-12 mb-6">
-                                                            <label class="form-label"
-                                                                for="description">Description</label>
-                                                            <textarea class="form-control" id="description" placeholder="Masukkan deskripsi galeri..." name="description"
-                                                                aria-label="Description" rows="10"></textarea>
-                                                            <div class="text-danger small" id="description-error"></div>
-                                                        </div>
-                                                        <div class="col-xl-6 mb-6">
                                                             <label class="form-label" for="image">Image</label>
                                                             <input type="file" id="image" class="form-control"
                                                                 aria-label="Image" name="image" accept="image/*" />
                                                             <div class="form-text">Upload gambar untuk image (JPG, PNG,
                                                                 GIF)</div>
                                                             <div class="text-danger small" id="image-error"></div>
+                                                        </div>
+                                                        <div class="col-xl-12 mb-6">
+                                                            <label class="form-label"
+                                                                for="description">Description</label>
+                                                            <textarea class="form-control" id="description" placeholder="Masukkan deskripsi galeri..." name="description"
+                                                                aria-label="Description" rows="10"></textarea>
+                                                            <div class="text-danger small" id="description-error"></div>
                                                         </div>
                                                     </div>
                                                 </div>
