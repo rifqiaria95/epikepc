@@ -242,7 +242,8 @@ $(document).ready(function () {
                     $('#id').val(res.user.id);
                     $('#name').val(res.user.name);
                     $('#email').val(res.user.email);
-                    $('#active').val(res.user.active);
+                    // Konversi boolean ke string untuk select option
+                    $('#active').val(res.user.active ? '1' : '0');
 
                     // Reset password fields
                     $('#password').val('');
@@ -263,6 +264,32 @@ $(document).ready(function () {
             }
         });
     }
+
+    // Event handler untuk modal show dan hide
+    $('#editModal').on('shown.bs.modal', function () {
+        // Initialize select2 saat modal dibuka
+        $('#active').select2({
+            placeholder: 'Pilih Status',
+            allowClear: true,
+            dropdownParent: $('#editModal')
+        });
+        
+        $('#role').select2({
+            placeholder: 'Pilih Role',
+            allowClear: true,
+            dropdownParent: $('#editModal')
+        });
+
+        // Trigger change untuk select2 setelah di-initialize
+        $('#active').trigger('change');
+        $('#role').trigger('change');
+    });
+
+    $('#editModal').on('hidden.bs.modal', function () {
+        // Destroy select2 saat modal ditutup untuk menghindari konflik
+        $('#active').select2('destroy');
+        $('#role').select2('destroy');
+    });
 
     // Event submit form update
     $('#formEdit').submit(function (e) {
