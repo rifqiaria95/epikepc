@@ -107,6 +107,7 @@
                 <thead class="border-top">
                     <tr>
                     <th>#</th>
+                    <th>Aksi</th>
                     <th>Image</th>
                     <th>Title</th>
                     <th>Subtitle</th>
@@ -119,7 +120,6 @@
                     <th>Twitter</th>
                     <th>Tiktok</th>
                     <th>Youtube</th>
-                    <th>Aksi</th>
                     </tr>
                 </thead>
                 </table>
