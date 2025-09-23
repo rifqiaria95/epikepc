@@ -8,6 +8,7 @@
     "require": {
         "php": "^8.4",
         "brian2694/laravel-toastr": "^5.59",
+        "google/cloud-storage": "^1.48",
         "laravel/breeze": "^2.3",
         "laravel/framework": "^11.31",
         "laravel/nightwatch": "^1.11",
@@ -15,6 +16,7 @@
         "laravel/tinker": "^2.10.1",
         "laravolt/indonesia": "^0.36.0",
         "league/flysystem-aws-s3-v3": "^3.29",
+        "league/flysystem-google-cloud-storage": "^3.30",
         "spatie/laravel-permission": "^6.15",
         "yajra/laravel-datatables-oracle": "11.0"
     },
