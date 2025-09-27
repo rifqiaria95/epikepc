@@ -15,7 +15,7 @@
                 <div class="row">
                   <div class="col-12">
                     <h5 class="text-white mb-0">Website Analytics</h5>
-                    <small>Total 28.5% Conversion Rate</small>
+                    <small>Total {{ $analyticsData['conversion_rate'] ?? 0 }}% Conversion Rate</small>
                   </div>
                   <div class="row">
                     <div class="col-lg-7 col-md-9 col-12 order-2 order-md-1 pt-md-9">
@@ -24,11 +24,11 @@
                         <div class="col-6">
                           <ul class="list-unstyled mb-0">
                             <li class="d-flex mb-4 align-items-center">
-                              <p class="mb-0 fw-medium me-2 website-analytics-text-bg">28%</p>
+                              <p class="mb-0 fw-medium me-2 website-analytics-text-bg">{{ $analyticsData['sessions']['today'] ?? 0 }}</p>
                               <p class="mb-0">Sessions</p>
                             </li>
                             <li class="d-flex align-items-center">
-                              <p class="mb-0 fw-medium me-2 website-analytics-text-bg">1.2k</p>
+                              <p class="mb-0 fw-medium me-2 website-analytics-text-bg">{{ $analyticsData['leads']['today'] ?? 0 }}</p>
                               <p class="mb-0">Leads</p>
                             </li>
                           </ul>
@@ -36,11 +36,11 @@
                         <div class="col-6">
                           <ul class="list-unstyled mb-0">
                             <li class="d-flex mb-4 align-items-center">
-                              <p class="mb-0 fw-medium me-2 website-analytics-text-bg">3.1k</p>
+                              <p class="mb-0 fw-medium me-2 website-analytics-text-bg">{{ $analyticsData['page_views']['today'] ?? 0 }}</p>
                               <p class="mb-0">Page Views</p>
                             </li>
                             <li class="d-flex align-items-center">
-                              <p class="mb-0 fw-medium me-2 website-analytics-text-bg">12%</p>
+                              <p class="mb-0 fw-medium me-2 website-analytics-text-bg">{{ $analyticsData['conversions']['today'] ?? 0 }}</p>
                               <p class="mb-0">Conversions</p>
                             </li>
                           </ul>
@@ -852,3 +852,76 @@
 </div>
 
 @endsection
+
+@push('scripts')
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Function to update analytics data
+    function updateAnalyticsData() {
+        fetch('/api/analytics')
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    const analytics = data.data;
+                    
+                    // Update conversion rate
+                    const conversionRateElement = document.querySelector('.swiper-slide .col-12 small');
+                    if (conversionRateElement) {
+                        conversionRateElement.textContent = `Total ${analytics.conversion_rate}% Conversion Rate`;
+                    }
+                    
+                    // Update sessions
+                    const sessionsElement = document.querySelector('.swiper-slide .col-6:first-child .list-unstyled li:first-child p:first-child');
+                    if (sessionsElement) {
+                        sessionsElement.textContent = analytics.sessions.today;
+                    }
+                    
+                    // Update leads
+                    const leadsElement = document.querySelector('.swiper-slide .col-6:first-child .list-unstyled li:last-child p:first-child');
+                    if (leadsElement) {
+                        leadsElement.textContent = analytics.leads.today;
+                    }
+                    
+                    // Update page views
+                    const pageViewsElement = document.querySelector('.swiper-slide .col-6:last-child .list-unstyled li:first-child p:first-child');
+                    if (pageViewsElement) {
+                        pageViewsElement.textContent = analytics.page_views.today;
+                    }
+                    
+                    // Update conversions
+                    const conversionsElement = document.querySelector('.swiper-slide .col-6:last-child .list-unstyled li:last-child p:first-child');
+                    if (conversionsElement) {
+                        conversionsElement.textContent = analytics.conversions.today;
+                    }
+                }
+            })
+            .catch(error => {
+                console.error('Error fetching analytics data:', error);
+            });
+    }
+    
+    // Update analytics data every 30 seconds
+    setInterval(updateAnalyticsData, 30000);
+    
+    // Track page view when dashboard loads
+    fetch('/api/analytics/track', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+        },
+        body: JSON.stringify({
+            type: 'pageview',
+            source: 'dashboard',
+            page: 'dashboard',
+            metadata: {
+                user_agent: navigator.userAgent,
+                timestamp: new Date().toISOString()
+            }
+        })
+    }).catch(error => {
+        console.error('Error tracking page view:', error);
+    });
+});
+</script>
+@endpush

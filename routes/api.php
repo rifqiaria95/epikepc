@@ -12,6 +12,7 @@ use App\Http\Controllers\Api\GaleriController;
 use App\Http\Controllers\Api\OrganisasiController;
 use App\Http\Controllers\Api\TestimoniController;
 use App\Http\Controllers\Api\VisiMisiController;
+use App\Http\Controllers\Api\AnalyticsController;
 
 Route::get('/user', function (Request $request) {
     return $request->user();
@@ -49,6 +50,10 @@ Route::get('/programs/open', [App\Http\Controllers\Api\ProgramController::class,
 
 // Testimoni endpoint
 Route::get('/testimoni', [TestimoniController::class, 'index']);
+
+// Analytics endpoints
+Route::post('/analytics/track', [AnalyticsController::class, 'track']);
+Route::get('/analytics/data', [AnalyticsController::class, 'getData']);
 
 // Auth endpoints
 Route::post('/auth/login', [AuthController::class, 'login']);

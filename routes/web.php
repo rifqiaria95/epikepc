@@ -69,6 +69,10 @@ Route::prefix('api')->name('api.')->group(function () {
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::get('/ext-dashboard', [DashboardController::class, 'extDashboard'])->name('ext-dashboard');
+    
+    // Analytics API routes
+    Route::get('/api/analytics', [DashboardController::class, 'getAnalytics'])->name('analytics.get');
+    Route::post('/api/analytics/track', [DashboardController::class, 'trackAnalytics'])->name('analytics.track');
 
     // Route User
     Route::prefix('inventory/unit')->name('unit.')->group(function () {
