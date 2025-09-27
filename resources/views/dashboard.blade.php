@@ -12,6 +12,7 @@
             id="swiper-with-pagination-cards">
             <div class="swiper-wrapper">
               <div class="swiper-slide">
+                {{-- ini konten dashboard --}}
                 <div class="row">
                   <div class="col-12">
                     <h5 class="text-white mb-0">Website Analytics</h5>
