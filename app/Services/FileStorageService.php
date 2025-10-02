@@ -317,6 +317,9 @@ class FileStorageService
                     }
                     return rtrim($baseUrl, '/') . '/' . ltrim($path, '/');
                 }
+                // Jika object TIDAK ada di GCS, fallback ke public URL
+                $publicBaseUrl = config('filesystems.disks.public.url');
+                return rtrim($publicBaseUrl, '/') . '/' . ltrim($path, '/');
             } catch (\Exception $e) {
                 // ignore and fallback to public below
             }
