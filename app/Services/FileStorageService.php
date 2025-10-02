@@ -306,13 +306,20 @@ class FileStorageService
     public function getFileUrl(string $path): string
     {
         // Jika object diupload ke GCS dengan client langsung (bucket siap), gunakan URL GCS
-        if ($this->disk === 'gcs' && $this->bucket) {
-            $baseUrl = config('filesystems.disks.gcs.url');
-            if (empty($baseUrl)) {
-                $bucket = config('filesystems.disks.gcs.bucket');
-                return 'https://storage.googleapis.com/' . $bucket . '/' . $path;
+        if ($this->bucket) {
+            try {
+                $object = $this->bucket->object($path);
+                if ($object->exists()) {
+                    $baseUrl = config('filesystems.disks.gcs.url');
+                    if (empty($baseUrl)) {
+                        $bucket = config('filesystems.disks.gcs.bucket');
+                        return 'https://storage.googleapis.com/' . $bucket . '/' . $path;
+                    }
+                    return rtrim($baseUrl, '/') . '/' . ltrim($path, '/');
+                }
+            } catch (\Exception $e) {
+                // ignore and fallback to public below
             }
-            return rtrim($baseUrl, '/') . '/' . ltrim($path, '/');
         }
 
         // Jika fallback ke public disk
