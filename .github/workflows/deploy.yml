@@ -33,6 +33,11 @@ jobs:
 
             # migrate database
             php artisan migrate --force
+            
+            # fix GCS environment variables
+            echo "Fixing GCS environment variables..."
+            sed -i 's|GOOGLE_CLOUD_KEY_FILE=.*|GOOGLE_CLOUD_KEY_FILE=storage/app/gcs-service-account.json|' .env
+            sed -i 's|FILESYSTEM_DISK=.*|FILESYSTEM_DISK=gcs|' .env
 
             # EMERGENCY FIX: Force fix permissions
             echo "Fixing permissions..."

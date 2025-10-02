@@ -46,6 +46,18 @@ class FileStorageService
             $this->safeLog('info', 'Key file: ' . $keyFile);
             $this->safeLog('info', 'Bucket name: ' . $bucketName);
             
+            // Validate and fix key file path
+            if (empty($keyFile) || !is_string($keyFile)) {
+                $this->safeLog('error', 'Key file path is empty or invalid: ' . $keyFile);
+                return;
+            }
+            
+            // Check if it's a hash (invalid path)
+            if (preg_match('/^[a-f0-9]{40}$/', $keyFile)) {
+                $this->safeLog('error', 'Key file path appears to be a hash, not a file path: ' . $keyFile);
+                return;
+            }
+            
             // Convert relative path to absolute path
             if (!file_exists($keyFile)) {
                 $keyFile = base_path($keyFile);
@@ -63,6 +75,7 @@ class FileStorageService
                 $this->safeLog('info', 'GCS client and bucket created successfully');
             } else {
                 $this->safeLog('error', 'Key file does not exist: ' . $keyFile);
+                $this->safeLog('error', 'Please check GOOGLE_CLOUD_KEY_FILE in .env file');
             }
         } catch (\Exception $e) {
             $this->safeLog('error', 'Failed to initialize GCS client: ' . $e->getMessage());
