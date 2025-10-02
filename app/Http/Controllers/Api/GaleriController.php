@@ -27,14 +27,8 @@ class GaleriController extends Controller
                                 ? rtrim(config('app.url'), '/')
                                 : rtrim(url('/'), '/');
 
-                            // Coba Storage URL terlebih dahulu
-                            if (Storage::disk('public')->exists($item->image)) {
-                                $item->image_url = Storage::disk('public')->url($item->image);
-                            } else {
-                                // Fallback ke URL manual jika storage symlink belum ada
-                                $item->image_url = $baseUrl . '/storage/' . $item->image;
-                                \Log::info("Using manual storage URL for: {$item->image}");
-                            }
+                            // Generate GCS URL
+                            $item->image_url = config('filesystems.disks.gcs.url') . '/' . $item->image;
                         } else {
                             // Ini adalah file lama yang disimpan di public/images/
                             $imagePath = public_path('images/' . $item->image);
@@ -47,7 +41,6 @@ class GaleriController extends Controller
                             } else {
                                 // Generate URL anyway for production, file might exist
                                 $item->image_url = $baseUrl . '/images/' . $item->image;
-                                \Log::warning("Image file not found but generating URL anyway: {$item->image}");
                             }
                         }
                     } else {

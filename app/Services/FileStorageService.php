@@ -6,17 +6,51 @@ use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Log;
+use Google\Cloud\Storage\StorageClient;
 
 class FileStorageService
 {
     protected $disk;
     protected $basePath;
+    protected $gcsClient;
+    protected $bucket;
 
     public function __construct()
     {
-        // Gunakan disk 'public' untuk file yang perlu diakses via web
-        $this->disk = 'public';
+        // Gunakan disk 'gcs' untuk file yang perlu diakses via web
+        $this->disk = 'gcs';
         $this->basePath = 'uploads/' . date('Y/m');
+        
+        // Initialize GCS client
+        $this->initializeGcsClient();
+    }
+    
+    /**
+     * Initialize Google Cloud Storage client
+     */
+    protected function initializeGcsClient()
+    {
+        try {
+            $projectId = config('filesystems.disks.gcs.project_id');
+            $keyFile = config('filesystems.disks.gcs.key_file');
+            $bucketName = config('filesystems.disks.gcs.bucket');
+            
+            // Convert relative path to absolute path
+            if (!file_exists($keyFile)) {
+                $keyFile = base_path($keyFile);
+            }
+            
+            if (file_exists($keyFile)) {
+                $this->gcsClient = new StorageClient([
+                    'projectId' => $projectId,
+                    'keyFilePath' => $keyFile,
+                ]);
+                
+                $this->bucket = $this->gcsClient->bucket($bucketName);
+            }
+        } catch (\Exception $e) {
+            Log::error('Failed to initialize GCS client: ' . $e->getMessage());
+        }
     }
 
     /**
@@ -36,7 +70,15 @@ class FileStorageService
             // Set path
             $path = $this->basePath . '/' . $directory . '/' . $filename;
 
-            // Upload file
+            // Try to upload to GCS first
+            if ($this->bucket) {
+                $gcsResult = $this->uploadToGcs($file, $path, $options);
+                if ($gcsResult['success']) {
+                    return $gcsResult;
+                }
+            }
+
+            // Fallback to local storage
             $uploaded = Storage::disk($this->disk)->putFileAs(
                 dirname($path),
                 $file,
@@ -64,6 +106,55 @@ class FileStorageService
         } catch (\Exception $e) {
             Log::error('File upload error: ' . $e->getMessage());
 
+            return [
+                'success' => false,
+                'error' => $e->getMessage()
+            ];
+        }
+    }
+    
+    /**
+     * Upload file directly to Google Cloud Storage
+     *
+     * @param UploadedFile $file
+     * @param string $path
+     * @param array $options
+     * @return array
+     */
+    protected function uploadToGcs(UploadedFile $file, string $path, array $options = [])
+    {
+        try {
+            if (!$this->bucket) {
+                throw new \Exception('GCS bucket not initialized');
+            }
+
+            // Get file content
+            $content = file_get_contents($file->getRealPath());
+            
+            // Upload to GCS
+            $object = $this->bucket->upload($content, [
+                'name' => $path,
+                'metadata' => [
+                    'contentType' => $file->getMimeType(),
+                ],
+            ]);
+
+            // Get public URL
+            $url = 'https://storage.googleapis.com/' . $this->bucket->name() . '/' . $path;
+
+            return [
+                'success' => true,
+                'filename' => basename($path),
+                'path' => $path,
+                'url' => $url,
+                'size' => $file->getSize(),
+                'mime_type' => $file->getMimeType(),
+                'disk' => 'gcs'
+            ];
+
+        } catch (\Exception $e) {
+            Log::error('GCS upload error: ' . $e->getMessage());
+            
             return [
                 'success' => false,
                 'error' => $e->getMessage()
@@ -104,10 +195,22 @@ class FileStorageService
     public function deleteFile(string $path): bool
     {
         try {
-            if (Storage::disk($this->disk)->exists($path)) {
-                return Storage::disk($this->disk)->delete($path);
+            if ($this->bucket) {
+                // Use GCS client directly for deletion
+                $object = $this->bucket->object($path);
+                if ($object->exists()) {
+                    $object->delete();
+                    Log::info('File deleted from GCS: ' . $path);
+                    return true;
+                }
+                return true; // File doesn't exist, consider it deleted
+            } else {
+                // Fallback to Laravel Storage for local disk
+                if (Storage::disk($this->disk)->exists($path)) {
+                    return Storage::disk($this->disk)->delete($path);
+                }
+                return true;
             }
-            return true;
         } catch (\Exception $e) {
             Log::error('File delete error: ' . $e->getMessage());
             return false;
@@ -122,7 +225,19 @@ class FileStorageService
      */
     public function fileExists(string $path): bool
     {
-        return Storage::disk($this->disk)->exists($path);
+        try {
+            if ($this->bucket) {
+                // Use GCS client directly for existence check
+                $object = $this->bucket->object($path);
+                return $object->exists();
+            } else {
+                // Fallback to Laravel Storage for local disk
+                return Storage::disk($this->disk)->exists($path);
+            }
+        } catch (\Exception $e) {
+            Log::error('File exists check error: ' . $e->getMessage());
+            return false;
+        }
     }
 
     /**
@@ -135,6 +250,11 @@ class FileStorageService
     {
         if ($this->disk === 'local' || $this->disk === 'public') {
             return Storage::disk($this->disk)->url($path);
+        }
+
+        // For GCS, generate URL manually
+        if ($this->disk === 'gcs') {
+            return config('filesystems.disks.gcs.url') . '/' . $path;
         }
 
         return Storage::disk($this->disk)->url($path);

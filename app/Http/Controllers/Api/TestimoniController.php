@@ -19,7 +19,7 @@ class TestimoniController extends Controller
                 ->map(function($item) {
                     // Format gambar URL jika ada
                     if ($item->gambar) {
-                        $item->gambar = \Storage::disk('public')->url($item->gambar);
+                        $item->gambar = config('filesystems.disks.gcs.url') . '/' . $item->gambar;
                     }
                     return $item;
                 });

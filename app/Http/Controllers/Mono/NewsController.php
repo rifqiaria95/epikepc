@@ -57,17 +57,18 @@ class NewsController extends Controller
                     return $data->tags->pluck('name')->join(', ') ?: '-';
                 })
                 ->editColumn('thumbnail', function ($data) {
-                    // Return full storage URL untuk thumbnail
+                    // Return HTML img tag untuk thumbnail
                     if ($data->thumbnail) {
-                        return \Storage::disk('public')->url($data->thumbnail);
+                        $imageUrl = config('filesystems.disks.gcs.url') . '/' . $data->thumbnail;
+                        return '<img src="' . $imageUrl . '" alt="News Thumbnail" style="width: 50px; height: 50px; object-fit: cover; border-radius: 4px;">';
                     }
-                    return null;
+                    return '<span class="text-muted">No Thumbnail</span>';
                 })
                 ->addColumn('aksi', function ($data) {
                     $button = '';
                     return $button;
                 })
-                ->rawColumns(['author', 'category', 'tags', 'aksi'])
+                ->rawColumns(['author', 'category', 'tags', 'thumbnail', 'aksi'])
                 ->addIndexColumn()
                 ->toJson();
         }

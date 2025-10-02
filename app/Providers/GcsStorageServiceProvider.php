@@ -12,10 +12,16 @@ class GcsStorageServiceProvider extends ServiceProvider
 {
     public function boot()
     {
-        Storage::extend('aws-s3', function ($app, $config) {
+        Storage::extend('gcs', function ($app, $config) {
+            // Convert relative path to absolute path
+            $keyFilePath = $config['key_file'];
+            if (!file_exists($keyFilePath)) {
+                $keyFilePath = base_path($config['key_file']);
+            }
+
             $client = new StorageClient([
                 'projectId' => $config['project_id'],
-                'keyFilePath' => $config['key_file'], // path ke service account json
+                'keyFilePath' => $keyFilePath, // path ke service account json
             ]);
 
             $bucket = $client->bucket($config['bucket']);

@@ -35,17 +35,18 @@ class VisiMisiController extends Controller
                     return optional($data->deletedBy)->name ?? '-';
                 })
                 ->editColumn('image', function ($data) {
-                    // Return full storage URL untuk image
+                    // Return HTML img tag untuk thumbnail
                     if ($data->image) {
-                        return \Storage::disk('public')->url($data->image);
+                        $imageUrl = config('filesystems.disks.gcs.url') . '/' . $data->image;
+                        return '<img src="' . $imageUrl . '" alt="Visi Misi Image" style="width: 50px; height: 50px; object-fit: cover; border-radius: 4px;">';
                     }
-                    return null;
+                    return '<span class="text-muted">No Image</span>';
                 })
                 ->addColumn('aksi', function ($data) {
                     $button = '';
                     return $button;
                 })
-                ->rawColumns(['created_by', 'updated_by', 'deleted_by', 'aksi'])
+                ->rawColumns(['created_by', 'updated_by', 'deleted_by', 'image', 'aksi'])
                 ->addIndexColumn()
                 ->toJson();
         }

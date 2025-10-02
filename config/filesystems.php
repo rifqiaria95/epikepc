@@ -13,7 +13,7 @@ return [
     |
     */
 
-    'default' => env('FILESYSTEM_DISK', 'local'),
+    'default' => env('FILESYSTEM_DISK', 'gcs'),
 
     /*
     |--------------------------------------------------------------------------
@@ -42,6 +42,17 @@ return [
             'driver' => 'local',
             'root' => storage_path('app/public'),
             'url' => env('APP_URL').'/storage',
+            'visibility' => 'public',
+            'throw' => false,
+            'report' => false,
+        ],
+
+        'gcs' => [
+            'driver' => 'gcs',
+            'project_id' => env('GOOGLE_CLOUD_PROJECT'),
+            'key_file' => env('GOOGLE_CLOUD_KEY_FILE'),
+            'bucket' => env('GOOGLE_CLOUD_BUCKET'),
+            'url' => env('GOOGLE_CLOUD_STORAGE_URL'),
             'visibility' => 'public',
             'throw' => false,
             'report' => false,

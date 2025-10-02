@@ -35,17 +35,18 @@ class TestimoniController extends Controller
                     return optional($data->deletedBy)->name ?? '-';
                 })
                 ->editColumn('gambar', function ($data) {
-                    // Return full storage URL untuk image
+                    // Return HTML img tag untuk thumbnail
                     if ($data->gambar) {
-                        return \Storage::disk('public')->url($data->gambar);
+                        $imageUrl = config('filesystems.disks.gcs.url') . '/' . $data->gambar;
+                        return '<img src="' . $imageUrl . '" alt="Testimoni Image" style="width: 50px; height: 50px; object-fit: cover; border-radius: 4px;">';
                     }
-                    return null;
+                    return '<span class="text-muted">No Image</span>';
                 })
                 ->addColumn('aksi', function ($data) {
                     $button = '';
                     return $button;
                 })
-                ->rawColumns(['created_by', 'updated_by', 'deleted_by', 'aksi'])
+                ->rawColumns(['created_by', 'updated_by', 'deleted_by', 'gambar', 'aksi'])
                 ->addIndexColumn()
                 ->toJson();
         }

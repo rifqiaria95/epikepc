@@ -64,17 +64,18 @@ class PegawaiController extends Controller
                     return optional($data->user)->email ?? '-';
                 })
                 ->editColumn('foto_pegawai', function ($data) {
-                    // Return full storage URL untuk foto_pegawai
+                    // Return HTML img tag untuk thumbnail
                     if ($data->foto_pegawai) {
-                        return \Storage::disk('public')->url($data->foto_pegawai);
+                        $imageUrl = config('filesystems.disks.gcs.url') . '/' . $data->foto_pegawai;
+                        return '<img src="' . $imageUrl . '" alt="Pegawai Photo" style="width: 50px; height: 50px; object-fit: cover; border-radius: 4px;">';
                     }
-                    return null;
+                    return '<span class="text-muted">No Photo</span>';
                 })
                 ->addColumn('aksi', function ($data) {
                     $button = '';
                     return $button;
                 })
-                ->rawColumns(['provinsi', 'aksi', 'email'])
+                ->rawColumns(['provinsi', 'aksi', 'email', 'foto_pegawai'])
                 ->addIndexColumn()
                 ->toJson();
         }

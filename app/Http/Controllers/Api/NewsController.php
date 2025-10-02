@@ -24,7 +24,7 @@ class NewsController extends Controller
                         $imageUrl = $item->thumbnail;
                     } else {
                         // Generate full URL using storage disk
-                        $imageUrl = \Storage::disk('public')->url($item->thumbnail);
+                        $imageUrl = config('filesystems.disks.gcs.url') . '/' . $item->thumbnail;
                     }
                 }
                 
