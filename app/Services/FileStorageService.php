@@ -21,8 +21,14 @@ class FileStorageService
         $this->disk = 'gcs';
         $this->basePath = 'uploads/' . date('Y/m');
         
+        $this->safeLog('info', 'FileStorageService constructor called');
+        $this->safeLog('info', 'Disk set to: ' . $this->disk);
+        $this->safeLog('info', 'Base path: ' . $this->basePath);
+        
         // Initialize GCS client
         $this->initializeGcsClient();
+        
+        $this->safeLog('info', 'GCS bucket initialized: ' . ($this->bucket ? 'YES' : 'NO'));
     }
     
     /**
@@ -35,18 +41,28 @@ class FileStorageService
             $keyFile = config('filesystems.disks.gcs.key_file');
             $bucketName = config('filesystems.disks.gcs.bucket');
             
+            $this->safeLog('info', 'Initializing GCS client...');
+            $this->safeLog('info', 'Project ID: ' . $projectId);
+            $this->safeLog('info', 'Key file: ' . $keyFile);
+            $this->safeLog('info', 'Bucket name: ' . $bucketName);
+            
             // Convert relative path to absolute path
             if (!file_exists($keyFile)) {
                 $keyFile = base_path($keyFile);
+                $this->safeLog('info', 'Key file not found, trying with base_path: ' . $keyFile);
             }
             
             if (file_exists($keyFile)) {
+                $this->safeLog('info', 'Key file exists, creating GCS client...');
                 $this->gcsClient = new StorageClient([
                     'projectId' => $projectId,
                     'keyFilePath' => $keyFile,
                 ]);
                 
                 $this->bucket = $this->gcsClient->bucket($bucketName);
+                $this->safeLog('info', 'GCS client and bucket created successfully');
+            } else {
+                $this->safeLog('error', 'Key file does not exist: ' . $keyFile);
             }
         } catch (\Exception $e) {
             $this->safeLog('error', 'Failed to initialize GCS client: ' . $e->getMessage());
@@ -64,18 +80,30 @@ class FileStorageService
     public function uploadFile(UploadedFile $file, string $directory = 'general', array $options = [])
     {
         try {
+            $this->safeLog('info', 'FileStorageService::uploadFile called');
+            $this->safeLog('info', 'Directory: ' . $directory);
+            $this->safeLog('info', 'GCS bucket initialized: ' . ($this->bucket ? 'YES' : 'NO'));
+            
             // Generate unique filename
             $filename = $this->generateUniqueFilename($file);
 
             // Set path
             $path = $this->basePath . '/' . $directory . '/' . $filename;
+            
+            $this->safeLog('info', 'Generated path: ' . $path);
 
             // Try to upload to GCS first
             if ($this->bucket) {
+                $this->safeLog('info', 'Attempting GCS upload...');
                 $gcsResult = $this->uploadToGcs($file, $path, $options);
                 if ($gcsResult['success']) {
+                    $this->safeLog('info', 'GCS upload successful');
                     return $gcsResult;
+                } else {
+                    $this->safeLog('error', 'GCS upload failed: ' . ($gcsResult['error'] ?? 'Unknown error'));
                 }
+            } else {
+                $this->safeLog('warning', 'GCS bucket not initialized, falling back to local storage');
             }
 
             // Fallback to local storage
@@ -128,8 +156,18 @@ class FileStorageService
                 throw new \Exception('GCS bucket not initialized');
             }
 
+            $this->safeLog('info', 'Starting GCS upload: ' . $path);
+            $this->safeLog('info', 'File size: ' . $file->getSize() . ' bytes');
+            $this->safeLog('info', 'File MIME type: ' . $file->getMimeType());
+
             // Get file content
             $content = file_get_contents($file->getRealPath());
+            
+            if ($content === false) {
+                throw new \Exception('Failed to read file content');
+            }
+            
+            $this->safeLog('info', 'File content read successfully, size: ' . strlen($content) . ' bytes');
             
             // Upload to GCS
             $object = $this->bucket->upload($content, [
@@ -138,6 +176,8 @@ class FileStorageService
                     'contentType' => $file->getMimeType(),
                 ],
             ]);
+
+            $this->safeLog('info', 'File uploaded to GCS successfully: ' . $path);
 
             // Get public URL
             $url = 'https://storage.googleapis.com/' . $this->bucket->name() . '/' . $path;
@@ -270,6 +310,14 @@ class FileStorageService
     protected function safeLog(string $level, string $message): void
     {
         try {
+            // Check if we're in production and log file is not writable
+            if (app()->environment('production')) {
+                $logPath = storage_path('logs/laravel.log');
+                if (!is_writable($logPath)) {
+                    // Skip logging in production if log file is not writable
+                    return;
+                }
+            }
             Log::$level($message);
         } catch (\Exception $e) {
             // If logging fails, we can't do much about it

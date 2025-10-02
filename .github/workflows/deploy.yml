@@ -34,22 +34,35 @@ jobs:
             # migrate database
             php artisan migrate --force
 
-            # fix permissions
+            # EMERGENCY FIX: Force fix permissions
+            echo "Fixing permissions..."
+            
+            # Stop web server temporarily
+            systemctl stop nginx 2>/dev/null || systemctl stop apache2 2>/dev/null || true
+            
+            # Fix ownership
             chown -R www-data:www-data /var/www/kaiproject1/storage
             chown -R www-data:www-data /var/www/kaiproject1/bootstrap/cache
+            chown -R www-data:www-data /var/www/kaiproject1/storage/app
+            
+            # Fix permissions
             chmod -R 775 /var/www/kaiproject1/storage
             chmod -R 775 /var/www/kaiproject1/bootstrap/cache
             
-            # create log file if not exists
+            # Remove and recreate log file
+            rm -f /var/www/kaiproject1/storage/logs/laravel.log
             touch /var/www/kaiproject1/storage/logs/laravel.log
             chown www-data:www-data /var/www/kaiproject1/storage/logs/laravel.log
             chmod 664 /var/www/kaiproject1/storage/logs/laravel.log
             
-            # fix GCS service account permissions
+            # Fix GCS service account permissions
             if [ -f "/var/www/kaiproject1/storage/app/gcs-service-account.json" ]; then
               chown www-data:www-data /var/www/kaiproject1/storage/app/gcs-service-account.json
               chmod 644 /var/www/kaiproject1/storage/app/gcs-service-account.json
             fi
+            
+            # Start web server
+            systemctl start nginx 2>/dev/null || systemctl start apache2 2>/dev/null || true
 
             # optimize laravel
             sudo -u www-data php artisan config:cache
