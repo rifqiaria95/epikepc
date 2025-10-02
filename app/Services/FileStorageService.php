@@ -49,7 +49,7 @@ class FileStorageService
                 $this->bucket = $this->gcsClient->bucket($bucketName);
             }
         } catch (\Exception $e) {
-            Log::error('Failed to initialize GCS client: ' . $e->getMessage());
+            $this->safeLog('error', 'Failed to initialize GCS client: ' . $e->getMessage());
         }
     }
 
@@ -104,7 +104,7 @@ class FileStorageService
             ];
 
         } catch (\Exception $e) {
-            Log::error('File upload error: ' . $e->getMessage());
+            $this->safeLog('error', 'File upload error: ' . $e->getMessage());
 
             return [
                 'success' => false,
@@ -153,7 +153,7 @@ class FileStorageService
             ];
 
         } catch (\Exception $e) {
-            Log::error('GCS upload error: ' . $e->getMessage());
+            $this->safeLog('error', 'GCS upload error: ' . $e->getMessage());
             
             return [
                 'success' => false,
@@ -200,7 +200,7 @@ class FileStorageService
                 $object = $this->bucket->object($path);
                 if ($object->exists()) {
                     $object->delete();
-                    Log::info('File deleted from GCS: ' . $path);
+                    $this->safeLog('info', 'File deleted from GCS: ' . $path);
                     return true;
                 }
                 return true; // File doesn't exist, consider it deleted
@@ -212,7 +212,7 @@ class FileStorageService
                 return true;
             }
         } catch (\Exception $e) {
-            Log::error('File delete error: ' . $e->getMessage());
+            $this->safeLog('error', 'File delete error: ' . $e->getMessage());
             return false;
         }
     }
@@ -235,7 +235,7 @@ class FileStorageService
                 return Storage::disk($this->disk)->exists($path);
             }
         } catch (\Exception $e) {
-            Log::error('File exists check error: ' . $e->getMessage());
+            $this->safeLog('error', 'File exists check error: ' . $e->getMessage());
             return false;
         }
     }
@@ -258,6 +258,23 @@ class FileStorageService
         }
 
         return Storage::disk($this->disk)->url($path);
+    }
+
+    /**
+     * Safe logging method that won't crash if logging fails
+     *
+     * @param string $level
+     * @param string $message
+     * @return void
+     */
+    protected function safeLog(string $level, string $message): void
+    {
+        try {
+            Log::$level($message);
+        } catch (\Exception $e) {
+            // If logging fails, we can't do much about it
+            // Just continue without crashing the application
+        }
     }
 
     /**
