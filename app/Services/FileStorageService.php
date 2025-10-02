@@ -119,8 +119,9 @@ class FileStorageService
                 $this->safeLog('warning', 'GCS bucket not initialized, falling back to local storage');
             }
 
-            // Fallback to local storage
-            $uploaded = Storage::disk($this->disk)->putFileAs(
+            // Fallback to local public storage when GCS is not available
+            $fallbackDisk = 'public';
+            $uploaded = Storage::disk($fallbackDisk)->putFileAs(
                 dirname($path),
                 $file,
                 basename($path),
@@ -131,8 +132,9 @@ class FileStorageService
                 throw new \Exception('Gagal mengupload file');
             }
 
-            // Get URL
-            $url = $this->getFileUrl($path);
+            // Get URL (public disk)
+            $publicBaseUrl = rtrim(config('filesystems.disks.public.url'), '/');
+            $url = $publicBaseUrl . '/' . ltrim($path, '/');
 
             return [
                 'success' => true,
@@ -141,7 +143,7 @@ class FileStorageService
                 'url' => $url,
                 'size' => $file->getSize(),
                 'mime_type' => $file->getMimeType(),
-                'disk' => $this->disk
+                'disk' => $fallbackDisk
             ];
 
         } catch (\Exception $e) {
@@ -182,12 +184,14 @@ class FileStorageService
             
             $this->safeLog('info', 'File content read successfully, size: ' . strlen($content) . ' bytes');
             
-            // Upload to GCS
+            // Upload to GCS (make object publicly readable)
             $object = $this->bucket->upload($content, [
                 'name' => $path,
                 'metadata' => [
                     'contentType' => $file->getMimeType(),
                 ],
+                // Use predefinedAcl to ensure public access
+                'predefinedAcl' => 'publicRead',
             ]);
 
             $this->safeLog('info', 'File uploaded to GCS successfully: ' . $path);
@@ -301,16 +305,24 @@ class FileStorageService
      */
     public function getFileUrl(string $path): string
     {
-        if ($this->disk === 'local' || $this->disk === 'public') {
-            return Storage::disk($this->disk)->url($path);
+        // Jika object diupload ke GCS dengan client langsung (bucket siap), gunakan URL GCS
+        if ($this->disk === 'gcs' && $this->bucket) {
+            $baseUrl = config('filesystems.disks.gcs.url');
+            if (empty($baseUrl)) {
+                $bucket = config('filesystems.disks.gcs.bucket');
+                return 'https://storage.googleapis.com/' . $bucket . '/' . $path;
+            }
+            return rtrim($baseUrl, '/') . '/' . ltrim($path, '/');
         }
 
-        // For GCS, generate URL manually
-        if ($this->disk === 'gcs') {
-            return config('filesystems.disks.gcs.url') . '/' . $path;
+        // Jika fallback ke public disk
+        if ($this->disk === 'public' || !$this->bucket) {
+            $publicBaseUrl = config('filesystems.disks.public.url');
+            return rtrim($publicBaseUrl, '/') . '/' . ltrim($path, '/');
         }
 
-        return Storage::disk($this->disk)->url($path);
+        // Fallback: kembalikan path relatif bila bukan public/gcs
+        return $path;
     }
 
     /**
