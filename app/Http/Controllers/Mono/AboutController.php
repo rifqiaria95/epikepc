@@ -24,6 +24,7 @@ class AboutController extends Controller
         // Menampilkan Data about
         $about = About::withoutTrashed()->with(['creator', 'updater', 'deleter']);
 
+        // Jika request adalah ajax, maka return data dalam bentuk json
         if ($request->ajax()) {
             return datatables()->of($about)
                 ->addColumn('created_by', function ($data) {
@@ -52,9 +53,11 @@ class AboutController extends Controller
                 ->toJson();
         }
 
+        // Jika request bukan ajax, maka return view
         return view('internal/about.index', compact(['about']));
     }
 
+    // Menambahkan data about
     public function store(AboutRequest $request)
     {
         $validatedData = $request->validated();
@@ -62,7 +65,7 @@ class AboutController extends Controller
         try {
             DB::beginTransaction();
 
-            // Upload image ke object storage jika ada
+            // Upload image ke object storage jika ada, jika tidak ada maka throw error
             if ($request->hasFile('image')) {
                 $uploadResult = $this->fileStorageService->uploadImage(
                     $request->file('image'),
@@ -76,7 +79,7 @@ class AboutController extends Controller
                 $validatedData['image'] = $uploadResult['path'];
             }
 
-            // Set created_by berdasarkan user yang sedang login
+            // Set created_by berdasarkan user yang sedang login, jika tidak ada maka throw error
             $validatedData['created_by'] = auth()->id();
 
             // Create About
@@ -92,7 +95,7 @@ class AboutController extends Controller
         } catch (\Exception $e) {
             DB::rollBack();
 
-            // Hapus file yang sudah diupload jika ada error
+            // Hapus file yang sudah diupload jika ada error, jika tidak ada maka throw error
             if (isset($uploadResult) && $uploadResult['success']) {
                 $this->fileStorageService->deleteFile($uploadResult['path']);
             }
@@ -105,6 +108,7 @@ class AboutController extends Controller
         }
     }
 
+    // Mengedit data about
     public function edit($id)
     {
         try {
@@ -117,7 +121,7 @@ class AboutController extends Controller
                 ], 404);
             }
 
-            // Format data untuk frontend
+            // Format data untuk frontend, jika tidak ada maka throw error
             $aboutData = $about->toArray();
 
             return response()->json([
@@ -133,6 +137,7 @@ class AboutController extends Controller
         }
     }
 
+    // Mengubah data about
     public function update($id, AboutRequest $request)
     {
         try {
@@ -142,7 +147,7 @@ class AboutController extends Controller
             $validatedData = $request->validated();
             $oldImage = $about->image;
 
-            // Upload image baru ke object storage jika ada
+            // Upload image baru ke object storage jika ada, jika tidak ada maka throw error
             if ($request->hasFile('image')) {
                 $uploadResult = $this->fileStorageService->uploadImage(
                     $request->file('image'),
@@ -155,13 +160,13 @@ class AboutController extends Controller
 
                 $validatedData['image'] = $uploadResult['path'];
 
-                // Hapus image lama jika ada
+                // Hapus image lama jika ada, jika tidak ada maka throw error
                 if ($oldImage) {
                     $this->fileStorageService->deleteFile($oldImage);
                 }
             }
 
-            // Set updated_by berdasarkan user yang sedang login
+            // Set updated_by berdasarkan user yang sedang login, jika tidak ada maka throw error
             $validatedData['updated_by'] = auth()->id();
 
             // Update about
@@ -176,7 +181,7 @@ class AboutController extends Controller
                 } catch (\Exception $e) {
             DB::rollBack();
 
-            // Hapus file yang sudah diupload jika ada error
+            // Hapus file yang sudah diupload jika ada error, jika tidak ada maka throw error
             if (isset($uploadResult) && $uploadResult['success']) {
                 $this->fileStorageService->deleteFile($uploadResult['path']);
             }
@@ -189,6 +194,7 @@ class AboutController extends Controller
         }
     }
 
+    // Menghapus data about
     public function destroy($id)
     {
         try {
@@ -203,16 +209,16 @@ class AboutController extends Controller
                 ]);
             }
 
-            // Hapus image dari object storage jika ada
+            // Hapus image dari object storage jika ada, jika tidak ada maka throw error
             if ($about->image) {
                 $this->fileStorageService->deleteFile($about->image);
             }
 
-            // Set deleted_by berdasarkan user yang sedang login
+            // Set deleted_by berdasarkan user yang sedang login, jika tidak ada maka throw error
             $about->deleted_by = auth()->id();
             $about->save();
 
-            // Hapus data (Soft Delete)
+            // Hapus data (Soft Delete), jika tidak ada maka throw error
             $about->delete();
 
             DB::commit();
