@@ -63,6 +63,53 @@ class UserController extends Controller
         ]);
     }
 
+    public function create()
+    {
+        $roles = \Cache::remember('roles_list', 3600, function() {
+            return Role::select(['id', 'name'])->get();
+        });
+
+        return response()->json([
+            'roles' => $roles,
+        ]);
+    }
+
+    public function store(Request $request)
+    {
+        $validated = $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'email', 'max:255', 'unique:users,email'],
+            'password' => ['required', 'string', 'min:8', 'confirmed'],
+            'active' => ['required', 'in:0,1'],
+            'role' => ['required', 'exists:roles,id'],
+            'avatar' => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif,svg', 'max:2048']
+        ]);
+
+        $user = new User();
+        $user->name = $validated['name'];
+        $user->email = $validated['email'];
+        $user->active = (int) $validated['active'];
+        $user->password = bcrypt($validated['password']);
+        $user->save();
+
+        if ($request->hasFile('avatar')) {
+            $avatarName = time() . '_' . Str::random(10) . '.' . $request->file('avatar')->getClientOriginalExtension();
+            $request->file('avatar')->storeAs('public/avatars', $avatarName);
+            $user->update(['avatar' => $avatarName]);
+        }
+
+        $role = Role::findById($validated['role']);
+        if ($role) {
+            $user->syncRoles($role);
+        }
+
+        return response()->json([
+            'status' => 200,
+            'message' => 'Data user berhasil disimpan',
+            'user_id' => $user->id
+        ]);
+    }
+
     public function update($id, UpdateUserRequest $request)
     {
         $user = User::findOrFail($id);

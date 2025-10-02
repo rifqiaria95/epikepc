@@ -166,6 +166,14 @@ $(document).ready(function () {
                 }
               ]
             },
+            {
+              text: '<i class="ti ti-plus me-0 me-sm-1 ti-xs"></i><span class="d-none d-sm-inline-block">Tambah User</span>',
+              className: 'add-new btn btn-primary waves-effect waves-light',
+              attr: {
+                'data-bs-toggle': 'modal',
+                'data-bs-target': '#tambahModal'
+              }
+            }
         ],
         processing: true,
         serverSide: true, //aktifkan server-side
@@ -223,6 +231,111 @@ $(document).ready(function () {
             [0, 'desc']
         ],
 
+    });
+    // Reset form tambah saat tombol add diklik dan muat role
+    $(document).on('click', '.add-new', function () {
+        // Reset form
+        if ($('#formCreate').length) {
+            $('#formCreate')[0].reset();
+            $('#role_create').empty().append('<option value="">Pilih Role</option>');
+            $('#active_create').val('');
+            // Hapus error
+            $('#formCreate .text-danger').remove();
+            $('#formCreate .is-invalid').removeClass('is-invalid');
+        }
+
+        // Ambil daftar role
+        $.ajax({
+            url: 'admin/users/create',
+            type: 'GET',
+            success: function (res) {
+                if (res && res.roles) {
+                    $('#role_create').empty().append('<option value="">Pilih Role</option>');
+                    $.each(res.roles, function (key, role) {
+                        $('#role_create').append('<option value="' + role.id + '">' + role.name + '</option>');
+                    });
+                }
+            }
+        });
+    });
+
+    // Init select2 saat modal tambah dibuka
+    $('#tambahModal').on('shown.bs.modal', function () {
+        $('#active_create').select2({
+            placeholder: 'Pilih Status',
+            allowClear: true,
+            dropdownParent: $('#tambahModal')
+        });
+
+        $('#role_create').select2({
+            placeholder: 'Pilih Role',
+            allowClear: true,
+            dropdownParent: $('#tambahModal')
+        });
+
+        $('#active_create').trigger('change');
+        $('#role_create').trigger('change');
+    });
+
+    // Destroy select2 saat modal tambah ditutup
+    $('#tambahModal').on('hidden.bs.modal', function () {
+        if ($('#active_create').hasClass('select2-hidden-accessible')) {
+            $('#active_create').select2('destroy');
+        }
+        if ($('#role_create').hasClass('select2-hidden-accessible')) {
+            $('#role_create').select2('destroy');
+        }
+    });
+
+    // Submit form tambah user
+    $(document).on('submit', '#formCreate', function (e) {
+        e.preventDefault();
+
+        var formData = new FormData(this);
+        var btn = $('#btn-create');
+        var originalText = btn.text();
+
+        $.ajax({
+            url: 'admin/users/store',
+            type: 'POST',
+            data: formData,
+            contentType: false,
+            processData: false,
+            beforeSend: function () {
+                btn.prop('disabled', true).text('Saving...');
+                // clear error
+                $('#formCreate .text-danger').remove();
+                $('#formCreate .is-invalid').removeClass('is-invalid');
+            },
+            success: function (res) {
+                if (res.status === 200) {
+                    toastr.success('Data berhasil disimpan!');
+                    $('#tambahModal').modal('hide');
+                    $('#formCreate')[0].reset();
+                    $('#role_create').val('').trigger('change');
+                    $('#active_create').val('').trigger('change');
+                    $('#TableUser').DataTable().ajax.reload(null, false);
+                } else {
+                    toastr.error(res.errors || 'Terjadi kesalahan, silakan coba lagi!');
+                }
+            },
+            error: function (xhr) {
+                if (xhr.status === 400 || xhr.status === 422) {
+                    let errors = xhr.responseJSON.errors || {};
+                    $.each(errors, function (key, value) {
+                        let inputField = $('#formCreate [name="' + key + '"]');
+                        inputField.addClass('is-invalid');
+                        inputField.after('<span class="text-danger">' + value[0] + '</span>');
+                        toastr.error(value[0]);
+                    });
+                } else {
+                    toastr.error('Terjadi kesalahan, silakan coba lagi!');
+                }
+            },
+            complete: function () {
+                btn.prop('disabled', false).text(originalText);
+            }
+        });
     });
 
     // Event klik tombol Edit

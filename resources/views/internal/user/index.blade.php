@@ -116,6 +116,65 @@
                 </thead>
                 </table>
             </div>
+            <!-- Modal Tambah User -->
+            <div class="modal fade text-start" id="tambahModal" tabindex="-1" aria-labelledby="modalTambahUser" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4 class="modal-title" id="modalTambahUser">Tambah User</h4>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <form id="formCreate" name="formCreate" class="form-horizontal" enctype="multipart/form-data">
+                            @csrf
+                            <div class="modal-body">
+                                <div class="row g-3">
+                                    <div class="col-md-6">
+                                        <label class="form-label">Nama</label>
+                                        <input type="text" id="name_create" name="name" class="form-control" required>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">Email</label>
+                                        <input type="email" id="email_create" name="email" class="form-control" required>
+                                    </div>
+                                    <div class="form-floating col-md-6">
+                                        <fieldset class="form-group">
+                                            <label class="form-label">Role</label>
+                                            <select class="select2 form-select" name="role" id="role_create" required>
+                                                <option value="">Pilih Role</option>
+                                            </select>
+                                        </fieldset>
+                                    </div>
+                                    <div class="form-floating col-md-6">
+                                        <fieldset class="form-group">
+                                            <label class="form-label">Status</label>
+                                            <select class="select2 form-select" name="active" id="active_create" required>
+                                                <option value="">Pilih Status</option>
+                                                <option value="0">Inactive</option>
+                                                <option value="1">Active</option>
+                                            </select>
+                                        </fieldset>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">Password</label>
+                                        <input type="password" id="password_create" name="password" class="form-control" required>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">Konfirmasi Password</label>
+                                        <input type="password" id="password_confirmation_create" name="password_confirmation" class="form-control" required>
+                                    </div>
+                                    <div class="col-lg-12 mb-3">
+                                        <label for="avatar_create" class="form-label">Avatar</label>
+                                        <input type="file" id="avatar_create" name="avatar" class="form-control">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="submit" class="btn btn-primary btn-block" id="btn-create">Simpan</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
             <div class="modal fade text-start" id="editModal" tabindex="-1" aria-labelledby="myModalLabel18" aria-hidden="true">
                 <div class="modal-dialog modal-dialog-centered modal-lg">
                     <div class="modal-content">

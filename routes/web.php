@@ -513,6 +513,8 @@ Route::middleware(['auth', 'role:superadmin'])->group(function () {
     // Route User
     Route::prefix('admin/users')->name('users.')->group(function () {
         Route::get('/', [UserController::class, 'index'])->name('index');
+        Route::get('/create', [UserController::class, 'create'])->name('create');
+        Route::post('/store', [UserController::class, 'store'])->name('store');
         Route::get('/edit/{id}', [UserController::class, 'edit'])->name('edit');
         Route::get('/getPermission/{id}', [UserController::class, 'getPermission'])->name('getPermission');
         Route::post('/update/{id}', [UserController::class, 'update'])->name('update');
