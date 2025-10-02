@@ -37,17 +37,17 @@ class AboutController extends Controller
                     return optional($data->deleter)->name ?? '-';
                 })
                 ->editColumn('image', function ($data) {
+                    // Kembalikan URL gambar saja; rendering <img> ditangani di frontend about.js
                     if ($data->image) {
-                        $imageUrl = $this->fileStorageService->getFileUrl($data->image);
-                        return '<img src="' . $imageUrl . '" alt="About Image" class="img-fluid" style="width: 50px; height: 50px; object-fit: cover; border-radius: 4px;" onerror="this.onerror=null; this.src=\'https://via.placeholder.com/50\';" />';
+                        return $this->fileStorageService->getFileUrl($data->image);
                     }
-                    return '<span class="text-muted">No Image</span>';
+                    return null;
                 })
                 ->addColumn('aksi', function ($data) {
                     $button = '';
                     return $button;
                 })
-                ->rawColumns(['created_by', 'updated_by', 'deleted_by', 'image', 'aksi'])
+                ->rawColumns(['created_by', 'updated_by', 'deleted_by', 'aksi'])
                 ->addIndexColumn()
                 ->toJson();
         }
