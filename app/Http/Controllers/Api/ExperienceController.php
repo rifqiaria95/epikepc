@@ -7,45 +7,22 @@ use Illuminate\Http\Request;
 use App\Models\Experience;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Cache;
+use App\Services\FileStorageService;
 
 class ExperienceController extends Controller
 {
     public function index()
     {
         // Optimasi: Cache API response untuk experience
-        $experience = \Cache::remember('api_experience_data', 1800, function() {
+        $experience = Cache::remember('api_experience_data', 600, function() {
+            $fileStorage = app(FileStorageService::class);
             return Experience::select(['id', 'title', 'subtitle', 'company', 'year', 'description', 'image', 'created_by', 'created_at'])
                 ->with(['createdBy:id,name'])
                 ->orderBy('year', 'desc')
                 ->get()
-                ->map(function($item) {
-                    // Tambahkan URL gambar yang dinamis dengan validasi file
-                    if ($item->image) {
-                        // Cek apakah ini path storage (mengandung 'uploads/')
-                        if (strpos($item->image, 'uploads/') === 0) {
-                            // Generate Storage URL - di production mungkin file ada tapi symlink belum dibuat
-                            $baseUrl = config('app.env') === 'production'
-                                ? rtrim(config('app.url'), '/')
-                                : rtrim(url('/'), '/');
-
-                            // Generate GCS URL
-                            $item->image_url = config('filesystems.disks.gcs.url') . '/' . $item->image;
-                        } else {
-                            // Ini adalah file lama yang disimpan di public/images/
-                            $imagePath = public_path('images/' . $item->image);
-                            if (File::exists($imagePath)) {
-                                // Gunakan URL yang dinamis berdasarkan environment dan hindari double slash
-                                $baseUrl = config('app.env') === 'production'
-                                    ? rtrim(config('app.url'), '/')
-                                    : rtrim(url('/'), '/');
-                                $item->image_url = $baseUrl . '/images/' . $item->image;
-                            } else {
-                                $item->image_url = null;
-                            }
-                        }
-                    } else {
-                        $item->image_url = null;
-                    }
+                ->map(function($item) use ($fileStorage) {
+                    $item->image_url = !empty($item->image) ? $fileStorage->getFileUrl($item->image) : null;
                     return $item;
                 });
         });
