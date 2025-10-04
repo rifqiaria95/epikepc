@@ -20,9 +20,11 @@ class NewsController extends Controller
                 ->orderBy('created_at', 'desc')
                 ->get()
                 ->map(function ($item) use ($fileStorage) {
-                    $imageUrl = null;
+                    // Generate image_url menggunakan FileStorageService seperti AboutController
                     if (!empty($item->thumbnail)) {
-                        $imageUrl = $fileStorage->getFileUrl($item->thumbnail);
+                        $item->image_url = $fileStorage->getFileUrl($item->thumbnail);
+                    } else {
+                        $item->image_url = null;
                     }
                     
                     return [
@@ -30,7 +32,8 @@ class NewsController extends Controller
                         'title' => $item->title,
                         'subtitle' => $item->summary,
                         'description' => $item->content,
-                        'image' => $imageUrl ?: '/images/blog/blog-img1.jpg',
+                        'image' => $item->image_url ?: '/images/blog/blog-img1.jpg',
+                        'image_url' => $item->image_url, // Tambahkan field image_url untuk konsistensi
                         'year' => $item->published_at ? date('Y', strtotime($item->published_at)) : date('Y'),
                         'created_at' => $item->published_at ?: $item->created_at,
                         'updated_at' => $item->updated_at,
