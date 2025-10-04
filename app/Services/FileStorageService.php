@@ -5,7 +5,6 @@ namespace App\Services;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
-use Illuminate\Support\Facades\Log;
 use Google\Cloud\Storage\StorageClient;
 
 class FileStorageService
@@ -21,14 +20,8 @@ class FileStorageService
         $this->disk = 'gcs';
         $this->basePath = 'uploads/' . date('Y/m');
         
-        $this->safeLog('info', 'FileStorageService constructor called');
-        $this->safeLog('info', 'Disk set to: ' . $this->disk);
-        $this->safeLog('info', 'Base path: ' . $this->basePath);
-        
         // Initialize GCS client
         $this->initializeGcsClient();
-        
-        $this->safeLog('info', 'GCS bucket initialized: ' . ($this->bucket ? 'YES' : 'NO'));
     }
     
     /**
@@ -41,44 +34,32 @@ class FileStorageService
             $keyFile = config('filesystems.disks.gcs.key_file');
             $bucketName = config('filesystems.disks.gcs.bucket');
             
-            $this->safeLog('info', 'Initializing GCS client...');
-            $this->safeLog('info', 'Project ID: ' . $projectId);
-            $this->safeLog('info', 'Key file: ' . $keyFile);
-            $this->safeLog('info', 'Bucket name: ' . $bucketName);
             
             // Validate and fix key file path
             if (empty($keyFile) || !is_string($keyFile)) {
-                $this->safeLog('error', 'Key file path is empty or invalid: ' . $keyFile);
                 return;
             }
             
             // Check if it's a hash (invalid path)
             if (preg_match('/^[a-f0-9]{40}$/', $keyFile)) {
-                $this->safeLog('error', 'Key file path appears to be a hash, not a file path: ' . $keyFile);
                 return;
             }
             
             // Convert relative path to absolute path
             if (!file_exists($keyFile)) {
                 $keyFile = base_path($keyFile);
-                $this->safeLog('info', 'Key file not found, trying with base_path: ' . $keyFile);
             }
             
             if (file_exists($keyFile)) {
-                $this->safeLog('info', 'Key file exists, creating GCS client...');
                 $this->gcsClient = new StorageClient([
                     'projectId' => $projectId,
                     'keyFilePath' => $keyFile,
                 ]);
                 
                 $this->bucket = $this->gcsClient->bucket($bucketName);
-                $this->safeLog('info', 'GCS client and bucket created successfully');
-            } else {
-                $this->safeLog('error', 'Key file does not exist: ' . $keyFile);
-                $this->safeLog('error', 'Please check GOOGLE_CLOUD_KEY_FILE in .env file');
             }
         } catch (\Exception $e) {
-            $this->safeLog('error', 'Failed to initialize GCS client: ' . $e->getMessage());
+            // Silent fail - will fallback to local storage
         }
     }
 
@@ -93,30 +74,18 @@ class FileStorageService
     public function uploadFile(UploadedFile $file, string $directory = 'general', array $options = [])
     {
         try {
-            $this->safeLog('info', 'FileStorageService::uploadFile called');
-            $this->safeLog('info', 'Directory: ' . $directory);
-            $this->safeLog('info', 'GCS bucket initialized: ' . ($this->bucket ? 'YES' : 'NO'));
-            
             // Generate unique filename
             $filename = $this->generateUniqueFilename($file);
 
             // Set path
             $path = $this->basePath . '/' . $directory . '/' . $filename;
-            
-            $this->safeLog('info', 'Generated path: ' . $path);
 
             // Try to upload to GCS first
             if ($this->bucket) {
-                $this->safeLog('info', 'Attempting GCS upload...');
                 $gcsResult = $this->uploadToGcs($file, $path, $options);
                 if ($gcsResult['success']) {
-                    $this->safeLog('info', 'GCS upload successful');
                     return $gcsResult;
-                } else {
-                    $this->safeLog('error', 'GCS upload failed: ' . ($gcsResult['error'] ?? 'Unknown error'));
                 }
-            } else {
-                $this->safeLog('warning', 'GCS bucket not initialized, falling back to local storage');
             }
 
             // Fallback to local public storage when GCS is not available
@@ -147,8 +116,6 @@ class FileStorageService
             ];
 
         } catch (\Exception $e) {
-            $this->safeLog('error', 'File upload error: ' . $e->getMessage());
-
             return [
                 'success' => false,
                 'error' => $e->getMessage()
@@ -171,10 +138,6 @@ class FileStorageService
                 throw new \Exception('GCS bucket not initialized');
             }
 
-            $this->safeLog('info', 'Starting GCS upload: ' . $path);
-            $this->safeLog('info', 'File size: ' . $file->getSize() . ' bytes');
-            $this->safeLog('info', 'File MIME type: ' . $file->getMimeType());
-
             // Get file content
             $content = file_get_contents($file->getRealPath());
             
@@ -182,19 +145,14 @@ class FileStorageService
                 throw new \Exception('Failed to read file content');
             }
             
-            $this->safeLog('info', 'File content read successfully, size: ' . strlen($content) . ' bytes');
-            
-            // Upload to GCS (make object publicly readable)
+            // Upload to GCS (without predefinedAcl for uniform bucket-level access)
             $object = $this->bucket->upload($content, [
                 'name' => $path,
                 'metadata' => [
                     'contentType' => $file->getMimeType(),
                 ],
-                // Use predefinedAcl to ensure public access
-                'predefinedAcl' => 'publicRead',
+                // Remove predefinedAcl for uniform bucket-level access compatibility
             ]);
-
-            $this->safeLog('info', 'File uploaded to GCS successfully: ' . $path);
 
             // Get public URL
             $url = 'https://storage.googleapis.com/' . $this->bucket->name() . '/' . $path;
@@ -210,8 +168,6 @@ class FileStorageService
             ];
 
         } catch (\Exception $e) {
-            $this->safeLog('error', 'GCS upload error: ' . $e->getMessage());
-            
             return [
                 'success' => false,
                 'error' => $e->getMessage()
@@ -257,7 +213,6 @@ class FileStorageService
                 $object = $this->bucket->object($path);
                 if ($object->exists()) {
                     $object->delete();
-                    $this->safeLog('info', 'File deleted from GCS: ' . $path);
                     return true;
                 }
                 return true; // File doesn't exist, consider it deleted
@@ -269,7 +224,6 @@ class FileStorageService
                 return true;
             }
         } catch (\Exception $e) {
-            $this->safeLog('error', 'File delete error: ' . $e->getMessage());
             return false;
         }
     }
@@ -292,7 +246,6 @@ class FileStorageService
                 return Storage::disk($this->disk)->exists($path);
             }
         } catch (\Exception $e) {
-            $this->safeLog('error', 'File exists check error: ' . $e->getMessage());
             return false;
         }
     }
@@ -335,30 +288,6 @@ class FileStorageService
         return $path;
     }
 
-    /**
-     * Safe logging method that won't crash if logging fails
-     *
-     * @param string $level
-     * @param string $message
-     * @return void
-     */
-    protected function safeLog(string $level, string $message): void
-    {
-        try {
-            // Check if we're in production and log file is not writable
-            if (app()->environment('production')) {
-                $logPath = storage_path('logs/laravel.log');
-                if (!is_writable($logPath)) {
-                    // Skip logging in production if log file is not writable
-                    return;
-                }
-            }
-            Log::$level($message);
-        } catch (\Exception $e) {
-            // If logging fails, we can't do much about it
-            // Just continue without crashing the application
-        }
-    }
 
     /**
      * Generate unique filename
@@ -446,8 +375,6 @@ class FileStorageService
             ];
 
         } catch (\Exception $e) {
-            Log::error('File migration error: ' . $e->getMessage());
-
             return [
                 'success' => false,
                 'error' => $e->getMessage()
