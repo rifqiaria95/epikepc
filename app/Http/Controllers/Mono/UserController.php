@@ -5,16 +5,24 @@ namespace App\Http\Controllers\Mono;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Str;
 use App\Models\User;
 use App\Models\UserProfile;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\UpdateUserRequest;
+use App\Services\FileStorageService;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
 
 class UserController extends Controller
 {
+    protected $fileStorageService;
+
+    public function __construct(FileStorageService $fileStorageService)
+    {
+        $this->fileStorageService = $fileStorageService;
+    }
     public function index(Request $request)
     {
         if ($request->ajax()) {
@@ -52,7 +60,7 @@ class UserController extends Controller
             ->with(['roles:id,name'])
             ->findOrFail($id);
 
-        $roles = \Cache::remember('roles_list', 3600, function() {
+        $roles = Cache::remember('roles_list', 3600, function() {
             return Role::select(['id', 'name'])->get();
         });
 
@@ -65,7 +73,7 @@ class UserController extends Controller
 
     public function create()
     {
-        $roles = \Cache::remember('roles_list', 3600, function() {
+        $roles = Cache::remember('roles_list', 3600, function() {
             return Role::select(['id', 'name'])->get();
         });
 
@@ -92,10 +100,18 @@ class UserController extends Controller
         $user->password = bcrypt($validated['password']);
         $user->save();
 
+        // Upload avatar ke object storage jika ada
         if ($request->hasFile('avatar')) {
-            $avatarName = time() . '_' . Str::random(10) . '.' . $request->file('avatar')->getClientOriginalExtension();
-            $request->file('avatar')->storeAs('public/avatars', $avatarName);
-            $user->update(['avatar' => $avatarName]);
+            $uploadResult = $this->fileStorageService->uploadImage(
+                $request->file('avatar'),
+                'users/avatars'
+            );
+
+            if (!$uploadResult['success']) {
+                throw new \Exception('Gagal upload avatar: ' . $uploadResult['error']);
+            }
+
+            $user->update(['avatar' => $uploadResult['path']]);
         }
 
         $role = Role::findById($validated['role']);
@@ -138,15 +154,23 @@ class UserController extends Controller
             }
         }
 
+        // Upload avatar baru ke object storage jika ada
         if ($request->hasFile('avatar')) {
-            if ($user->avatar) {
-                Storage::delete('public/avatars/' . $user->avatar);
+            $uploadResult = $this->fileStorageService->uploadImage(
+                $request->file('avatar'),
+                'users/avatars'
+            );
+
+            if (!$uploadResult['success']) {
+                throw new \Exception('Gagal upload avatar: ' . $uploadResult['error']);
             }
 
-            $avatarName = time() . '_' . Str::random(10) . '.' . $request->file('avatar')->getClientOriginalExtension();
-            $request->file('avatar')->storeAs('public/avatars', $avatarName);
+            // Hapus avatar lama jika ada
+            if ($user->avatar) {
+                $this->fileStorageService->deleteFile($user->avatar);
+            }
 
-            $user->update(['avatar' => $avatarName]);
+            $user->update(['avatar' => $uploadResult['path']]);
         }
 
         return response()->json([

@@ -7,9 +7,16 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\PerusahaanRequest;
 use Illuminate\Support\Facades\File;
+use App\Services\FileStorageService;
 
 class PerusahaanController extends Controller
 {
+    protected $fileStorageService;
+
+    public function __construct(FileStorageService $fileStorageService)
+    {
+        $this->fileStorageService = $fileStorageService;
+    }
     public function index(Request $request)
     {
         // Menampilkan Data pegawai
@@ -48,11 +55,18 @@ class PerusahaanController extends Controller
         $validatedData = $request->validated();
 
         try {
+            // Upload logo perusahaan ke object storage jika ada
             if ($request->hasFile('logo_perusahaan')) {
-                $file = $request->file('logo_perusahaan');
-                $filename = time() . '_' . $file->getClientOriginalName();
-                $file->move(public_path('images/'), $filename);
-                $validatedData['logo_perusahaan'] = $filename;
+                $uploadResult = $this->fileStorageService->uploadImage(
+                    $request->file('logo_perusahaan'),
+                    'perusahaan/logos'
+                );
+
+                if (!$uploadResult['success']) {
+                    throw new \Exception('Gagal upload logo perusahaan: ' . $uploadResult['error']);
+                }
+
+                $validatedData['logo_perusahaan'] = $uploadResult['path'];
             }
 
             // Simpan data perusahaan baru
@@ -89,18 +103,23 @@ class PerusahaanController extends Controller
 
             $validatedData = $request->validated();
 
+            // Upload logo perusahaan baru ke object storage jika ada
             if ($request->hasFile('logo_perusahaan')) {
-                if ($perusahaan->logo_perusahaan) {
-                    $oldPath = public_path('images/' . $perusahaan->logo_perusahaan);
-                    if (File::exists($oldPath)) {
-                        File::delete($oldPath);
-                    }
+                $uploadResult = $this->fileStorageService->uploadImage(
+                    $request->file('logo_perusahaan'),
+                    'perusahaan/logos'
+                );
+
+                if (!$uploadResult['success']) {
+                    throw new \Exception('Gagal upload logo perusahaan: ' . $uploadResult['error']);
                 }
 
-                $file = $request->file('logo_perusahaan');
-                $filename = time() . '_' . $file->getClientOriginalName();
-                $file->move(public_path('images/'), $filename);
-                $validatedData['logo_perusahaan'] = $filename;
+                // Hapus logo lama jika ada
+                if ($perusahaan->logo_perusahaan) {
+                    $this->fileStorageService->deleteFile($perusahaan->logo_perusahaan);
+                }
+
+                $validatedData['logo_perusahaan'] = $uploadResult['path'];
             }
 
             $perusahaan->update($validatedData);

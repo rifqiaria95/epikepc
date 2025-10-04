@@ -6,9 +6,16 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Http\Requests\JenisProgramRequest;
 use App\Models\JenisProgram;
+use App\Services\FileStorageService;
 
 class JenisProgramController extends Controller
 {
+    protected $fileStorageService;
+
+    public function __construct(FileStorageService $fileStorageService)
+    {
+        $this->fileStorageService = $fileStorageService;
+    }
     public function index(Request $request)
     {
         // Menampilkan Data pegawai
@@ -47,11 +54,18 @@ class JenisProgramController extends Controller
         $validatedData = $request->validated();
 
         try {
+            // Upload gambar jenis program ke object storage jika ada
             if ($request->hasFile('gambar_jenis_program')) {
-                $file = $request->file('gambar_jenis_program');
-                $filename = time() . '_' . $file->getClientOriginalName();
-                $file->move(public_path('images/'), $filename);
-                $validatedData['gambar_jenis_program'] = $filename;
+                $uploadResult = $this->fileStorageService->uploadImage(
+                    $request->file('gambar_jenis_program'),
+                    'jenis-program/images'
+                );
+
+                if (!$uploadResult['success']) {
+                    throw new \Exception('Gagal upload gambar jenis program: ' . $uploadResult['error']);
+                }
+
+                $validatedData['gambar_jenis_program'] = $uploadResult['path'];
             }
 
             // Simpan data perusahaan baru

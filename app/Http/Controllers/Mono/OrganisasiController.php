@@ -20,23 +20,33 @@ class OrganisasiController extends Controller
 
     public function index(Request $request)
     {
-        // Menampilkan Data about
-        $organisasi = Organisasi::withoutTrashed();
+        // Menampilkan Data organisasi
+        $organisasi = Organisasi::withoutTrashed()->with(['createdBy', 'updatedBy', 'deleter']);
 
         if ($request->ajax()) {
             return datatables()->of($organisasi)
+                ->addColumn('created_by', function ($data) {
+                    return optional($data->createdBy)->name ?? '-';
+                })
+                ->addColumn('updated_by', function ($data) {
+                    return optional($data->updatedBy)->name ?? '-';
+                })
                 ->addColumn('deleted_by', function ($data) {
                     return optional($data->deleter)->name ?? '-';
                 })
                 ->editColumn('image', function ($data) {
-                    // Data sudah berupa URL lengkap dari accessor model
-                    return $data->image;
+                    // Return HTML img tag untuk image
+                    if ($data->image) {
+                        $imageUrl = $this->fileStorageService->getFileUrl($data->image);
+                        return '<img src="' . $imageUrl . '" alt="Organisasi Image" style="width: 50px; height: 50px; object-fit: cover; border-radius: 4px;">';
+                    }
+                    return '<span class="text-muted">No Image</span>';
                 })
                 ->addColumn('aksi', function ($data) {
                     $button = '';
                     return $button;
                 })
-                ->rawColumns(['created_by', 'updated_by', 'deleted_by', 'aksi'])
+                ->rawColumns(['created_by', 'updated_by', 'deleted_by', 'image', 'aksi'])
                 ->addIndexColumn()
                 ->toJson();
         }
@@ -73,7 +83,7 @@ class OrganisasiController extends Controller
 
             DB::commit();
 
-                        return response()->json([
+            return response()->json([
                 'status' => 200,
                 'message' => 'Data organisasi berhasil disimpan!',
                 'data' => $organisasi
@@ -97,7 +107,7 @@ class OrganisasiController extends Controller
     public function edit($id)
     {
         try {
-            $organisasi = Organisasi::where('id', $id)->first();
+            $organisasi = Organisasi::with(['createdBy', 'updatedBy', 'deleter'])->where('id', $id)->first();
 
             if (!$organisasi) {
                 return response()->json([
@@ -162,7 +172,7 @@ class OrganisasiController extends Controller
                 'status'  => 200,
                 'message' => 'Data organisasi berhasil diubah'
             ]);
-                } catch (\Exception $e) {
+        } catch (\Exception $e) {
             DB::rollBack();
 
             // Hapus file yang sudah diupload jika ada error

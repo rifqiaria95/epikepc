@@ -11,19 +11,23 @@ class Organisasi extends Model
     use HasFactory, SoftDeletes;
 
     protected $table    = 'organisasi';
-    protected $fillable = ['nama', 'jabatan', 'tahun', 'lokasi', 'deskripsi', 'image', 'created_by'];
+    protected $fillable = ['nama', 'jabatan', 'tahun', 'lokasi', 'deskripsi', 'image', 'created_by', 'updated_by', 'deleted_by'];
     protected $dates    = ['deleted_at'];
 
-    public function getImageAttribute($value)
-    {
-        if (!$value) {
-            return null;
-        }
-        return asset('storage/' . $value);
-    }
+    // Removed getImageAttribute accessor to use FileStorageService instead
 
     public function createdBy()
     {
         return $this->belongsTo(User::class, 'created_by');
+    }
+
+    public function updatedBy()
+    {
+        return $this->belongsTo(User::class, 'updated_by');
+    }
+
+    public function deleter()
+    {
+        return $this->belongsTo(User::class, 'deleted_by');
     }
 }

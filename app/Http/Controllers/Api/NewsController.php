@@ -20,7 +20,7 @@ class NewsController extends Controller
                 ->orderBy('created_at', 'desc')
                 ->get()
                 ->map(function ($item) use ($fileStorage) {
-                    // Generate image_url menggunakan FileStorageService seperti AboutController
+                    // Generate image_url menggunakan FileStorageService
                     if (!empty($item->thumbnail)) {
                         $item->image_url = $fileStorage->getFileUrl($item->thumbnail);
                     } else {

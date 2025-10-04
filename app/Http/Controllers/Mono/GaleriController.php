@@ -42,7 +42,7 @@ class GaleriController extends Controller
                 ->editColumn('image', function ($data) {
                     // Return HTML img tag untuk thumbnail
                     if ($data->image) {
-                        $imageUrl = config('filesystems.disks.gcs.url') . '/' . $data->image;
+                        $imageUrl = $this->fileStorageService->getFileUrl($data->image);
                         return '<img src="' . $imageUrl . '" alt="Gallery Image" style="width: 50px; height: 50px; object-fit: cover; border-radius: 4px;">';
                     }
                     return '<span class="text-muted">No Image</span>';
@@ -88,7 +88,7 @@ class GaleriController extends Controller
 
             DB::commit();
 
-                        return response()->json([
+            return response()->json([
                 'status' => 200,
                 'message' => 'Data galeri berhasil disimpan!',
                 'data' => $galeri
@@ -177,7 +177,7 @@ class GaleriController extends Controller
                 'status'  => 200,
                 'message' => 'Data galeri berhasil diubah'
             ]);
-                } catch (\Exception $e) {
+        } catch (\Exception $e) {
             DB::rollBack();
 
             // Hapus file yang sudah diupload jika ada error

@@ -86,7 +86,7 @@ class AboutController extends Controller
 
             DB::commit();
 
-                        return response()->json([
+            return response()->json([
                 'status' => 200,
                 'message' => 'Data about berhasil disimpan!',
                 'data' => $about
@@ -177,7 +177,7 @@ class AboutController extends Controller
                 'status'  => 200,
                 'message' => 'Data about berhasil diubah'
             ]);
-                } catch (\Exception $e) {
+        } catch (\Exception $e) {
             DB::rollBack();
 
             // Hapus file yang sudah diupload jika ada error, jika tidak ada maka throw error

@@ -13,6 +13,7 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Cache;
 use App\Services\FileStorageService;
 
 class NewsController extends Controller
@@ -27,13 +28,13 @@ class NewsController extends Controller
     public function index(Request $request)
     {
         // Cache data dropdown yang jarang berubah
-        $kategori = \Cache::remember('kategori_news_list', 1800, function() {
+        $kategori = Cache::remember('kategori_news_list', 1800, function() {
             return Kategori::select(['id', 'name'])->get();
         });
-        $tags = \Cache::remember('tags_list', 1800, function() {
+        $tags = Cache::remember('tags_list', 1800, function() {
             return Tag::select(['id', 'name'])->get();
         });
-        $users = \Cache::remember('users_author_list', 1800, function() {
+        $users = Cache::remember('users_author_list', 1800, function() {
             return User::select(['id', 'name'])->where('active', true)->get();
         });
 
@@ -59,7 +60,7 @@ class NewsController extends Controller
                 ->editColumn('thumbnail', function ($data) {
                     // Return HTML img tag untuk thumbnail
                     if ($data->thumbnail) {
-                        $imageUrl = config('filesystems.disks.gcs.url') . '/' . $data->thumbnail;
+                        $imageUrl = $this->fileStorageService->getFileUrl($data->thumbnail);
                         return '<img src="' . $imageUrl . '" alt="News Thumbnail" style="width: 50px; height: 50px; object-fit: cover; border-radius: 4px;">';
                     }
                     return '<span class="text-muted">No Thumbnail</span>';

@@ -7,9 +7,16 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\GudangRequest;
 use App\Models\Gudang;
 use Illuminate\Support\Facades\File;
+use App\Services\FileStorageService;
 
 class GudangController extends Controller
 {
+    protected $fileStorageService;
+
+    public function __construct(FileStorageService $fileStorageService)
+    {
+        $this->fileStorageService = $fileStorageService;
+    }
     public function index(Request $request)
     {
         // Menampilkan Data pegawai
@@ -48,11 +55,18 @@ class GudangController extends Controller
         $validatedData = $request->validated();
 
         try {
+            // Upload foto gudang ke object storage jika ada
             if ($request->hasFile('foto_gudang')) {
-                $file = $request->file('foto_gudang');
-                $filename = time() . '_' . $file->getClientOriginalName();
-                $file->move(public_path('images/'), $filename);
-                $validatedData['foto_gudang'] = $filename;
+                $uploadResult = $this->fileStorageService->uploadImage(
+                    $request->file('foto_gudang'),
+                    'gudang/photos'
+                );
+
+                if (!$uploadResult['success']) {
+                    throw new \Exception('Gagal upload foto gudang: ' . $uploadResult['error']);
+                }
+
+                $validatedData['foto_gudang'] = $uploadResult['path'];
             }
 
             // Simpan data gudang baru
@@ -89,18 +103,23 @@ class GudangController extends Controller
 
             $validatedData = $request->validated();
 
+            // Upload foto gudang baru ke object storage jika ada
             if ($request->hasFile('foto_gudang')) {
-                if ($gudang->foto_gudang) {
-                    $oldPath = public_path('images/' . $gudang->foto_gudang);
-                    if (File::exists($oldPath)) {
-                        File::delete($oldPath);
-                    }
+                $uploadResult = $this->fileStorageService->uploadImage(
+                    $request->file('foto_gudang'),
+                    'gudang/photos'
+                );
+
+                if (!$uploadResult['success']) {
+                    throw new \Exception('Gagal upload foto gudang: ' . $uploadResult['error']);
                 }
 
-                $file = $request->file('foto_gudang');
-                $filename = time() . '_' . $file->getClientOriginalName();
-                $file->move(public_path('images/'), $filename);
-                $validatedData['foto_gudang'] = $filename;
+                // Hapus foto lama jika ada
+                if ($gudang->foto_gudang) {
+                    $this->fileStorageService->deleteFile($gudang->foto_gudang);
+                }
+
+                $validatedData['foto_gudang'] = $uploadResult['path'];
             }
 
             $gudang->update($validatedData);

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Mono;
 
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreItemRequest;
@@ -11,17 +12,24 @@ use App\Http\Requests\UpdateItemRequest;
 use App\Models\Item;
 use App\Models\UnitBerat;
 use App\Models\Kategori;
+use App\Services\FileStorageService;
 
 
 class ItemController extends Controller
 {
+    protected $fileStorageService;
+
+    public function __construct(FileStorageService $fileStorageService)
+    {
+        $this->fileStorageService = $fileStorageService;
+    }
     public function index(Request $request)
     {
         // Optimasi: Cache data dropdown dan gunakan select untuk field yang diperlukan
-        $unit_berat = \Cache::remember('unit_berat_list', 1800, function() {
+        $unit_berat = Cache::remember('unit_berat_list', 1800, function() {
             return UnitBerat::select(['id', 'nama'])->get();
         });
-        $kategori = \Cache::remember('kategori_list', 1800, function() {
+        $kategori = Cache::remember('kategori_list', 1800, function() {
             return Kategori::select(['id', 'nama_kategori'])->get();
         });
 
@@ -73,12 +81,18 @@ class ItemController extends Controller
             // Simpan data item baru
             $item = Item::create($request->all());
 
-            // Upload Foto Item jika ada
+            // Upload foto item ke object storage jika ada
             if ($request->hasFile('foto_item')) {
-                $file = $request->file('foto_item');
-                $filename = time() . '_' . $file->getClientOriginalName();
-                $file->move(public_path('images/'), $filename);
-                $item->foto_item = $filename;
+                $uploadResult = $this->fileStorageService->uploadImage(
+                    $request->file('foto_item'),
+                    'items/photos'
+                );
+
+                if (!$uploadResult['success']) {
+                    throw new \Exception('Gagal upload foto item: ' . $uploadResult['error']);
+                }
+
+                $item->foto_item = $uploadResult['path'];
                 $item->save();
             }
 
@@ -119,18 +133,23 @@ class ItemController extends Controller
 
             $item->update($validatedData);
 
+            // Upload foto item baru ke object storage jika ada
             if ($request->hasFile('foto_item')) {
-                if ($item->foto_item) {
-                    $oldPath = public_path('images/' . $item->foto_item);
-                    if (File::exists($oldPath)) {
-                        File::delete($oldPath);
-                    }
+                $uploadResult = $this->fileStorageService->uploadImage(
+                    $request->file('foto_item'),
+                    'items/photos'
+                );
+
+                if (!$uploadResult['success']) {
+                    throw new \Exception('Gagal upload foto item: ' . $uploadResult['error']);
                 }
 
-                $file = $request->file('foto_item');
-                $filename = time() . '_' . $file->getClientOriginalName();
-                $file->move(public_path('images/'), $filename);
-                $item->foto_item = $filename;
+                // Hapus foto lama jika ada
+                if ($item->foto_item) {
+                    $this->fileStorageService->deleteFile($item->foto_item);
+                }
+
+                $item->foto_item = $uploadResult['path'];
                 $item->save();
             }
 
