@@ -11,6 +11,7 @@ use App\Models\MenuGroup;
 use App\Models\MenuDetail;
 use Illuminate\Support\Facades\URL;
 use App\Http\View\Composers\MenuComposer;
+use App\Http\View\Composers\FrontendMenuComposer;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -31,9 +32,14 @@ class AppServiceProvider extends ServiceProvider
             URL::forceScheme('https');
         }
 
-        // Daftarkan view composer untuk menu
+        // Daftarkan view composer untuk menu internal
         if (Schema::hasTable('menu_groups')) {
             View::composer(['layouts.side-menu', 'internal.permission.index'], MenuComposer::class);
+        }
+
+        // Daftarkan view composer untuk menu frontend
+        if (Schema::hasTable('service_type')) {
+            View::composer(['layouts.frontend.header', 'layouts.frontend.footer'], FrontendMenuComposer::class);
         }
 
         // Custom pesan validasi

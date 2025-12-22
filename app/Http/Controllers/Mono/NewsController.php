@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Auth;
 use App\Services\FileStorageService;
 
 class NewsController extends Controller
@@ -99,8 +100,8 @@ class NewsController extends Controller
             }
 
             // Set author_id, created_by berdasarkan user yang sedang login
-            $validatedData['author_id'] = auth()->id();
-            $validatedData['created_by'] = auth()->id();
+            $validatedData['author_id'] = Auth::id();
+            $validatedData['created_by'] = Auth::id();
 
             // Auto-fill published_at dan archived_at berdasarkan status
             $this->handleStatusTimestamps($validatedData);
@@ -206,7 +207,7 @@ class NewsController extends Controller
             }
 
             // Set updated_by berdasarkan user yang sedang login
-            $validatedData['updated_by'] = auth()->id();
+            $validatedData['updated_by'] = Auth::id();
 
             // Auto-fill published_at dan archived_at berdasarkan status
             $this->handleStatusTimestamps($validatedData, $news);
@@ -270,7 +271,7 @@ class NewsController extends Controller
             }
 
             // Set deleted_by berdasarkan user yang sedang login
-            $news->deleted_by = auth()->id();
+            $news->deleted_by = Auth::id();
             $news->save();
 
             // Hapus data (Soft Delete)

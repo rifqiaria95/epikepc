@@ -173,7 +173,7 @@ $(document).ready(function () {
         processing: true,
         serverSide: true,
         ajax: {
-            url: "/portfolio/news/",
+            url: "/frontend/news/",
             type: 'GET'
         },
         columns: [
@@ -347,8 +347,8 @@ $(document).ready(function () {
 
         // Use debug route if user doesn't have permission
         var ajaxUrl = userPermissions.includes('edit_news')
-            ? '/portfolio/news/edit/' + id
-            : '/portfolio/news/debug-edit/' + id;
+            ? '/frontend/news/edit/' + id
+            : '/frontend/news/debug-edit/' + id;
 
         $.ajax({
             url: ajaxUrl,
@@ -492,11 +492,11 @@ $(document).ready(function () {
         var method = '';
 
         if(id){
-            url = '/portfolio/news/update/' + id;
+            url = '/frontend/news/update/' + id;
             method = 'POST';
             formData.append('_method', 'PUT');
         } else {
-            url = '/portfolio/news/store';
+            url = '/frontend/news/store';
             method = 'POST';
         }
 
@@ -581,7 +581,7 @@ $(document).ready(function () {
         }).then(function(result) {
             if (result.isConfirmed) {
                 $.ajax({
-                    url: '/portfolio/news/delete/' + id,
+                    url: '/frontend/news/delete/' + id,
                     type: 'DELETE',
                     data: {
                         _method: 'DELETE',

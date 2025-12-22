@@ -17,6 +17,16 @@ class News extends Model
     protected $keyType = 'string';
     public $incrementing = false;
 
+    /**
+     * The attributes that should be cast.
+     *
+     * @var array
+     */
+    protected $casts = [
+        'published_at' => 'datetime',
+        'archived_at' => 'datetime',
+    ];
+
     protected static function boot()
     {
         parent::boot();

@@ -8,6 +8,7 @@ use App\Services\FileStorageService;
 use App\Models\Testimoni;
 use App\Http\Requests\TestimoniRequest;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 
 class TestimoniController extends Controller
 {
@@ -35,12 +36,8 @@ class TestimoniController extends Controller
                     return optional($data->deletedBy)->name ?? '-';
                 })
                 ->editColumn('gambar', function ($data) {
-                    // Return HTML img tag untuk thumbnail
-                    if ($data->gambar) {
-                        $imageUrl = config('filesystems.disks.gcs.url') . '/' . $data->gambar;
-                        return '<img src="' . $imageUrl . '" alt="Testimoni Image" style="width: 50px; height: 50px; object-fit: cover; border-radius: 4px;">';
-                    }
-                    return '<span class="text-muted">No Image</span>';
+                    // Return URL gambar menggunakan method getImageUrl dari model
+                    return $data->getImageUrl();
                 })
                 ->addColumn('aksi', function ($data) {
                     $button = '';
@@ -61,23 +58,33 @@ class TestimoniController extends Controller
         try {
             DB::beginTransaction();
 
-            // Upload image ke object storage jika ada
-            if ($request->hasFile('gambar')) {
-                $uploadResult = $this->fileStorageService->uploadImage(
-                    $request->file('gambar'),
-                    'testimoni/images'
-                );
-
-                if (!$uploadResult['success']) {
-                    throw new \Exception('Gagal upload gambar: ' . $uploadResult['error']);
-                }
-
-                $validatedData['gambar'] = $uploadResult['path'];
+            // Upload image ke object storage - wajib saat create
+            if (!$request->hasFile('gambar')) {
+                return response()->json([
+                    'status' => 422,
+                    'message' => 'Gambar wajib diisi saat membuat testimoni baru.',
+                    'errors' => ['gambar' => ['Gambar wajib diisi saat membuat testimoni baru.']]
+                ], 422);
             }
 
+            $uploadResult = $this->fileStorageService->uploadImage(
+                $request->file('gambar'),
+                'testimoni/images'
+            );
+
+            if (!$uploadResult['success']) {
+                return response()->json([
+                    'status' => 422,
+                    'message' => 'Gagal upload gambar: ' . $uploadResult['error'],
+                    'errors' => ['gambar' => ['Gagal upload gambar: ' . $uploadResult['error']]]
+                ], 422);
+            }
+
+            $validatedData['gambar'] = $uploadResult['path'];
+
             // Set created_by dan updated_by berdasarkan user yang sedang login
-            $validatedData['created_by'] = auth()->id();
-            $validatedData['updated_by'] = auth()->id();
+            $validatedData['created_by'] = Auth::id();
+            $validatedData['updated_by'] = Auth::id();
 
             // Create Testimoni
             $testimoni = Testimoni::create($validatedData);
@@ -162,7 +169,7 @@ class TestimoniController extends Controller
             }
 
             // Set updated_by berdasarkan user yang sedang login
-            $validatedData['updated_by'] = auth()->id();
+            $validatedData['updated_by'] = Auth::id();
 
             // Update testimoni
             $testimoni->update($validatedData);
@@ -209,7 +216,7 @@ class TestimoniController extends Controller
             }
 
             // Set deleted_by berdasarkan user yang sedang login
-            $testimoni->deleted_by = auth()->id();
+            $testimoni->deleted_by = Auth::id();
             $testimoni->save();
 
             // Hapus data (Soft Delete)

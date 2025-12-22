@@ -154,6 +154,13 @@
                                                                 aria-label="Nama" />
                                                             <div class="text-danger small" id="nama-error"></div>
                                                         </div>
+                                                        <div class="col-xl-6 mb-6">
+                                                            <label class="form-label" for="instansi">Instansi</label>
+                                                            <input type="text" class="form-control" id="instansi"
+                                                                placeholder="Masukkan institusi" aria-label="Instansi"
+                                                                name="instansi" />
+                                                            <div class="text-danger small" id="instansi-error"></div>
+                                                        </div>
                                                         <div class="col-xl-12 mb-6">
                                                             <label class="form-label" for="testimoni">Testimoni</label>
                                                             <textarea class="form-control" id="testimoni" placeholder="Masukkan testimoni" name="testimoni"
@@ -161,13 +168,6 @@
                                                             <div class="text-danger small" id="testimoni-error"></div>
                                                         </div>
                                                         <div class="col-xl-12 mb-6">
-                                                            <label class="form-label" for="instansi">Instansi</label>
-                                                            <input type="text" class="form-control" id="instansi"
-                                                                placeholder="Masukkan institusi" aria-label="Instansi"
-                                                                name="instansi" />
-                                                            <div class="text-danger small" id="instansi-error"></div>
-                                                        </div>
-                                                        <div class="col-xl-6 mb-6">
                                                             <label class="form-label" for="gambar">Gambar</label>
                                                             <input type="file" id="gambar" class="form-control"
                                                                 aria-label="Gambar" name="gambar" accept="image/*" />

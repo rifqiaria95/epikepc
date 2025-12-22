@@ -180,7 +180,7 @@ $(document).ready(function () {
         processing: true,
         serverSide: true,
         ajax: {
-            url: "portfolio/testimoni/",
+            url: "frontend/testimoni/",
             type: 'GET'
         },
         columns: [{
@@ -273,11 +273,10 @@ $(document).ready(function () {
     $('#formTestimoni').on('submit', function(e){
         e.preventDefault();
 
-        // Show loader on button
-        let submitBtn = $('#btn-simpan');
-        let originalText = submitBtn.html();
-        submitBtn.html('<i class="ti ti-loader ti-spin me-2"></i>Menyimpan...');
-        submitBtn.prop('disabled', true);
+        // Tambahkan loader pada tombol submit
+        var submitBtn = $(this).find('button[type="submit"]');
+        var originalText = submitBtn.html();
+        submitBtn.html('<i class="ti ti-loader ti-spin me-2"></i>Menyimpan...').prop('disabled', true);
 
         // Clear previous errors
         $('#formTestimoni .form-control, #formTestimoni .form-select').removeClass('is-invalid');
@@ -289,16 +288,17 @@ $(document).ready(function () {
             tinymce.get('testimoni').save();
         }
 
-        let formData = new FormData(this);
-        let id = $('#id').val();
-        let url = '';
-        let method = '';
+        var formData = new FormData(this);
+        var id = $('#id').val();
+        var url = '';
+        var method = '';
 
         if(id){
-            url = '/portfolio/testimoni/update/' + id;
-            method = 'PUT';
+            url = '/frontend/testimoni/update/' + id;
+            method = 'POST';
+            formData.append('_method', 'PUT');
         } else {
-            url = '/portfolio/testimoni/store';
+            url = '/frontend/testimoni/store';
             method = 'POST';
         }
 
@@ -316,10 +316,12 @@ $(document).ready(function () {
                 } else {
                     toastr.error('Terjadi kesalahan, silakan coba lagi!');
                 }
+                // Kembalikan tombol ke kondisi semula
+                submitBtn.html(originalText).prop('disabled', false);
             },
             error: function (xhr) {
               if (xhr.status === 422) {
-                  let errors = xhr.responseJSON.errors;
+                  var errors = xhr.responseJSON.errors;
                   // Clear previous errors
                   $('#formTestimoni .form-control, #formTestimoni .form-select').removeClass('is-invalid');
                   $('#formTestimoni .text-danger.small').text('');
@@ -337,11 +339,8 @@ $(document).ready(function () {
               } else {
                   toastr.error('Gagal menyimpan data!');
               }
-            },
-            complete: function() {
-                // Hide loader and restore button
-                submitBtn.html(originalText);
-                submitBtn.prop('disabled', false);
+              // Kembalikan tombol ke kondisi semula
+              submitBtn.html(originalText).prop('disabled', false);
             }
         });
     });
@@ -355,6 +354,9 @@ $(document).ready(function () {
         $('#formTestimoni .form-control, #formTestimoni .form-select').removeClass('is-invalid');
         $('#formTestimoni .text-danger.small').text('');
         setTinyMCEError(false);
+
+        // Clear file input
+        $('#gambar').val('');
 
         // Clear TinyMCE content
         if (tinymce.get('testimoni')) {
@@ -370,14 +372,14 @@ function editTestimoni(id) {
     setTinyMCEError(false);
 
     $.ajax({
-        url: '/portfolio/testimoni/edit/' + id,
+        url: '/frontend/testimoni/edit/' + id,
         type: 'GET',
         success: function(response) {
             if (response.success) {
-                let testimoni = response.testimoni;
+                var testimoni = response.testimoni;
                 $('#id').val(testimoni.id);
-                $('#nama').val(testimoni.nama);
-                $('#instansi').val(testimoni.instansi);
+                $('#nama').val(testimoni.nama || '');
+                $('#instansi').val(testimoni.instansi || '');
 
                 // Set content to TinyMCE editor
                 if (tinymce.get('testimoni')) {
@@ -399,7 +401,7 @@ function editTestimoni(id) {
 }
 
 $(document).on('click', '.delete-record', function () {
-    let id = $(this).data('id');
+    var id = $(this).data('id');
 
     Swal.fire({
         title: 'Apakah Anda yakin?',
@@ -418,7 +420,7 @@ $(document).on('click', '.delete-record', function () {
     }).then((result) => {
         if (result.isConfirmed) {
             $.ajax({
-                url: '/portfolio/testimoni/delete/' + id,
+                url: '/frontend/testimoni/delete/' + id,
                 type: 'DELETE',
                 data: {
                     _method: 'DELETE',

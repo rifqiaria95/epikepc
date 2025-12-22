@@ -180,7 +180,7 @@ $(document).ready(function () {
         processing: true,
         serverSide: true,
         ajax: {
-            url: "portfolio/experience/",
+            url: "frontend/experience/",
             type: 'GET'
         },
         columns: [{
@@ -303,11 +303,11 @@ $(document).ready(function () {
         let method = '';
 
         if(id){
-            url = '/portfolio/experience/update/' + id;
+            url = '/frontend/experience/update/' + id;
             method = 'POST';
             formData.append('_method', 'PUT');
         } else {
-            url = '/portfolio/experience/store';
+            url = '/frontend/experience/store';
             method = 'POST';
         }
 
@@ -379,7 +379,7 @@ function editExperience(id) {
     setTinyMCEError(false);
 
     $.ajax({
-        url: '/portfolio/experience/edit/' + id,
+        url: '/frontend/experience/edit/' + id,
         type: 'GET',
         success: function(response) {
             if (response.success) {
@@ -431,7 +431,7 @@ $(document).on('click', '.delete-record', function () {
     }).then((result) => {
         if (result.isConfirmed) {
             $.ajax({
-                url: '/portfolio/experience/delete/' + id,
+                url: '/frontend/experience/delete/' + id,
                 type: 'DELETE',
                 data: {
                     _method: 'DELETE',

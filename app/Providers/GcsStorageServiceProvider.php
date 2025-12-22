@@ -3,10 +3,11 @@
 namespace App\Providers;
 
 use Google\Cloud\Storage\StorageClient;
+use Illuminate\Filesystem\FilesystemAdapter as LaravelFilesystemAdapter;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\ServiceProvider;
 use League\Flysystem\Filesystem;
-use League\Flysystem\GoogleCloudStorage\GoogleCloudStorageAdapter;
-use Illuminate\Support\Facades\Storage;
+use App\Filesystem\GoogleCloudStorageAdapterWithUrl;
 
 class GcsStorageServiceProvider extends ServiceProvider
 {
@@ -26,9 +27,11 @@ class GcsStorageServiceProvider extends ServiceProvider
 
             $bucket = $client->bucket($config['bucket']);
 
-            $adapter = new GoogleCloudStorageAdapter($bucket);
+            $adapter = new GoogleCloudStorageAdapterWithUrl($bucket);
 
-            return new Filesystem($adapter);
+            $driver = new Filesystem($adapter);
+
+            return new LaravelFilesystemAdapter($driver, $adapter, $config);
         });
     }
 }

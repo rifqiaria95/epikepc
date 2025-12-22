@@ -21,20 +21,11 @@ class TestimoniRequest extends FormRequest
      */
     public function rules(): array
     {
-        $rules = [
+        return [
             'nama'       => 'required|string|max:255',
             'testimoni'  => 'required|string|max:500',
             'instansi'   => 'required|string|max:255',
+            'gambar'     => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ];
-
-        // Jika ini adalah request untuk create (tidak ada ID), gambar wajib diisi
-        if (!$this->route('id')) {
-            $rules['gambar'] = 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048';
-        } else {
-            // Jika ini adalah request untuk update, gambar opsional
-            $rules['gambar'] = 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048';
-        }
-
-        return $rules;
     }
 }

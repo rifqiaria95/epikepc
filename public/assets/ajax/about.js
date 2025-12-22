@@ -180,7 +180,7 @@ $(document).ready(function () {
       processing: true,
       serverSide: true,
       ajax: {
-          url: "portfolio/profile/about/",
+          url: "frontend/profile/about/",
           type: 'GET'
       },
       columns: [{
@@ -335,11 +335,11 @@ $(document).ready(function () {
         let method = '';
 
         if(id){
-            url = '/portfolio/profile/about/update/' + id;
+            url = '/frontend/profile/about/update/' + id;
             method = 'POST';
             formData.append('_method', 'PUT');
         } else {
-            url = '/portfolio/profile/about/store';
+            url = '/frontend/profile/about/store';
             method = 'POST';
         }
 
@@ -411,7 +411,7 @@ function editAbout(id) {
     setTinyMCEError(false);
 
     $.ajax({
-        url: '/portfolio/profile/about/edit/' + id,
+        url: '/frontend/profile/about/edit/' + id,
         type: 'GET',
         success: function(response) {
             if (response.success) {
@@ -469,7 +469,7 @@ $(document).on('click', '.delete-record', function () {
     }).then((result) => {
         if (result.isConfirmed) {
             $.ajax({
-                url: '/portfolio/profile/about/delete/' + id,
+                url: '/frontend/profile/about/delete/' + id,
                 type: 'DELETE',
                 data: {
                     _method: 'DELETE',

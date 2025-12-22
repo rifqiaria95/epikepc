@@ -180,7 +180,7 @@ $(document).ready(function () {
         processing: true,
         serverSide: true,
         ajax: {
-            url: "portfolio/education/",
+            url: "frontend/education/",
             type: 'GET'
         },
         columns: [{
@@ -303,11 +303,11 @@ $(document).ready(function () {
         let method = '';
 
         if(id){
-            url = '/portfolio/education/update/' + id;
+            url = '/frontend/education/update/' + id;
             method = 'POST';
             formData.append('_method', 'PUT');
         } else {
-            url = '/portfolio/education/store';
+            url = '/frontend/education/store';
             method = 'POST';
         }
 
@@ -379,7 +379,7 @@ function editEducation(id) {
     setTinyMCEError(false);
 
     $.ajax({
-        url: '/portfolio/education/edit/' + id,
+        url: '/frontend/education/edit/' + id,
         type: 'GET',
         success: function(response) {
             if (response.success) {
@@ -431,7 +431,7 @@ $(document).on('click', '.delete-record', function () {
     }).then((result) => {
         if (result.isConfirmed) {
             $.ajax({
-                url: '/portfolio/education/delete/' + id,
+                url: '/frontend/education/delete/' + id,
                 type: 'DELETE',
                 data: {
                     _method: 'DELETE',

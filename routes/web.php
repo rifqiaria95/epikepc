@@ -6,6 +6,8 @@ use App\Http\Controllers\Mono\TagController;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Mono\ItemController;
 use App\Http\Controllers\Mono\NewsController;
+use App\Http\Controllers\Mono\HomeController;
+use App\Http\Controllers\Frontend\NewsController as FrontendNewsController;
 use App\Http\Controllers\Mono\UnitController;
 use App\Http\Controllers\Mono\UserController;
 use App\Http\Controllers\Mono\AboutController;
@@ -42,28 +44,19 @@ use App\Http\Controllers\Mono\RolePermissionController;
 use App\Http\Controllers\Auth\EmailVerificationController;
 use App\Http\Controllers\Ext\ProgramRegistController as ExtProgramRegistController;
 use App\Http\Controllers\Mono\TestimoniController;
+use App\Http\Controllers\Mono\ServiceTypeController;
+use App\Http\Controllers\Mono\ServicesController as MonoServicesController;
+use App\Http\Controllers\Frontend\ServicesController as FrontendServicesController;
 
-Route::get('/', function () {
-    return view('auth.login');
-});
+Route::get('/', [HomeController::class, 'index']);
 
-// Route untuk External
-Route::prefix('registration')->name('registration.')->group(function () {
-    Route::get('/', [RegistrationController::class, 'index'])->name('index');
-    Route::post('/store', [RegistrationController::class, 'store'])->name('store');
-    Route::get('/show/{id}', [RegistrationController::class, 'show'])->name('show');
-    Route::get('/edit/{id}', [RegistrationController::class, 'edit'])->name('edit');
-    Route::post('/update/{id}', [RegistrationController::class, 'update'])->name('update');
-    Route::delete('/delete/{id}', [RegistrationController::class, 'destroy'])->name('destroy');
-});
-
-// API Routes untuk dropdown wilayah
-Route::prefix('api')->name('api.')->group(function () {
-    Route::get('/provinsi', [RegistrationController::class, 'getProvinsi'])->name('provinsi');
-    Route::get('/kota/{id_provinsi}', [RegistrationController::class, 'getKota'])->name('kota');
-    Route::get('/kecamatan/{id_kota}', [RegistrationController::class, 'getKecamatan'])->name('kecamatan');
-    Route::get('/kelurahan/{id_kecamatan}', [RegistrationController::class, 'getKelurahan'])->name('kelurahan');
-});
+// Frontend Routes
+Route::get('/news/{slug}', [FrontendNewsController::class, 'show'])->name('news.show');
+Route::get('/services', [FrontendServicesController::class, 'index'])->name('frontend.services.index');
+Route::get('/services/{slug}', [FrontendServicesController::class, 'showByServiceType'])
+    ->name('frontend.services.show')
+    ->where('slug', '^(?!service_type|service_list).*$'); // Exclude internal routes
+Route::get('/detail-service/{id}', [FrontendServicesController::class, 'detailService'])->name('frontend.detail-service');
 
 // Route untuk Semua Role
 Route::middleware(['auth', 'verified'])->group(function () {
@@ -165,7 +158,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     });
 
     // Route Kategori
-    Route::prefix('portfolio/news/kategori')->name('kategori.')->group(function () {
+    Route::prefix('frontend/news/kategori')->name('kategori.')->group(function () {
         Route::get('/', [KategoriController::class, 'index'])->name('index');
         Route::post('/store', [KategoriController::class, 'store'])->name('store');
         Route::get('/edit/{id}', [KategoriController::class, 'edit'])->name('edit');
@@ -273,20 +266,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
             ->middleware('permission:delete_program_registration');
     });
 
-    // Route Program Registration External
-    Route::prefix('registration-program')->name('registration-program.')->middleware('guest_role')->group(function () {
-        Route::get('/', [ExtProgramRegistController::class, 'index'])
-            ->name('index');
-        Route::post('/store', [ExtProgramRegistController::class, 'store'])
-            ->name('store');
-        Route::get('/edit/{id}', [ExtProgramRegistController::class, 'edit'])
-            ->name('edit');
-        Route::put('/update/{id}', [ExtProgramRegistController::class, 'update'])
-            ->name('update');
-    });
-
     // Route Tag
-    Route::prefix('portfolio/news/tag')->name('tag.')->group(function () {
+    Route::prefix('frontend/news/tag')->name('tag.')->group(function () {
         Route::get('/', [TagController::class, 'index'])->name('index');
         Route::post('/store', [TagController::class, 'store'])->name('store');
         Route::get('/edit/{id}', [TagController::class, 'edit'])->name('edit');
@@ -305,7 +286,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/profile/{id}', [PelangganController::class, 'profile'])->name('profile');
     });
 
-    // Route Pelanggan
+    // Route Vendor
     Route::prefix('vendor')->name('vendor.')->group(function () {
         Route::get('/', [VendorController::class, 'index'])->name('index');
         Route::post('/store', [VendorController::class, 'store'])->name('store');
@@ -316,8 +297,41 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/profile/{id}', [VendorController::class, 'profile'])->name('profile');
     });
 
+    // Route Service Type
+    Route::prefix('services/service_type')->name('service_type.')->group(function () {
+        Route::get('/', [ServiceTypeController::class, 'index'])
+        ->name('index');
+        Route::post('/store', [ServiceTypeController::class, 'store'])
+        ->name('store');
+        Route::get('/edit/{id}', [ServiceTypeController::class, 'edit'])
+        ->name('edit');
+        Route::put('/update/{id}', [ServiceTypeController::class, 'update'])
+        ->name('update');
+        Route::delete('/delete/{id}', [ServiceTypeController::class, 'destroy'])
+        ->name('destroy');
+    });
+
+    // Route Services
+    Route::prefix('services/service_list')->name('service_list.')->group(function () {
+        Route::get('/', [MonoServicesController::class, 'index'])
+            ->name('index')
+            ->middleware('permission:view_services');
+        Route::post('/store', [MonoServicesController::class, 'store'])
+            ->name('store')
+            ->middleware('permission:create_services');
+        Route::get('/edit/{id}', [MonoServicesController::class, 'edit'])
+            ->name('edit')
+            ->middleware('permission:edit_services');
+        Route::put('/update/{id}', [MonoServicesController::class, 'update'])
+            ->name('update')
+            ->middleware('permission:edit_services');
+        Route::delete('/delete/{id}', [MonoServicesController::class, 'destroy'])
+            ->name('destroy')
+            ->middleware('permission:delete_services');
+    });
+
     // Route News
-    Route::prefix('portfolio/news')->name('news.')->group(function () {
+    Route::prefix('frontend/news')->name('news.')->group(function () {
         Route::get('/', [NewsController::class, 'index'])
             ->name('index')
             ->middleware('permission:view_news');
@@ -336,7 +350,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     });
 
     // Route About
-    Route::prefix('portfolio/profile/about')->name('about.')->group(function () {
+    Route::prefix('frontend/profile/about')->name('about.')->group(function () {
         Route::get('/', [AboutController::class, 'index'])
             ->name('index')
             ->middleware('permission:view_profile');
@@ -355,7 +369,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     });
 
     // Route Visi Misi
-    Route::prefix('portfolio/profile/visi-misi')->name('visi-misi.')->group(function () {
+    Route::prefix('frontend/profile/visi-misi')->name('visi-misi.')->group(function () {
         Route::get('/', [VisiMisiController::class, 'index'])
             ->name('index')
             ->middleware('permission:view_profile');
@@ -374,7 +388,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     });
 
     // Route Education
-    Route::prefix('portfolio/education')->name('education.')->group(function () {
+    Route::prefix('frontend/education')->name('education.')->group(function () {
         Route::get('/', [EducationController::class, 'index'])
             ->name('index')
             ->middleware('permission:view_education');
@@ -393,7 +407,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     });
 
     // Route Galeri
-    Route::prefix('portfolio/galeri/list-galeri')->name('list-galeri.')->group(function () {
+    Route::prefix('frontend/galeri/list-galeri')->name('list-galeri.')->group(function () {
         Route::get('/', [GaleriController::class, 'index'])
             ->name('index')
             ->middleware('permission:view_galeri');
@@ -412,7 +426,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     });
 
     // Route Kategori Galeri
-    Route::prefix('portfolio/galeri/kategori-galeri')->name('kategori-galeri.')->group(function () {
+    Route::prefix('frontend/galeri/kategori-galeri')->name('kategori-galeri.')->group(function () {
         Route::get('/', [KategoriGaleriController::class, 'index'])
             ->name('index')
             ->middleware('permission:view_galeri');
@@ -431,7 +445,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     });
 
     // Route Organisasi
-    Route::prefix('portfolio/organisasi')->name('organisasi.')->group(function () {
+    Route::prefix('frontend/organisasi')->name('organisasi.')->group(function () {
         Route::get('/', [OrganisasiController::class, 'index'])
             ->name('index')
             ->middleware('permission:view_organisasi');
@@ -450,7 +464,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     });
 
     // Route Experience
-    Route::prefix('portfolio/experience')->name('experience.')->group(function () {
+    Route::prefix('frontend/experience')->name('experience.')->group(function () {
         Route::get('/', [ExperienceController::class, 'index'])
             ->name('index')
             ->middleware('permission:view_experience');
@@ -469,7 +483,26 @@ Route::middleware(['auth', 'verified'])->group(function () {
     });
 
     // Route Testimoni
-    Route::prefix('portfolio/testimoni')->name('testimoni.')->group(function () {
+    Route::prefix('frontend/testimoni')->name('testimoni.')->group(function () {
+        Route::get('/', [TestimoniController::class, 'index'])
+            ->name('index')
+            ->middleware('permission:view_testimoni');
+        Route::post('/store', [TestimoniController::class, 'store'])
+            ->name('store')
+            ->middleware('permission:create_testimoni');
+        Route::get('/edit/{id}', [TestimoniController::class, 'edit'])
+            ->name('edit')
+            ->middleware('permission:edit_testimoni');
+        Route::put('/update/{id}', [TestimoniController::class, 'update'])
+            ->name('update')
+            ->middleware('permission:edit_testimoni');
+        Route::delete('/delete/{id}', [TestimoniController::class, 'destroy'])
+            ->name('destroy')
+            ->middleware('permission:delete_testimoni');
+    });
+
+    // Route Testimoni
+    Route::prefix('internal/testimoni')->name('internal/testimoni.')->group(function () {
         Route::get('/', [TestimoniController::class, 'index'])
             ->name('index')
             ->middleware('permission:view_testimoni');

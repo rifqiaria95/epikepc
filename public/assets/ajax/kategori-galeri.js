@@ -177,7 +177,7 @@ $(document).ready(function () {
         processing: true,
         serverSide: true,
         ajax: {
-            url: "/portfolio/galeri/kategori-galeri/",
+            url: "/frontend/galeri/kategori-galeri/",
             type: 'GET'
         },
         columns: [
@@ -251,7 +251,7 @@ $(document).ready(function () {
         $('.text-danger').text('');
 
         $.ajax({
-            url: `/portfolio/galeri/kategori-galeri/edit/${id}/`,
+            url: `/frontend/galeri/kategori-galeri/edit/${id}/`,
             type: "GET",
             success: function (response) {
                 if (response.success) {
@@ -286,11 +286,11 @@ $(document).ready(function () {
 
         let formData = new FormData(this);
         let id       = $("#id").val();
-        let url      = "/portfolio/galeri/kategori-galeri/store";
+        let url      = "/frontend/galeri/kategori-galeri/store";
         let method   = "POST";
 
         if (id) {
-            url = "/portfolio/galeri/kategori-galeri/update/" + id;
+            url = "/frontend/galeri/kategori-galeri/update/" + id;
             formData.append("_method", "PUT");
         }
 
@@ -347,7 +347,7 @@ $(document).ready(function () {
         }).then((result) => {
             if (result.isConfirmed) {
                 $.ajax({
-                    url: '/portfolio/galeri/kategori-galeri/delete/' + id,
+                    url: '/frontend/galeri/kategori-galeri/delete/' + id,
                     type: 'DELETE',
                     data: {
                         _method: 'DELETE',
