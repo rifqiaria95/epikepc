@@ -40,8 +40,21 @@ class NewsController extends Controller
         });
 
         if ($request->ajax()) {
-            // Temporary fix: Simplified query without specific select fields
-            $news = News::withoutTrashed()
+            // Samakan pendekatan dengan Services: select field yang dibutuhkan,
+            // dan kirimkan URL thumbnail (bukan langsung HTML <img>).
+            $news = News::select([
+                    'id',
+                    'title',
+                    'slug',
+                    'content',
+                    'summary',
+                    'thumbnail',
+                    'status',
+                    'published_at',
+                    'archived_at',
+                    'author_id'
+                ])
+                ->withoutTrashed()
                 ->with([
                     'user',
                     'categories',
@@ -59,18 +72,14 @@ class NewsController extends Controller
                     return $data->tags->pluck('name')->join(', ') ?: '-';
                 })
                 ->editColumn('thumbnail', function ($data) {
-                    // Return HTML img tag untuk thumbnail
-                    if ($data->thumbnail) {
-                        $imageUrl = $this->fileStorageService->getFileUrl($data->thumbnail);
-                        return '<img src="' . $imageUrl . '" alt="News Thumbnail" style="width: 50px; height: 50px; object-fit: cover; border-radius: 4px;">';
-                    }
-                    return '<span class="text-muted">No Thumbnail</span>';
+                    // Ikuti pendekatan Services: hanya kembalikan URL gambar
+                    return $data->getThumbnailUrl();
                 })
                 ->addColumn('aksi', function ($data) {
                     $button = '';
                     return $button;
                 })
-                ->rawColumns(['author', 'category', 'tags', 'thumbnail', 'aksi'])
+                ->rawColumns(['author', 'category', 'tags', 'aksi'])
                 ->addIndexColumn()
                 ->toJson();
         }

@@ -27,6 +27,45 @@ class News extends Model
         'archived_at' => 'datetime',
     ];
 
+    /**
+     * Generate public URL for thumbnail (mirip dengan Service::getImageUrl()).
+     *
+     * @return string|null
+     */
+    public function getThumbnailUrl()
+    {
+        if (!$this->thumbnail) {
+            return null;
+        }
+
+        $defaultDisk = config('filesystems.default');
+
+        // Jika menggunakan GCS
+        if ($defaultDisk === 'gcs') {
+            $gcsUrl = config('filesystems.disks.gcs.url');
+            $bucket = config('filesystems.disks.gcs.bucket');
+
+            if (!empty($gcsUrl)) {
+                return rtrim($gcsUrl, '/') . '/' . ltrim($this->thumbnail, '/');
+            }
+
+            return 'https://storage.googleapis.com/' . $bucket . '/' . $this->thumbnail;
+        }
+
+        // Fallback ke local storage URL
+        return url('storage/' . $this->thumbnail);
+    }
+
+    /**
+     * Accessor agar bisa pakai $news->thumbnail_url langsung.
+     *
+     * @return string|null
+     */
+    public function getThumbnailUrlAttribute()
+    {
+        return $this->getThumbnailUrl();
+    }
+
     protected static function boot()
     {
         parent::boot();
