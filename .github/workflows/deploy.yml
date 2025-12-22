@@ -31,7 +31,7 @@ jobs:
             # install dependencies
             composer install --no-interaction --prefer-dist --optimize-autoloader
 
-            # migrate database
+            # migrate database Laravel
             php artisan migrate --force
             
             # fix GCS environment variables
