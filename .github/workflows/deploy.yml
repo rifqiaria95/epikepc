@@ -3,7 +3,7 @@ name: Deploy to Server
 on:
   push:
     branches:
-      # jalan setiap push ke branch main
+      # otomatis jalan setiap push ke branch main
       - main
 jobs:
   # deploy to server
