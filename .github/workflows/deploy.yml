@@ -3,8 +3,8 @@ name: Deploy to Server
 on:
   push:
     branches:
-      - main   # jalan setiap push ke branch main
-
+      # jalan setiap push ke branch main
+      - main
 jobs:
   # deploy to server
   deploy:
@@ -46,24 +46,24 @@ jobs:
             systemctl stop nginx 2>/dev/null || systemctl stop apache2 2>/dev/null || true
             
             # Fix ownership
-            chown -R www-data:www-data /var/www/kaiproject1/storage
-            chown -R www-data:www-data /var/www/kaiproject1/bootstrap/cache
-            chown -R www-data:www-data /var/www/kaiproject1/storage/app
+            chown -R www-data:www-data /var/www/kainnovacp/storage
+            chown -R www-data:www-data /var/www/kainnovacp/bootstrap/cache
+            chown -R www-data:www-data /var/www/kainnovacp/storage/app
             
             # Fix permissions
-            chmod -R 775 /var/www/kaiproject1/storage
-            chmod -R 775 /var/www/kaiproject1/bootstrap/cache
+            chmod -R 775 /var/www/kainnovacp/storage
+            chmod -R 775 /var/www/kainnovacp/bootstrap/cache
             
             # Remove and recreate log file
-            rm -f /var/www/kaiproject1/storage/logs/laravel.log
-            touch /var/www/kaiproject1/storage/logs/laravel.log
-            chown www-data:www-data /var/www/kaiproject1/storage/logs/laravel.log
-            chmod 664 /var/www/kaiproject1/storage/logs/laravel.log
+            rm -f /var/www/kainnovacp/storage/logs/laravel.log
+            touch /var/www/kainnovacp/storage/logs/laravel.log
+            chown www-data:www-data /var/www/kainnovacp/storage/logs/laravel.log
+            chmod 664 /var/www/kainnovacp/storage/logs/laravel.log
             
             # Fix GCS service account permissions
-            if [ -f "/var/www/kaiproject1/storage/app/gcs-service-account.json" ]; then
-              chown www-data:www-data /var/www/kaiproject1/storage/app/gcs-service-account.json
-              chmod 644 /var/www/kaiproject1/storage/app/gcs-service-account.json
+            if [ -f "/var/www/kainnovacp/storage/app/gcs-service-account.json" ]; then
+              chown www-data:www-data /var/www/kainnovacp/storage/app/gcs-service-account.json
+              chmod 644 /var/www/kainnovacp/storage/app/gcs-service-account.json
             fi
             
             # Start web server
