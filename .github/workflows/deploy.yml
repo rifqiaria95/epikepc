@@ -22,7 +22,7 @@ jobs:
       - name: Deploy to Server
         run: |
           ssh -o StrictHostKeyChecking=no root@34.2.139.16 << 'EOF'
-            cd /var/www/kaiproject1
+            cd /var/www/kainnovacp
 
             # pull kode terbaru
             git reset --hard
