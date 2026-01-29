@@ -265,6 +265,11 @@ class ServicesController extends Controller
      */
     public function detailService($id)
     {
+        // Hanya terima ID numerik (mencegah request seperti pricing.html masuk ke query)
+        if (! is_numeric($id)) {
+            abort(404);
+        }
+
         // Get service by id with relations
         $service = Service::withoutTrashed()
             ->with(['serviceType', 'serviceDetails'])

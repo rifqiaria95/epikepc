@@ -56,7 +56,9 @@ Route::get('/services', [FrontendServicesController::class, 'index'])->name('fro
 Route::get('/services/{slug}', [FrontendServicesController::class, 'showByServiceType'])
     ->name('frontend.services.show')
     ->where('slug', '^(?!service_type|service_list).*$'); // Exclude internal routes
-Route::get('/detail-service/{id}', [FrontendServicesController::class, 'detailService'])->name('frontend.detail-service');
+Route::get('/detail-service/{id}', [FrontendServicesController::class, 'detailService'])
+    ->name('frontend.detail-service')
+    ->where('id', '[0-9]+');
 
 // Route untuk Semua Role
 Route::middleware(['auth', 'verified'])->group(function () {
