@@ -53,6 +53,7 @@ Thumbs.db
 
 # Environment Tambahan
 .env.local
+.env.prod
 .env.staging
 .env.testing
 
