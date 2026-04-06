@@ -38,7 +38,7 @@ class EducationController extends Controller
                 ->editColumn('image', function ($data) {
                     // Return HTML img tag untuk thumbnail
                     if ($data->image) {
-                        $imageUrl = config('filesystems.disks.gcs.url') . '/' . $data->image;
+                        $imageUrl = $this->fileStorageService->getFileUrl($data->image);
                         return '<img src="' . $imageUrl . '" alt="Education Image" style="width: 50px; height: 50px; object-fit: cover; border-radius: 4px;">';
                     }
                     return '<span class="text-muted">No Image</span>';

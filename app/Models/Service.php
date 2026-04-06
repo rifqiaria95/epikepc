@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Support\Facades\Storage;
 
 class Service extends Model
 {
@@ -19,24 +20,7 @@ class Service extends Model
             return null;
         }
 
-        // Check if using GCS storage
-        $defaultDisk = config('filesystems.default');
-        
-        if ($defaultDisk === 'gcs') {
-            $gcsUrl = config('filesystems.disks.gcs.url');
-            $bucket = config('filesystems.disks.gcs.bucket');
-            
-            // Use custom URL if set, otherwise use default GCS URL
-            if (!empty($gcsUrl)) {
-                return rtrim($gcsUrl, '/') . '/' . ltrim($this->image, '/');
-            }
-            
-            // Default GCS public URL
-            return 'https://storage.googleapis.com/' . $bucket . '/' . $this->image;
-        }
-
-        // Fallback to local storage URL
-        return url('storage/' . $this->image);
+        return Storage::disk('public')->url($this->image);
     }
 
     public function getImageUrlAttribute()

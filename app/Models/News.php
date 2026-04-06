@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
 class News extends Model
@@ -38,22 +39,7 @@ class News extends Model
             return null;
         }
 
-        $defaultDisk = config('filesystems.default');
-
-        // Jika menggunakan GCS
-        if ($defaultDisk === 'gcs') {
-            $gcsUrl = config('filesystems.disks.gcs.url');
-            $bucket = config('filesystems.disks.gcs.bucket');
-
-            if (!empty($gcsUrl)) {
-                return rtrim($gcsUrl, '/') . '/' . ltrim($this->thumbnail, '/');
-            }
-
-            return 'https://storage.googleapis.com/' . $bucket . '/' . $this->thumbnail;
-        }
-
-        // Fallback ke local storage URL
-        return url('storage/' . $this->thumbnail);
+        return Storage::disk('public')->url($this->thumbnail);
     }
 
     /**

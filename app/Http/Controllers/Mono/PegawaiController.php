@@ -66,7 +66,7 @@ class PegawaiController extends Controller
                 ->editColumn('foto_pegawai', function ($data) {
                     // Return HTML img tag untuk thumbnail
                     if ($data->foto_pegawai) {
-                        $imageUrl = config('filesystems.disks.gcs.url') . '/' . $data->foto_pegawai;
+                        $imageUrl = $this->fileStorageService->getFileUrl($data->foto_pegawai);
                         return '<img src="' . $imageUrl . '" alt="Pegawai Photo" style="width: 50px; height: 50px; object-fit: cover; border-radius: 4px;">';
                     }
                     return '<span class="text-muted">No Photo</span>';

@@ -5,104 +5,39 @@ require_once 'vendor/autoload.php';
 $app = require_once 'bootstrap/app.php';
 $app->make('Illuminate\Contracts\Console\Kernel')->bootstrap();
 
-echo "=== GCS Upload Test ===\n";
+echo "=== Public storage upload test ===\n";
 
 try {
-    // Test 1: Check configuration
-    echo "1. Checking GCS configuration...\n";
-    $projectId = config('filesystems.disks.gcs.project_id');
-    $keyFile = config('filesystems.disks.gcs.key_file');
-    $bucketName = config('filesystems.disks.gcs.bucket');
-    $url = config('filesystems.disks.gcs.url');
-    
-    echo "   Project ID: " . $projectId . "\n";
-    echo "   Key File: " . $keyFile . "\n";
-    echo "   Bucket: " . $bucketName . "\n";
-    echo "   URL: " . $url . "\n";
-    
-    // Test 2: Check key file exists
-    echo "\n2. Checking key file...\n";
-    if (file_exists($keyFile)) {
-        echo "   ✅ Key file exists\n";
-        $keyContent = json_decode(file_get_contents($keyFile), true);
-        if ($keyContent && isset($keyContent['project_id'])) {
-            echo "   ✅ Key file is valid JSON\n";
-            echo "   Project ID in key: " . $keyContent['project_id'] . "\n";
-        } else {
-            echo "   ❌ Key file is not valid JSON\n";
-        }
-    } else {
-        echo "   ❌ Key file does not exist\n";
-        // Try with base_path
-        $keyFileWithBasePath = base_path($keyFile);
-        if (file_exists($keyFileWithBasePath)) {
-            echo "   ✅ Key file exists with base_path: " . $keyFileWithBasePath . "\n";
-        } else {
-            echo "   ❌ Key file does not exist with base_path either\n";
-        }
+    $disk = \Illuminate\Support\Facades\Storage::disk('public');
+    echo '1. Disk URL: '.config('filesystems.disks.public.url')."\n";
+
+    $path = 'test-uploads/test-'.time().'.txt';
+    $disk->put($path, 'Public storage test — '.date('c'));
+    echo "2. Write OK: {$path}\n";
+    echo '   URL: '.$disk->url($path)."\n";
+
+    if ($disk->exists($path)) {
+        echo "3. exists(): yes\n";
     }
-    
-    // Test 3: Test GCS connection
-    echo "\n3. Testing GCS connection...\n";
-    $client = new \Google\Cloud\Storage\StorageClient([
-        'projectId' => $projectId,
-        'keyFilePath' => file_exists($keyFile) ? $keyFile : base_path($keyFile)
-    ]);
-    
-    $bucket = $client->bucket($bucketName);
-    echo "   ✅ GCS client created successfully\n";
-    echo "   ✅ Bucket object created: " . $bucket->name() . "\n";
-    
-    // Test 4: Test file upload
-    echo "\n4. Testing file upload...\n";
-    $testContent = "Test file content - " . date('Y-m-d H:i:s');
-    $testPath = 'test-uploads/test-file-' . time() . '.txt';
-    
-    $object = $bucket->upload($testContent, [
-        'name' => $testPath,
-        'metadata' => [
-            'contentType' => 'text/plain',
-        ],
-    ]);
-    
-    echo "   ✅ File uploaded successfully\n";
-    echo "   File path: " . $testPath . "\n";
-    echo "   Public URL: " . $url . '/' . $testPath . "\n";
-    
-    // Test 5: Test FileStorageService
-    echo "\n5. Testing FileStorageService...\n";
-    $fileStorageService = new \App\Services\FileStorageService();
-    
-    // Create a test uploaded file
-    $testFile = new \Illuminate\Http\UploadedFile(
-        storage_path('app/test.txt'),
-        'test.txt',
-        'text/plain',
-        null,
-        true
-    );
-    
-    // Create test file
-    file_put_contents(storage_path('app/test.txt'), 'Test content for FileStorageService');
-    
-    $result = $fileStorageService->uploadFile($testFile, 'test');
-    
+
+    $disk->delete($path);
+    echo "4. Cleaned up test object.\n";
+
+    $tmp = tempnam(sys_get_temp_dir(), 'up');
+    file_put_contents($tmp, 'FileStorageService probe');
+    $uploadedFile = new \Illuminate\Http\UploadedFile($tmp, 'probe.txt', 'text/plain', null, true);
+    $svc = app(\App\Services\FileStorageService::class);
+    $result = $svc->uploadFile($uploadedFile, 'test');
     if ($result['success']) {
-        echo "   ✅ FileStorageService upload successful\n";
-        echo "   Filename: " . $result['filename'] . "\n";
-        echo "   Path: " . $result['path'] . "\n";
-        echo "   URL: " . $result['url'] . "\n";
+        echo "5. FileStorageService OK — {$result['path']}\n";
+        $svc->deleteFile($result['path']);
+        echo "   (test file removed)\n";
     } else {
-        echo "   ❌ FileStorageService upload failed\n";
-        echo "   Error: " . ($result['error'] ?? 'Unknown error') . "\n";
+        echo '5. FileStorageService failed: '.($result['error'] ?? 'unknown')."\n";
     }
-    
-    // Cleanup
-    unlink(storage_path('app/test.txt'));
-    
-    echo "\n=== All tests completed successfully! ===\n";
-    
+
+    echo "\nDone.\n";
 } catch (\Exception $e) {
-    echo "\n❌ Error: " . $e->getMessage() . "\n";
-    echo "Stack trace:\n" . $e->getTraceAsString() . "\n";
+    echo 'Error: '.$e->getMessage()."\n";
+    exit(1);
 }

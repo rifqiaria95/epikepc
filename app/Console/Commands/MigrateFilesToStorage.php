@@ -24,7 +24,7 @@ class MigrateFilesToStorage extends Command
      *
      * @var string
      */
-    protected $description = 'Migrasi file dari local storage ke object storage';
+    protected $description = 'Migrasi file dari disk local (private) ke disk public';
 
     protected $fileStorageService;
 

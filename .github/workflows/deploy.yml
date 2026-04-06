@@ -34,10 +34,10 @@ jobs:
             # migrate database Laravel
             php artisan migrate --force
             
-            # fix GCS environment variables
-            echo "Fixing GCS environment variables..."
-            sed -i 's|GOOGLE_CLOUD_KEY_FILE=.*|GOOGLE_CLOUD_KEY_FILE=storage/app/gcs-service-account.json|' .env
-            sed -i 's|FILESYSTEM_DISK=.*|FILESYSTEM_DISK=gcs|' .env
+            # use local public disk for uploads (e.g. bind-mounted storage/app/public)
+            echo "Ensuring FILESYSTEM_DISK=public..."
+            if grep -q '^FILESYSTEM_DISK=' .env; then sed -i 's|^FILESYSTEM_DISK=.*|FILESYSTEM_DISK=public|' .env; else echo 'FILESYSTEM_DISK=public' >> .env; fi
+            sudo -u www-data php artisan storage:link --force 2>/dev/null || true
 
             # EMERGENCY FIX: Force fix permissions
             echo "Fixing permissions..."
@@ -59,12 +59,6 @@ jobs:
             touch /var/www/kainnovacp/storage/logs/laravel.log
             chown www-data:www-data /var/www/kainnovacp/storage/logs/laravel.log
             chmod 664 /var/www/kainnovacp/storage/logs/laravel.log
-            
-            # Fix GCS service account permissions
-            if [ -f "/var/www/kainnovacp/storage/app/gcs-service-account.json" ]; then
-              chown www-data:www-data /var/www/kainnovacp/storage/app/gcs-service-account.json
-              chmod 644 /var/www/kainnovacp/storage/app/gcs-service-account.json
-            fi
             
             # Start web server
             systemctl start nginx 2>/dev/null || systemctl start apache2 2>/dev/null || true
