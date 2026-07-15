@@ -24,8 +24,8 @@
             </div>
         </div>
         <picture>
-            <source data-srcset="{{ asset('frontend/img/placeholder.jpg') }}" srcset="{{ asset('frontend/img/placeholder.jpg') }}" type="image/webp" data-role="deco" />
-            <img class="lazy plan" data-src="{{ asset('frontend/img/placeholder.jpg') }}" src="{{ asset('frontend/img/placeholder.jpg') }}" alt="media" data-role="deco" />
+            <source data-srcset="{{ asset('frontend/img/lineart.png') }}" srcset="{{ asset('frontend/img/lineart.png') }}" type="image/webp" data-role="deco" />
+            <img class="lazy plan" data-src="{{ asset('frontend/img/lineart.png') }}" src="{{ asset('frontend/img/lineart.png') }}" alt="media" data-role="deco" />
         </picture>
     </div>
 @endsection
