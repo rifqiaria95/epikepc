@@ -38,9 +38,10 @@ class AppServiceProvider extends ServiceProvider
         }
 
         // Daftarkan view composer untuk menu frontend
-        if (Schema::hasTable('service_type')) {
-            View::composer(['layouts.frontend.header', 'layouts.frontend.footer'], FrontendMenuComposer::class);
-        }
+        View::composer(
+            ['layouts.frontend.header', 'layouts.frontend.footer', 'index'],
+            FrontendMenuComposer::class
+        );
 
         // Custom pesan validasi
         Validator::replacer('required', function ($message, $attribute, $rule, $parameters) {

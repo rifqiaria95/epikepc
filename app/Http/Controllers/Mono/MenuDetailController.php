@@ -52,7 +52,7 @@ class MenuDetailController extends Controller
 
         return response()->json([
             'success' => true,
-            'message' => 'Menu berhasil ditambahkan beserta permissions!',
+            'message' => 'Menu added with permissions successfully!',
             'menu'    => $menu
         ]);
     }
@@ -110,7 +110,7 @@ class MenuDetailController extends Controller
         if (!$menuDetail) {
             return response()->json([
                 'success' => false,
-                'message' => 'Data tidak ditemukan'
+                'message' => 'Data not found'
             ], 404);
         }
 
@@ -140,7 +140,7 @@ class MenuDetailController extends Controller
 
         return response()->json([
             'success' => true,
-            'message' => 'Menu berhasil diperbarui!'
+            'message' => 'Menu updated successfully!'
         ]);
     }
 
@@ -174,7 +174,7 @@ class MenuDetailController extends Controller
                     $existingNewPermission->menuDetails()->syncWithoutDetaching($menuDetail->id);
                     $oldPermission->menuDetails()->detach($menuDetail->id);
 
-                    // Hapus permission lama jika tidak memiliki relasi lain
+                    // Delete permission lama jika tidak memiliki relasi lain
                     if ($oldPermission->menuDetails()->count() === 0) {
                         $oldPermission->delete();
                     }
@@ -191,7 +191,7 @@ class MenuDetailController extends Controller
             MenuDetail::where('id', $id)->update(['order' => $index + 1]);
         }
 
-        return response()->json(['message' => 'Urutan berhasil diperbarui']);
+        return response()->json(['message' => 'Order updated successfully']);
     }
 
     public function destroy($id)
@@ -201,20 +201,20 @@ class MenuDetailController extends Controller
         // \ActivityLog::addToLog('Menghapus data menu_detail');
 
         if ($menu_detail) {
-            // Hapus relasi permissions dengan menu detail ini
+            // Delete relasi permissions dengan menu detail ini
             $this->cleanupMenuPermissions($menu_detail);
 
-            // Hapus menu detail
+            // Delete menu detail
             $menu_detail->delete();
 
             return response()->json([
                 'status'    => 200,
-                'message'   => 'Sukses! Data menu_detail dan permissions terkait berhasil dihapus'
+                'message'   => 'Menu detail and related permissions deleted successfully'
             ]);
         } else {
             return response()->json([
                 'status'    => 404,
-                'errors'    => 'Error! Data menu_detail tidak ditemukan'
+                'errors'    => 'Error! Menu detail data not found'
             ]);
         }
     }
@@ -235,10 +235,10 @@ class MenuDetailController extends Controller
                 try {
                     $menuDetail = MenuDetail::findOrFail($id);
                     
-                    // Hapus relasi permissions dengan menu detail ini
+                    // Delete relasi permissions dengan menu detail ini
                     $this->cleanupMenuPermissions($menuDetail);
                     
-                    // Hapus menu detail
+                    // Delete menu detail
                     $menuDetail->delete();
                     $deletedCount++;
                 } catch (\Exception $e) {
@@ -246,9 +246,9 @@ class MenuDetailController extends Controller
                 }
             }
 
-            $message = "Berhasil menghapus {$deletedCount} menu detail";
+            $message = "Successfully deleted {$deletedCount} menu detail";
             if ($failedCount > 0) {
-                $message .= ", {$failedCount} menu detail gagal dihapus";
+                $message .= ", {$failedCount} menu detail failed to delete";
             }
 
             return response()->json([
@@ -261,7 +261,7 @@ class MenuDetailController extends Controller
         } catch (\Exception $e) {
             return response()->json([
                 'status' => 500,
-                'message' => 'Terjadi kesalahan: ' . $e->getMessage()
+                'message' => 'An error occurred: ' . $e->getMessage()
             ]);
         }
     }
@@ -288,12 +288,12 @@ class MenuDetailController extends Controller
             $permission = Permission::where('name', $permissionName)->first();
 
             if ($permission) {
-                // Hapus relasi dengan menu detail ini
+                // Delete relasi dengan menu detail ini
                 $permission->menuDetails()->detach($menuDetail->id);
 
                 // Jika permission tidak memiliki relasi dengan menu detail lain, hapus permission
                 if ($permission->menuDetails()->count() === 0 && $permission->menuGroups()->count() === 0) {
-                    // Hapus juga relasi dengan roles jika ada
+                    // Delete juga relasi dengan roles jika ada
                     $permission->roles()->detach();
                     $permission->delete();
                 }

@@ -1,0 +1,59 @@
+/**
+ * Axial
+ * EPIKEPC is a universal template for factories, industry, construction, architecture, factories, mechanics, energy
+ * Exclusively on https://1.envato.market/axial-html
+ *
+ * @encoding        UTF-8
+ * @version         1.0.0
+ * @copyright       (C) 2018 - 2021 Merkulove ( https://merkulov.design/ ). All rights reserved.
+ * @license         Envato License https://1.envato.market/KYbje
+ * @contributors    Lamber Lilit (winter.rituel@gmail.com)
+ * @support         help@merkulov.design
+ **/
+//  TINY SLIDER CUSTOM DOTS STYLING
+
+.tns-nav,
+.hero_slider-nav {
+    button {
+        width: 12px;
+        height: 12px;
+        background: #E9E6E6;
+        display: block;
+        border-radius: 50%;
+        position: relative;
+        transition: all .2s ease-in-out;
+
+        &:after {
+            content: '';
+            position: absolute;
+            width: 22px;
+            height: 22px;
+            top: 50%;
+            left: 50%;
+            border-radius: 50%;
+            transform: translateY(-50%) translateX(-50%);
+            border: 1px solid transparent;
+            transition: all .2s ease-in-out;
+        }
+
+        &.tns-nav-active {
+            background: $primary;
+
+            &:after {
+                border-color: $primary;
+            }
+        }
+    }
+    &--alt {
+        button {
+            &.tns-nav-active {
+                background: $accent;
+
+                &:after {
+                    border-color: $accent;
+                }
+            }
+        }
+    }
+}
+

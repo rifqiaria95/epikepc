@@ -7,7 +7,7 @@
         <span class="app-brand-logo demo">
             <img src="{{ url('assets/img/branding/logo.png') }}" alt="Logo" width="40">
         </span>
-        <span class="app-brand-text demo menu-text fw-bold">Kainnova</span>
+        <span class="app-brand-text demo menu-text fw-bold">EPIKEPC</span>
     </a>
       <!-- /Logo -->
       <div class="authentication-inner row m-0">
@@ -34,8 +34,8 @@
         <!-- Forgot Password -->
         <div class="d-flex col-12 col-lg-4 align-items-center authentication-bg p-sm-12 p-6">
           <div class="w-px-400 mx-auto mt-12 mt-5">
-            <h4 class="mb-1">Lupa Kata Sandi? 🔒</h4>
-            <p class="mb-6">Masukkan email Anda dan kami akan mengirimkan instruksi untuk mengatur ulang kata sandi Anda</p>
+            <h4 class="mb-1">Forgot Password? 🔒</h4>
+            <p class="mb-6">Enter your email and we will send instructions to reset your password</p>
             
             @if (session('status'))
                 <div class="alert alert-success alert-dismissible fade show" role="alert">
@@ -53,18 +53,18 @@
                   class="form-control"
                   id="email"
                   name="email"
-                  placeholder="Masukkan email Anda"
+                  placeholder="Enter your email"
                   autofocus />
                 @error('email')
                     <div class="text-danger mt-1">{{ $message }}</div>
                 @enderror
               </div>
-              <button class="btn btn-primary d-grid w-100">Kirim Tautan Reset</button>
+              <button class="btn btn-primary d-grid w-100">Send Reset Link</button>
             </form>
             <div class="text-center">
               <a href="{{ route('login') }}" class="d-flex align-items-center justify-content-center">
                 <i class="ti ti-chevron-left scaleX-n1-rtl me-1_5"></i>
-                Kembali ke login
+                Back to login
               </a>
             </div>
           </div>
@@ -76,7 +76,7 @@
 @if (session('status'))
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        toastr.success('{{ session('status') }}', 'Berhasil!', {
+        toastr.success('{{ session('status') }}', 'Success!', {
             closeButton: true,
             progressBar: true,
             timeOut: 5000

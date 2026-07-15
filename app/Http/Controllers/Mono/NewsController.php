@@ -102,7 +102,7 @@ class NewsController extends Controller
                 );
 
                 if (!$uploadResult['success']) {
-                    throw new \Exception('Gagal upload thumbnail: ' . $uploadResult['error']);
+                    throw new \Exception('Failed to upload thumbnail: ' . $uploadResult['error']);
                 }
 
                 $validatedData['thumbnail'] = $uploadResult['path'];
@@ -113,7 +113,7 @@ class NewsController extends Controller
             $validatedData['created_by'] = Auth::id();
 
             // Auto-fill published_at dan archived_at berdasarkan status
-            $this->handleStatusTimestamps($validatedData);
+            $this->handleStatusTeamestamps($validatedData);
 
             // Pisahkan category_id dan tags_id dari validatedData karena tidak ada di tabel news
             $categoryId = Arr::pull($validatedData, 'category_id');
@@ -136,20 +136,20 @@ class NewsController extends Controller
 
             return response()->json([
                 'status' => 200,
-                'message' => 'Data news berhasil disimpan!',
+                'message' => 'News saved successfully!',
                 'data' => $news
             ]);
         } catch (\Exception $e) {
             DB::rollBack();
 
-            // Hapus file yang sudah diupload jika ada error
+            // Delete file yang sudah diupload jika ada error
             if (isset($uploadResult) && $uploadResult['success']) {
                 $this->fileStorageService->deleteFile($uploadResult['path']);
             }
 
             return response()->json([
                 'status' => 500,
-                'message' => 'Terjadi kesalahan pada server.',
+                'message' => 'A server error occurred.',
                 'error' => $e->getMessage()
             ], 500);
         }
@@ -163,14 +163,14 @@ class NewsController extends Controller
             if (!$news) {
                 return response()->json([
                     'status' => 404,
-                    'message' => 'Data news tidak ditemukan'
+                    'message' => 'News data not found'
                 ], 404);
             }
 
             // Format data untuk frontend
             $newsData = $news->toArray();
 
-            // Tambahkan category_id dan tags_id untuk form edit
+            // Addkan category_id dan tags_id untuk form edit
             $newsData['category_id'] = $news->categories->pluck('id')->toArray();
             $newsData['tags_id'] = $news->tags->pluck('id')->toArray();
 
@@ -181,7 +181,7 @@ class NewsController extends Controller
         } catch (\Exception $e) {
             return response()->json([
                 'status' => 500,
-                'message' => 'Terjadi kesalahan pada server.',
+                'message' => 'A server error occurred.',
                 'error' => $e->getMessage()
             ], 500);
         }
@@ -204,12 +204,12 @@ class NewsController extends Controller
                 );
 
                 if (!$uploadResult['success']) {
-                    throw new \Exception('Gagal upload thumbnail: ' . $uploadResult['error']);
+                    throw new \Exception('Failed to upload thumbnail: ' . $uploadResult['error']);
                 }
 
                 $validatedData['thumbnail'] = $uploadResult['path'];
 
-                // Hapus thumbnail lama jika ada
+                // Delete thumbnail lama jika ada
                 if ($oldThumbnail) {
                     $this->fileStorageService->deleteFile($oldThumbnail);
                 }
@@ -219,7 +219,7 @@ class NewsController extends Controller
             $validatedData['updated_by'] = Auth::id();
 
             // Auto-fill published_at dan archived_at berdasarkan status
-            $this->handleStatusTimestamps($validatedData, $news);
+            $this->handleStatusTeamestamps($validatedData, $news);
 
             // Pisahkan category_id dan tags_id dari validatedData
             $categoryId = Arr::pull($validatedData, 'category_id');
@@ -242,19 +242,19 @@ class NewsController extends Controller
 
             return response()->json([
                 'status'  => 200,
-                'message' => 'Data news berhasil diubah'
+                'message' => 'News updated successfully'
             ]);
         } catch (\Exception $e) {
             DB::rollBack();
 
-            // Hapus file yang sudah diupload jika ada error
+            // Delete file yang sudah diupload jika ada error
             if (isset($uploadResult) && $uploadResult['success']) {
                 $this->fileStorageService->deleteFile($uploadResult['path']);
             }
 
             return response()->json([
                 'status' => 500,
-                'message' => 'Terjadi kesalahan pada server.',
+                'message' => 'A server error occurred.',
                 'error' => $e->getMessage()
             ], 500);
         }
@@ -274,7 +274,7 @@ class NewsController extends Controller
                 ]);
             }
 
-            // Hapus thumbnail dari object storage jika ada
+            // Delete thumbnail dari object storage jika ada
             if ($news->thumbnail) {
                 $this->fileStorageService->deleteFile($news->thumbnail);
             }
@@ -283,21 +283,21 @@ class NewsController extends Controller
             $news->deleted_by = Auth::id();
             $news->save();
 
-            // Hapus data (Soft Delete)
+            // Delete data (Soft Delete)
             $news->delete();
 
             DB::commit();
 
             return response()->json([
                 'status' => 200,
-                'message' => 'Data News Berhasil Dihapus'
+                'message' => 'News deleted successfully'
             ]);
         } catch (\Exception $e) {
             DB::rollBack();
 
             return response()->json([
                 'status' => 500,
-                'message' => 'Terjadi kesalahan pada server.',
+                'message' => 'A server error occurred.',
                 'error' => $e->getMessage()
             ], 500);
         }
@@ -310,14 +310,14 @@ class NewsController extends Controller
      * @param News|null $existingNews
      * @return void
      */
-    private function handleStatusTimestamps(array &$validatedData, News $existingNews = null)
+    private function handleStatusTeamestamps(array &$validatedData, News $existingNews = null)
     {
         $status = $validatedData['status'] ?? null;
         $now = now();
 
         switch ($status) {
             case 'published':
-                // Set published_at jika belum ada atau jika status berubah dari non-published ke published
+                // Set published_at jika belum ada or jika status berubah dari non-published ke published
                 if (empty($validatedData['published_at'])) {
                     if (!$existingNews || $existingNews->status !== 'published') {
                         $validatedData['published_at'] = $now;
@@ -331,7 +331,7 @@ class NewsController extends Controller
                 break;
 
             case 'archived':
-                // Set archived_at jika belum ada atau jika status berubah ke archived
+                // Set archived_at jika belum ada or jika status berubah ke archived
                 if (empty($validatedData['archived_at'])) {
                     if (!$existingNews || $existingNews->status !== 'archived') {
                         $validatedData['archived_at'] = $now;

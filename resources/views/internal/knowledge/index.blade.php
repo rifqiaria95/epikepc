@@ -104,9 +104,9 @@
             <thead class="border-top">
             <tr>
                 <th>#</th>
-                <th>Pertanyaan</th>
+                <th>Question</th>
                 <th>Jawaban</th>
-                <th>Aksi</th>
+                <th>Actions</th>
             </tr>
             </thead>
         </table>
@@ -118,7 +118,7 @@
         id="offcanvasAddknowledge"
         aria-labelledby="offcanvasAddUserLabel">
             <div class="offcanvas-header border-bottom">
-                <h5 id="offcanvasAddUserLabel" class="offcanvas-title">Tambah Knowledge</h5>
+                <h5 id="offcanvasAddUserLabel" class="offcanvas-title">Add Knowledge</h5>
                 <button
                 type="button"
                 class="btn-close text-reset"
@@ -130,8 +130,8 @@
                     @csrf
                     <input type="hidden" name="id" id="id">
                     <div class="mb-6">
-                        <label class="form-label" for="question">Pertanyaan</label>
-                        <input type="text" class="form-control" id="question" name="question" placeholder="Masukkan pertanyaan">
+                        <label class="form-label" for="question">Question</label>
+                        <input type="text" class="form-control" id="question" name="question" placeholder="Enter pertanyaan">
                         <div id="question-error" class="text-danger small"></div>
                     </div>
                     <div class="mb-6">

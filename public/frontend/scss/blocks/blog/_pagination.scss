@@ -1,0 +1,68 @@
+/**
+ * Axial
+ * EPIKEPC is a universal template for factories, industry, construction, architecture, factories, mechanics, energy
+ * Exclusively on https://1.envato.market/axial-html
+ *
+ * @encoding        UTF-8
+ * @version         1.0.0
+ * @copyright       (C) 2018 - 2021 Merkulove ( https://merkulov.design/ ). All rights reserved.
+ * @license         Envato License https://1.envato.market/KYbje
+ * @contributors    Lamber Lilit (winter.rituel@gmail.com)
+ * @support         help@merkulov.design
+ **/
+// PAGINATION COMPONENT
+
+.pagination {
+    margin-top: 60px;
+    &_control {
+        border-radius: 50%;
+        width: 30px;
+        height: 30px;
+        font-size: 16px;
+        line-height: 22px;
+        .icon {
+            transition: all .3s ease-in-out;
+        }
+        &--prev {
+            &:hover:not([aria-disabled="true"]),
+            &:focus:not([aria-disabled="true"]) {
+                .icon {
+                    margin-right: 5px;
+                }
+            }
+        }
+        &[aria-disabled="true"] {
+            border: 1px solid #C8C8C8;
+            color: #C8C8C8;
+            cursor: default;
+        }
+        &--next {
+            border: 1px solid $primary;
+            &:hover:not([aria-disabled="true"]),
+            &:focus:not([aria-disabled="true"]) {
+                .icon {
+                    margin-left: 5px;
+                }
+            }
+        }
+    }
+    &_list {
+        margin: 0 30px;
+        &-item {
+            margin-right: 30px;
+            &:last-of-type {
+                margin-right: 0;
+            }
+            &_link {
+                color: $gray;
+                transition: all .3s ease-in-out;
+                &:hover,
+                &:focus,
+                &--current {
+                    color: $blackalt;
+                    font-weight: 500;
+                }
+            }
+        }
+    }
+}

@@ -1,0 +1,117 @@
+/**
+ * Axial
+ * EPIKEPC is a universal template for factories, industry, construction, architecture, factories, mechanics, energy
+ * Exclusively on https://1.envato.market/axial-html
+ *
+ * @encoding        UTF-8
+ * @version         1.0.0
+ * @copyright       (C) 2018 - 2021 Merkulove ( https://merkulov.design/ ). All rights reserved.
+ * @license         Envato License https://1.envato.market/KYbje
+ * @contributors    Lamber Lilit (winter.rituel@gmail.com)
+ * @support         help@merkulov.design
+ **/
+// CONTACTS INFO SECTION
+
+.info {
+    &_header {
+        margin-bottom: 30px;
+    }
+
+    &_data {
+        margin-bottom: 40px;
+        &-card {
+            margin-top: 30px;
+            &[data-order="1"] {
+                margin-top: 0;
+            }
+            .wrapper {
+                border: 1px solid #C8C8C8;
+                padding: 30px;
+                transition: all .3s ease-in-out;
+
+                &:hover {
+                    border-color: $accent;
+                }
+            }
+
+            .icon {
+                color: $accent;
+                font-size: 32px;
+                line-height: 30px;
+            }
+
+            .title {
+                margin: 15px 0 10px;
+            }
+
+            .content {
+                color: $blackalt;
+
+                .link {
+                    transition: color .3s ease-in-out;
+
+                    &:hover, &:focus {
+                        color: $secondary;
+                    }
+                }
+            }
+        }
+
+    }
+
+    &_map {
+        height: 330px;
+        #map {
+            height: 100%;
+        }
+    }
+}
+
+// ------ MEDIA QUERIES
+
+@media screen and (min-width: 767.98px) {
+    .info {
+        &_header {
+            padding: 0 15px;
+        }
+        &_data {
+            margin: 0 -15px;
+            &-card {
+                padding: 0 15px;
+                .wrapper {
+                    padding: 40px;
+                }
+            }
+
+        }
+        &_map {
+            margin-top: 30px;
+        }
+    }
+}
+
+@media screen and (min-width: 991.98px) {
+    .info {
+        &_map {
+            height: 660px;
+        }
+    }
+}
+
+@media screen and (min-width: 1199.98px) {
+    .info {
+        &_map {
+            margin-top: 60px;
+        }
+    }
+}
+
+@media screen and (min-width: 1399.98px) {
+    .info {
+        &_data {
+            &-card {
+                margin-top: 0;
+            }
+        }
+    }
+}

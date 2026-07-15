@@ -47,7 +47,7 @@ class RegisteredUserController extends Controller
 
         // JANGAN login user, tapi redirect ke halaman verifikasi
         return redirect()->route('verification.notice')->with([
-            'message' => 'Akun berhasil dibuat! Silakan cek email Anda untuk verifikasi.',
+            'message' => 'Account created successfully! Please check your email for verification.',
             'email' => $user->email
         ]);
     }

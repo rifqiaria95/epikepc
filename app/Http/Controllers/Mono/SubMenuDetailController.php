@@ -49,7 +49,7 @@ class SubMenuDetailController extends Controller
 
         return response()->json([
             'success' => true,
-            'message' => 'Menu berhasil ditambahkan!',
+            'message' => 'Menu added successfully!',
             'menu'    => $menu
         ]);
     }
@@ -61,7 +61,7 @@ class SubMenuDetailController extends Controller
         if (!$menuDetail) {
             return response()->json([
                 'success' => false,
-                'message' => 'Data tidak ditemukan'
+                'message' => 'Data not found'
             ], 404);
         }
 
@@ -83,7 +83,7 @@ class SubMenuDetailController extends Controller
 
         return response()->json([
             'success' => true,
-            'message' => 'Menu berhasil diperbarui!'
+            'message' => 'Menu updated successfully!'
         ]);
     }
 
@@ -95,7 +95,7 @@ class SubMenuDetailController extends Controller
             SubMenuDetail::where('id', $id)->update(['order' => $index + 1]);
         }
 
-        return response()->json(['message' => 'Urutan berhasil diperbarui']);
+        return response()->json(['message' => 'Order updated successfully']);
     }
 
     public function destroy($id)
@@ -108,12 +108,12 @@ class SubMenuDetailController extends Controller
             $menu_detail->delete();
             return response()->json([
                 'status'    => 200,
-                'message'   => 'Sukses! Data sub menu detail berhasil dihapus'
+                'message'   => 'Sub menu detail deleted successfully'
             ]);
         } else {
             return response()->json([
                 'status'    => 404,
-                'errors'    => 'Error! Data sub menu detail tidak ditemukan'
+                'errors'    => 'Error! Sub menu detail data not found'
             ]);
         }
     }

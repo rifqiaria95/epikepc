@@ -36,7 +36,7 @@ class TagController extends Controller
 
         return response()->json([
             'success'  => true,
-            'message'  => 'Tags berhasil ditambahkan!',
+            'message'  => 'Tag added successfully!',
             'tag' => $tag
         ]);
     }
@@ -60,7 +60,7 @@ class TagController extends Controller
 
         return response()->json([
             'success' => true,
-            'message' => 'Tags berhasil diperbarui!'
+            'message' => 'Tag updated successfully!'
         ]);
     }
 
@@ -74,12 +74,12 @@ class TagController extends Controller
             $tag->delete();
             return response()->json([
                 'status'    => 200,
-                'message'   => 'Sukses! Data tag berhasil dihapus'
+                'message'   => 'Tag deleted successfully'
             ]);
         } else {
             return response()->json([
                 'status'    => 404,
-                'errors'    => 'Error! Data tag tidak ditemukan'
+                'errors'    => 'Error! Tag data not found'
             ]);
         }
     }

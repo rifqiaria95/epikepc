@@ -107,21 +107,21 @@
                 <thead class="border-top">
                     <tr>
                     <th>ID</th>
-                    <th>Nama</th>
+                    <th>Name</th>
                     <th>Email</th>
                     <th>Status</th>
                     <th>Role</th>
-                    <th>Aksi</th>
+                    <th>Actions</th>
                     </tr>
                 </thead>
                 </table>
             </div>
-            <!-- Modal Tambah User -->
-            <div class="modal fade text-start" id="tambahModal" tabindex="-1" aria-labelledby="modalTambahUser" aria-hidden="true">
+            <!-- Modal Add User -->
+            <div class="modal fade text-start" id="tambahModal" tabindex="-1" aria-labelledby="modalAddUser" aria-hidden="true">
                 <div class="modal-dialog modal-dialog-centered modal-lg">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h4 class="modal-title" id="modalTambahUser">Tambah User</h4>
+                            <h4 class="modal-title" id="modalAddUser">Add User</h4>
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <form id="formCreate" name="formCreate" class="form-horizontal" enctype="multipart/form-data">
@@ -129,7 +129,7 @@
                             <div class="modal-body">
                                 <div class="row g-3">
                                     <div class="col-md-6">
-                                        <label class="form-label">Nama</label>
+                                        <label class="form-label">Name</label>
                                         <input type="text" id="name_create" name="name" class="form-control" required>
                                     </div>
                                     <div class="col-md-6">
@@ -140,7 +140,7 @@
                                         <fieldset class="form-group">
                                             <label class="form-label">Role</label>
                                             <select class="select2 form-select" name="role" id="role_create" required>
-                                                <option value="">Pilih Role</option>
+                                                <option value="">Select Role</option>
                                             </select>
                                         </fieldset>
                                     </div>
@@ -148,7 +148,7 @@
                                         <fieldset class="form-group">
                                             <label class="form-label">Status</label>
                                             <select class="select2 form-select" name="active" id="active_create" required>
-                                                <option value="">Pilih Status</option>
+                                                <option value="">Select Status</option>
                                                 <option value="0">Inactive</option>
                                                 <option value="1">Active</option>
                                             </select>
@@ -169,7 +169,7 @@
                                 </div>
                             </div>
                             <div class="modal-footer">
-                                <button type="submit" class="btn btn-primary btn-block" id="btn-create">Simpan</button>
+                                <button type="submit" class="btn btn-primary btn-block" id="btn-create">Save</button>
                             </div>
                         </form>
                     </div>
@@ -186,10 +186,10 @@
                             @csrf
                             <div class="modal-body">
                                 <input type="hidden" name="id" id="id">
-                                <ul class="alert alert-warning d-none" id="modalJudulEdit"></ul>
+                                <ul class="alert alert-warning d-none" id="modalTitleEdit"></ul>
                                 <div class="row g-3">
                                     <div class="col-md-6">
-                                        <label class="form-label">Nama</label>
+                                        <label class="form-label">Name</label>
                                         <input type="text" id="name" name="name" class="name form-control" value="" required>
                                     </div>
                                     <div class="col-md-6">
@@ -200,7 +200,7 @@
                                         <fieldset class="form-group">
                                             <label class="form-label">Role</label>
                                             <select class="select2 form-select" name="role" id="role" required>
-                                                <option value="">Pilih Role</option>
+                                                <option value="">Select Role</option>
                                             </select>
                                         </fieldset>
                                     </div>
@@ -208,7 +208,7 @@
                                         <fieldset class="form-group">
                                             <label class="form-label">Status</label>
                                             <select class="select2 form-select" name="active" id="active" required>
-                                                <option>Pilih Status</option>
+                                                <option>Select Status</option>
                                                 <option value="0">Inactive</option>
                                                 <option value="1">Active</option>
                                             </select>
@@ -216,8 +216,8 @@
                                     </div>
                                     <div class="col-md-6">
                                         <label class="form-label">Password Baru</label>
-                                        <input type="password" id="password" name="password" class="form-control" placeholder="Kosongkan jika tidak ingin mengubah password">
-                                        <small class="text-muted">Minimal 8 karakter. Kosongkan jika tidak ingin mengubah password.</small>
+                                        <input type="password" id="password" name="password" class="form-control" placeholder="Leave blank to keep current password">
+                                        <small class="text-muted">Minimum 8 characters. Leave blank to keep current password.</small>
                                     </div>
                                     <div class="col-md-6">
                                         <label class="form-label">Konfirmasi Password</label>
@@ -230,7 +230,7 @@
                                 </div>
                             </div>
                             <div class="modal-footer">
-                                <button type="submit" class="btn btn-primary btn-block" id="btn-update" value="create">Simpan
+                                <button type="submit" class="btn btn-primary btn-block" id="btn-update" value="create">Save
                                 </button>
                             </div>
                         </form>

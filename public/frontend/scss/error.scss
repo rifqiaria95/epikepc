@@ -1,0 +1,108 @@
+/**
+ * Axial
+ * EPIKEPC is a universal template for factories, industry, construction, architecture, factories, mechanics, energy
+ * Exclusively on https://1.envato.market/axial-html
+ *
+ * @encoding        UTF-8
+ * @version         1.0.0
+ * @copyright       (C) 2018 - 2021 Merkulove ( https://merkulov.design/ ). All rights reserved.
+ * @license         Envato License https://1.envato.market/KYbje
+ * @contributors    Lamber Lilit (winter.rituel@gmail.com)
+ * @support         help@merkulov.design
+ **/
+// BASE
+@import "bootstrap/dist/css/bootstrap-grid";
+@import "base/base";
+@import "base/mixins";
+@import "base/variables";
+@import "base/keyframes";
+@import "global/global";
+@import "../fonts/icomoon/style.css";
+// BASE
+
+// PAGE 404
+
+.error {
+    background: url("../img/404.jpg") no-repeat bottom right;
+    background-size: cover;
+    text-align: center;
+    min-height: 100vh;
+    padding-top: 40px;
+    &_number {
+        @include archExtra;
+        font-size: 120px;
+        line-height: 1;
+        display: inline-block;
+        text-align: left;
+        margin-bottom: 30px;
+    }
+    &_message {
+        &-header {
+            text-align: left;
+            .subtitle {
+                text-transform: uppercase;
+                @include archSemi;
+                padding-left: 60px;
+                position: relative;
+                margin-bottom: 12px;
+                display: inline-block;
+                &:before {
+                    content: '';
+                    position: absolute;
+                    height: 2px;
+                    width: 40px;
+                    left: 0;
+                    top: 50%;
+                    transform: translateY(-50%);
+                    background: $accent;
+                }
+            }
+        }
+        &-text {
+            margin: 18px 0 30px;
+            text-align: left;
+        }
+        .btn {
+            width: 100%;
+        }
+    }
+}
+
+@media screen and (min-width: 575.98px) {
+    .error {
+        &_message {
+            max-width: 230px;
+        }
+        &_number {
+            text-align: center;
+        }
+    }
+}
+
+@media screen and (min-width: 767.98px){
+    .error {
+        text-align: left;
+        padding-top: 120px;
+        &_number {
+            font-size: 200px;
+            margin-right: 62px;
+            margin-bottom: 0;
+        }
+        &_message {
+            .btn {
+                width: auto;
+                margin-right: auto;
+            }
+        }
+    }
+}
+
+@media screen and (min-width: 991.98px){
+    .error {
+        padding-top: 321px;
+        &_number {
+            font-size: 320px;
+            margin-bottom: -30px;
+        }
+    }
+}

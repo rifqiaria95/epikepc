@@ -7,7 +7,7 @@ $(document).ready(function() {
         let cabangSelect = $('#pegawai-cabang');
         
         // Reset cabang dropdown
-        cabangSelect.empty().append('<option value="" selected disabled>Pilih Cabang</option>');
+        cabangSelect.empty().append('<option value="" selected disabled>Select Cabang</option>');
         
         if (perusahaanId) {
             $.ajax({
@@ -23,7 +23,7 @@ $(document).ready(function() {
                     }
                 },
                 error: function() {
-                    toastr.error('Gagal mengambil data cabang!');
+                    toastr.error('Failed to fetch branch data!');
                 }
             });
         }
@@ -35,7 +35,7 @@ $(document).ready(function() {
         let departemenSelect = $('#pegawai-departemen');
         
         // Reset departemen dropdown
-        departemenSelect.empty().append('<option value="" selected disabled>Pilih Departemen</option>');
+        departemenSelect.empty().append('<option value="" selected disabled>Select Departemen</option>');
         
         if (divisiId) {
             $.ajax({
@@ -51,7 +51,7 @@ $(document).ready(function() {
                     }
                 },
                 error: function() {
-                    toastr.error('Gagal mengambil data departemen!');
+                    toastr.error('Failed to fetch department data!');
                 }
             });
         }
@@ -63,7 +63,7 @@ $(document).ready(function() {
         let cabangSelect = $('#id_cabang');
         
         // Reset cabang dropdown
-        cabangSelect.empty().append('<option value="" selected disabled>Pilih Cabang</option>');
+        cabangSelect.empty().append('<option value="" selected disabled>Select Cabang</option>');
         
         if (perusahaanId) {
             $.ajax({
@@ -79,7 +79,7 @@ $(document).ready(function() {
                     }
                 },
                 error: function() {
-                    toastr.error('Gagal mengambil data cabang!');
+                    toastr.error('Failed to fetch branch data!');
                 }
             });
         }
@@ -91,7 +91,7 @@ $(document).ready(function() {
         let departemenSelect = $('#id_departemen');
         
         // Reset departemen dropdown
-        departemenSelect.empty().append('<option value="" selected disabled>Pilih Departemen</option>');
+        departemenSelect.empty().append('<option value="" selected disabled>Select Departemen</option>');
         
         if (divisiId) {
             $.ajax({
@@ -107,7 +107,7 @@ $(document).ready(function() {
                     }
                 },
                 error: function() {
-                    toastr.error('Gagal mengambil data departemen!');
+                    toastr.error('Failed to fetch department data!');
                 }
             });
         }
@@ -119,7 +119,7 @@ $(document).ready(function() {
         let cabangSelect = $('#form_cabang');
         
         // Reset cabang dropdown
-        cabangSelect.empty().append('<option value="" selected disabled>Pilih Cabang</option>');
+        cabangSelect.empty().append('<option value="" selected disabled>Select Cabang</option>');
         
         if (perusahaanId) {
             $.ajax({
@@ -135,7 +135,7 @@ $(document).ready(function() {
                     }
                 },
                 error: function() {
-                    toastr.error('Gagal mengambil data cabang!');
+                    toastr.error('Failed to fetch branch data!');
                 }
             });
         }
@@ -147,7 +147,7 @@ $(document).ready(function() {
         let departemenSelect = $('#form_departemen');
         
         // Reset departemen dropdown
-        departemenSelect.empty().append('<option value="" selected disabled>Pilih Departemen</option>');
+        departemenSelect.empty().append('<option value="" selected disabled>Select Departemen</option>');
         
         if (divisiId) {
             $.ajax({
@@ -163,7 +163,7 @@ $(document).ready(function() {
                     }
                 },
                 error: function() {
-                    toastr.error('Gagal mengambil data departemen!');
+                    toastr.error('Failed to fetch department data!');
                 }
             });
         }
@@ -172,27 +172,27 @@ $(document).ready(function() {
     // Reset hierarki dropdowns when form is reset
     $('.btn-reset').on('click', function() {
         // Reset cabang dropdown
-        $('#id_cabang, #form_cabang, #pegawai-cabang').empty().append('<option value="" selected disabled>Pilih Cabang</option>');
+        $('#id_cabang, #form_cabang, #pegawai-cabang').empty().append('<option value="" selected disabled>Select Cabang</option>');
         
         // Reset departemen dropdown
-        $('#id_departemen, #form_departemen, #pegawai-departemen').empty().append('<option value="" selected disabled>Pilih Departemen</option>');
+        $('#id_departemen, #form_departemen, #pegawai-departemen').empty().append('<option value="" selected disabled>Select Departemen</option>');
     });
 
     // Reset hierarki dropdowns when modal is closed
     $('.offcanvas').on('hidden.bs.offcanvas', function() {
         // Reset cabang dropdown
-        $('#id_cabang, #form_cabang, #pegawai-cabang').empty().append('<option value="" selected disabled>Pilih Cabang</option>');
+        $('#id_cabang, #form_cabang, #pegawai-cabang').empty().append('<option value="" selected disabled>Select Cabang</option>');
         
         // Reset departemen dropdown
-        $('#id_departemen, #form_departemen, #pegawai-departemen').empty().append('<option value="" selected disabled>Pilih Departemen</option>');
+        $('#id_departemen, #form_departemen, #pegawai-departemen').empty().append('<option value="" selected disabled>Select Departemen</option>');
     });
 
     // Reset hierarki dropdowns when modal is closed (untuk modal pegawai)
     $('#tambahModal').on('hidden.bs.modal', function() {
         // Reset cabang dropdown
-        $('#pegawai-cabang').empty().append('<option value="" selected disabled>Pilih Cabang</option>');
+        $('#pegawai-cabang').empty().append('<option value="" selected disabled>Select Cabang</option>');
         
         // Reset departemen dropdown
-        $('#pegawai-departemen').empty().append('<option value="" selected disabled>Pilih Departemen</option>');
+        $('#pegawai-departemen').empty().append('<option value="" selected disabled>Select Departemen</option>');
     });
 }); 

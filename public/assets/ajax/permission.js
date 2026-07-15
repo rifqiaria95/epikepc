@@ -162,14 +162,14 @@ $(document).ready(function () {
               ]
             },
             {
-                text: '<i class="ti ti-trash me-0 me-sm-1 ti-xs"></i><span class="d-none d-sm-inline-block">Hapus Terpilih</span>',
+                text: '<i class="ti ti-trash me-0 me-sm-1 ti-xs"></i><span class="d-none d-sm-inline-block">Delete Terpilih</span>',
                 className: 'btn btn-danger waves-effect waves-light delete-selected me-3',
                 action: function () {
                     deleteSelectedRecords();
                 }
             },
             {
-                text: '<i class="ti ti-plus me-0 me-sm-1 ti-xs"></i><span class="d-none d-sm-inline-block">Tambah Permission</span>',
+                text: '<i class="ti ti-plus me-0 me-sm-1 ti-xs"></i><span class="d-none d-sm-inline-block">Add Permission</span>',
                 className: 'add-new btn btn-primary waves-effect waves-light',
                 action: function () {
                     ViewData(0);
@@ -252,7 +252,7 @@ $(document).ready(function () {
                       buttons += '<a href="javascript:;" class="dropdown-item" onclick="ViewData(' + full.id + ')"><i class="ti ti-edit ti-md"></i>Edit</a>';
                     }
                     if (canDelete) {
-                      buttons += '<a href="javascript:;" class="dropdown-item delete-record" data-id="' + full.id + '"><i class="ti ti-trash ti-md"></i>Hapus</a>';
+                      buttons += '<a href="javascript:;" class="dropdown-item delete-record" data-id="' + full.id + '"><i class="ti ti-trash ti-md"></i>Delete</a>';
                     }
                     buttons += '</div>';
 
@@ -289,10 +289,10 @@ $(document).ready(function () {
         
         if (checkedCount > 0) {
             deleteButton.addClass('show');
-            deleteButton.find('span').text(`Hapus Terpilih (${checkedCount})`);
+            deleteButton.find('span').text(`Delete Terpilih (${checkedCount})`);
         } else {
             deleteButton.removeClass('show');
-            deleteButton.find('span').text('Hapus Terpilih');
+            deleteButton.find('span').text('Delete Terpilih');
         }
     }
 
@@ -306,7 +306,7 @@ $(document).ready(function () {
         let menuDetailsSelect = $('#menu_details');
         
         // Reset menu_details select
-        menuDetailsSelect.empty().append('<option selected disabled>Pilih Menu Details</option>');
+        menuDetailsSelect.empty().append('<option selected disabled>Select Menu Details</option>');
         
         if (menuGroupId && menuGroupId !== '') {
             // Show loading state
@@ -333,7 +333,7 @@ $(document).ready(function () {
                     console.error('Error fetching menu details:', error);
                     menuDetailsSelect.append('<option disabled>Error loading menu details</option>');
                     menuDetailsSelect.prop('disabled', false);
-                    toastr.error('Gagal mengambil data menu details!');
+                    toastr.error('Failed to fetch menu details!');
                 }
             });
         } else {
@@ -345,8 +345,8 @@ $(document).ready(function () {
         $('#tambahModal').modal('show');
 
         if (id === 0) {
-            // Mode Tambah Data
-            $("#modal-judul").text("Tambah Permission");
+            // Mode Add Data
+            $("#modal-judul").text("Add Permission");
             $("#formPermission")[0].reset();
             $("#id").val("");
             $("#btn-simpan").val("create");
@@ -356,7 +356,7 @@ $(document).ready(function () {
             $("#menu_details").val("").trigger("change");
             
             // Reset menu_details options
-            $("#menu_details").empty().append('<option selected disabled>Pilih Menu Details</option>');
+            $("#menu_details").empty().append('<option selected disabled>Select Menu Details</option>');
 
         } else {
             // Mode Edit (Ambil data dari API)
@@ -376,7 +376,7 @@ $(document).ready(function () {
                         $("#menu_groups").val(response.permission.menu_groups).trigger("change");
                         
                         // Tunggu sebentar agar event change menu_groups selesai, lalu set menu_details
-                        setTimeout(function() {
+                        setTeameout(function() {
                             if (response.permission.menu_details && response.permission.menu_details.length > 0) {
                                 $("#menu_details").val(response.permission.menu_details).trigger("change");
                             }
@@ -385,13 +385,13 @@ $(document).ready(function () {
                 },
                 error: function (xhr, status, error) {
                     console.error('Error fetching permission data:', error);
-                    toastr.error('Gagal mengambil data!');
+                    toastr.error('Failed to fetch data!');
                 }
             });
         }
     }
 
-    // Submit Form: Tambah & Update
+    // Submit Form: Add & Update
     $("#formPermission").on("submit", function (e) {
         e.preventDefault();
 
@@ -420,7 +420,7 @@ $(document).ready(function () {
                     $("#menu_details").prop("selectedIndex", 0).trigger("change");
                     
                     // Reset menu_details options
-                    $("#menu_details").empty().append('<option selected disabled>Pilih Menu Details</option>');
+                    $("#menu_details").empty().append('<option selected disabled>Select Menu Details</option>');
 
                     toastr.success(response.message);
                     $("#TablePermission").DataTable().ajax.reload(null, false);
@@ -443,15 +443,15 @@ $(document).ready(function () {
         let id = $(this).data('id');
 
         Swal.fire({
-            title: 'Apakah Anda yakin?',
-            text: "Data role akan dihapus!",
+            title: 'Are you sure?',
+            text: "Role data will be deleted!",
             icon: 'warning',
             customClass: {
                 confirmButton: 'btn btn-primary waves-effect waves-light ml-3',
                 cancelButton: 'btn btn-label-secondary waves-effect waves-light'
             },
             showCancelButton: true,
-            cancelButtonText: 'Batal',
+            cancelButtonText: 'Cancel',
             buttonsStyling: false,
             didRender: function () {
                 $('.swal2-actions').css('gap', '10px');
@@ -474,7 +474,7 @@ $(document).ready(function () {
                         }
                     },
                     error: function () {
-                        toastr.error('Terjadi kesalahan saat menghapus data.');
+                        toastr.error('An error occurred while deleting data.');
                     }
                 });
             }
@@ -495,7 +495,7 @@ $(document).ready(function () {
             Swal.fire({
                 icon: 'warning',
                 title: 'Peringatan!',
-                text: 'Silakan pilih data yang akan dihapus terlebih dahulu.',
+                text: 'Please select data to delete first.',
                 customClass: {
                     confirmButton: 'btn btn-warning waves-effect waves-light'
                 }
@@ -504,7 +504,7 @@ $(document).ready(function () {
         }
 
         Swal.fire({
-            title: 'Apakah Anda yakin?',
+            title: 'Are you sure?',
             text: `Anda akan menghapus ${selectedIds.length} data permission yang dipilih!`,
             icon: 'warning',
             customClass: {
@@ -512,8 +512,8 @@ $(document).ready(function () {
                 cancelButton: 'btn btn-label-secondary waves-effect waves-light'
             },
             showCancelButton: true,
-            cancelButtonText: 'Batal',
-            confirmButtonText: 'Ya, Hapus!',
+            cancelButtonText: 'Cancel',
+            confirmButtonText: 'Ya, Delete!',
             buttonsStyling: false,
             didRender: function () {
                 $('.swal2-actions').css('gap', '10px');
@@ -541,7 +541,7 @@ $(document).ready(function () {
                         }
                     },
                     error: function (xhr) {
-                        let errorMessage = 'Terjadi kesalahan saat menghapus data.';
+                        let errorMessage = 'An error occurred while deleting data.';
                         if (xhr.responseJSON && xhr.responseJSON.message) {
                             errorMessage = xhr.responseJSON.message;
                         }

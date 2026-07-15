@@ -38,7 +38,7 @@ class ServiceTypeController extends Controller
 
         return response()->json([
             'success'      => true,
-            'message'      => 'Service Type berhasil ditambahkan!',
+            'message'      => 'Service type added successfully!',
             'service_type' => $service_type
         ]);
     }
@@ -63,7 +63,7 @@ class ServiceTypeController extends Controller
 
         return response()->json([
             'success' => true,
-            'message' => 'Service Type berhasil diperbarui!'
+            'message' => 'Service type updated successfully!'
         ]);
     }
 
@@ -79,12 +79,12 @@ class ServiceTypeController extends Controller
             $service_type->delete();
             return response()->json([
                 'status'    => 200,
-                'message'   => 'Sukses! Data service type berhasil dihapus'
+                'message'   => 'Service type deleted successfully'
             ]);
         } else {
             return response()->json([
                 'status'    => 404,
-                'errors'    => 'Error! Data service type tidak ditemukan'
+                'errors'    => 'Error! Service type data not found'
             ]);
         }
     }

@@ -4,7 +4,7 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Baris Bahasa Atur Ulang Kata Sandi
+    | Baris Bahasa Reset Password
     |--------------------------------------------------------------------------
     |
     | Baris bahasa berikut adalah baris default yang cocok dengan alasan

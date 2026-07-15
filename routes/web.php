@@ -4,54 +4,51 @@ use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\Mono\TagController;
 use App\Http\Controllers\Auth\AuthController;
-use App\Http\Controllers\Mono\ItemController;
 use App\Http\Controllers\Mono\NewsController;
 use App\Http\Controllers\Mono\HomeController;
 use App\Http\Controllers\Frontend\NewsController as FrontendNewsController;
-use App\Http\Controllers\Mono\UnitController;
 use App\Http\Controllers\Mono\UserController;
 use App\Http\Controllers\Mono\AboutController;
 use App\Http\Controllers\Mono\AdminController;
-use App\Http\Controllers\Mono\CabangController;
-use App\Http\Controllers\Mono\DivisiController;
 use App\Http\Controllers\Mono\GaleriController;
-use App\Http\Controllers\Mono\GudangController;
-use App\Http\Controllers\Mono\VisiMisiController;
-use App\Http\Controllers\Mono\VendorController;
-use App\Http\Controllers\Mono\ChatLogController;
-use App\Http\Controllers\Mono\JabatanController;
-use App\Http\Controllers\Mono\PegawaiController;
-use App\Http\Controllers\Mono\ProgramController;
 use App\Http\Controllers\Mono\KategoriController;
 use App\Http\Controllers\Mono\DashboardController;
-use App\Http\Controllers\Mono\EducationController;
 use App\Http\Controllers\Mono\KnowledgeController;
 use App\Http\Controllers\Mono\MenuGroupController;
-use App\Http\Controllers\Mono\PelangganController;
-use App\Http\Controllers\Mono\DepartemenController;
-use App\Http\Controllers\Mono\ExperienceController;
 use App\Http\Controllers\Mono\MenuDetailController;
 use App\Http\Controllers\Mono\OrganisasiController;
 use App\Http\Controllers\Mono\PermissionController;
-use App\Http\Controllers\Mono\PerusahaanController;
-use App\Http\Controllers\Mono\ProgramReqController;
 use App\Http\Controllers\Ext\RegistrationController;
-use App\Http\Controllers\Mono\JenisProgramController;
-use App\Http\Controllers\Mono\ProgramRegistController;
 use App\Http\Controllers\Mono\SubMenuDetailController;
 use App\Http\Controllers\Mono\KategoriGaleriController;
 use App\Http\Controllers\Mono\RolePermissionController;
 use App\Http\Controllers\Auth\EmailVerificationController;
-use App\Http\Controllers\Ext\ProgramRegistController as ExtProgramRegistController;
 use App\Http\Controllers\Mono\TestimoniController;
+use App\Http\Controllers\Mono\PricingController;
+use App\Http\Controllers\Mono\CoverageLocationController;
+use App\Http\Controllers\Mono\ConsultationRequestController as MonoConsultationRequestController;
 use App\Http\Controllers\Mono\ServiceTypeController;
 use App\Http\Controllers\Mono\ServicesController as MonoServicesController;
+use App\Http\Controllers\Mono\ProjectController as MonoProjectController;
 use App\Http\Controllers\Frontend\ServicesController as FrontendServicesController;
+use App\Http\Controllers\Frontend\ProjectController as FrontendProjectController;
+use App\Http\Controllers\Frontend\ContactController as FrontendContactController;
+use App\Http\Controllers\Frontend\ConsultationRequestController as FrontendConsultationRequestController;
+use App\Http\Controllers\Frontend\CoverageController as FrontendCoverageController;
+use App\Http\Controllers\Frontend\AboutController as FrontendAboutController;
+use App\Http\Controllers\Frontend\TeamController as FrontendTeamController;
+use App\Http\Controllers\Frontend\GalleryController as FrontendGalleryController;
+use App\Http\Controllers\Frontend\FaqController as FrontendFaqController;
 
 Route::get('/', [HomeController::class, 'index']);
 
 // Frontend Routes
+Route::get('/about', [FrontendAboutController::class, 'index'])->name('frontend.about.index');
+Route::get('/news', [FrontendNewsController::class, 'index'])->name('frontend.news.index');
 Route::get('/news/{slug}', [FrontendNewsController::class, 'show'])->name('news.show');
+Route::get('/team', [FrontendTeamController::class, 'index'])->name('frontend.team.index');
+Route::get('/gallery', [FrontendGalleryController::class, 'index'])->name('frontend.gallery.index');
+Route::get('/faq', [FrontendFaqController::class, 'index'])->name('frontend.faq.index');
 Route::get('/services', [FrontendServicesController::class, 'index'])->name('frontend.services.index');
 Route::get('/services/{slug}', [FrontendServicesController::class, 'showByServiceType'])
     ->name('frontend.services.show')
@@ -59,105 +56,33 @@ Route::get('/services/{slug}', [FrontendServicesController::class, 'showByServic
 Route::get('/detail-service/{id}', [FrontendServicesController::class, 'detailService'])
     ->name('frontend.detail-service')
     ->where('id', '[0-9]+');
+Route::get('/projects', [FrontendProjectController::class, 'index'])->name('frontend.projects.index');
+Route::get('/projects/{slug}', [FrontendProjectController::class, 'show'])
+    ->name('frontend.projects.show')
+    ->where('slug', '[a-z0-9\-]+');
+Route::get('/contact', [FrontendContactController::class, 'index'])->name('frontend.contact.index');
+Route::post('/contact', [FrontendContactController::class, 'store'])->name('frontend.contact.store')->middleware('throttle:10,1');
+Route::post('/consultation', [FrontendConsultationRequestController::class, 'store'])
+    ->middleware('throttle:20,1')
+    ->name('frontend.consultation.store');
+Route::post('/coverage/check', [FrontendCoverageController::class, 'check'])
+    ->middleware('throttle:30,1')
+    ->name('frontend.coverage.check');
+Route::get('/coverage/suggest', [FrontendCoverageController::class, 'suggest'])
+    ->middleware('throttle:60,1')
+    ->name('frontend.coverage.suggest');
+Route::get('/coverage/reverse', [FrontendCoverageController::class, 'reverse'])
+    ->middleware('throttle:30,1')
+    ->name('frontend.coverage.reverse');
 
 // Route untuk Semua Role
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::get('/ext-dashboard', [DashboardController::class, 'extDashboard'])->name('ext-dashboard');
-    
+
     // Analytics API routes
     Route::get('/api/analytics', [DashboardController::class, 'getAnalytics'])->name('analytics.get');
     Route::post('/api/analytics/track', [DashboardController::class, 'trackAnalytics'])->name('analytics.track');
-
-    // Route User
-    Route::prefix('inventory/unit')->name('unit.')->group(function () {
-        Route::get('/', [UnitController::class, 'index'])->name('index');
-        Route::post('/store', [UnitController::class, 'store'])->name('store');
-        Route::get('/edit/{id}', [UnitController::class, 'edit'])->name('edit');
-        Route::put('/update/{id}', [UnitController::class, 'update'])->name('update');
-        Route::delete('/delete/{id}', [UnitController::class, 'destroy'])->name('destroy');
-    });
-
-    // Route Pegawai
-    Route::prefix('hrd/pegawai')->name('pegawai.')->group(function () {
-        Route::get('/', [PegawaiController::class, 'index'])->name('index');
-        Route::post('/store', [PegawaiController::class, 'store'])->name('store');
-        Route::get('/edit/{id}', [PegawaiController::class, 'edit'])->name('edit');
-        Route::put('/update/{id}', [PegawaiController::class, 'update'])->name('update');
-        Route::delete('/delete/{id}', [PegawaiController::class, 'destroy'])->name('destroy');
-        Route::get('/profile/{id}', [PegawaiController::class, 'profile'])->name('profile');
-        Route::get('/get-kota/{id_provinsi}', [PegawaiController::class, 'getKotaByProvinsi'])->name('pegawai.get-kota');
-        Route::get('/get-cabang/{id_perusahaan}', [PegawaiController::class, 'getCabangByPerusahaan'])->name('pegawai.get-cabang');
-        Route::get('/get-departemen/{id_divisi}', [PegawaiController::class, 'getDepartemenByDivisi'])->name('pegawai.get-departemen');
-        Route::get('/form-example', [PegawaiController::class, 'formExample'])->name('pegawai.form-example');
-    });
-
-    // Route Jabatan
-    Route::prefix('hrd/jabatan')->name('jabatan.')->group(function () {
-        Route::get('/', [JabatanController::class, 'index'])->name('index');
-        Route::post('/store', [JabatanController::class, 'store'])->name('store');
-        Route::get('/edit/{id}', [JabatanController::class, 'edit'])->name('edit');
-        Route::put('/update/{id}', [JabatanController::class, 'update'])->name('update');
-        Route::delete('/delete/{id}', [JabatanController::class, 'destroy'])->name('destroy');
-    });
-
-    // Route Divisi
-    Route::prefix('hrd/divisi')->name('divisi.')->group(function () {
-        Route::get('/', [DivisiController::class, 'index'])->name('index');
-        Route::post('/store', [DivisiController::class, 'store'])->name('store');
-        Route::get('/edit/{id}', [DivisiController::class, 'edit'])->name('edit');
-        Route::put('/update/{id}', [DivisiController::class, 'update'])->name('update');
-        Route::delete('/delete/{id}', [DivisiController::class, 'destroy'])->name('destroy');
-    });
-
-    // Route Departemen
-    Route::prefix('hrd/departemen')->name('departemen.')->group(function () {
-        Route::get('/', [DepartemenController::class, 'index'])->name('index');
-        Route::post('/store', [DepartemenController::class, 'store'])->name('store');
-        Route::get('/edit/{id}', [DepartemenController::class, 'edit'])->name('edit');
-        Route::put('/update/{id}', [DepartemenController::class, 'update'])->name('update');
-        Route::delete('/delete/{id}', [DepartemenController::class, 'destroy'])->name('destroy');
-        Route::get('/get-by-divisi/{id_divisi}', [DepartemenController::class, 'getByDivisi'])->name('get.by.divisi');
-    });
-
-    // Route Perusahaan
-    Route::prefix('company/perusahaan')->name('perusahaan.')->group(function () {
-        Route::get('/', [PerusahaanController::class, 'index'])->name('index');
-        Route::post('/store', [PerusahaanController::class, 'store'])->name('store');
-        Route::get('/edit/{id}', [PerusahaanController::class, 'edit'])->name('edit');
-        Route::put('/update/{id}', [PerusahaanController::class, 'update'])->name('update');
-        Route::delete('/delete/{id}', [PerusahaanController::class, 'destroy'])->name('destroy');
-    });
-
-    // Route Cabang
-    Route::prefix('company/cabang')->name('cabang.')->group(function () {
-        Route::get('/', [CabangController::class, 'index'])->name('index');
-        Route::post('/store', [CabangController::class, 'store'])->name('store');
-        Route::get('/edit/{id}', [CabangController::class, 'edit'])->name('edit');
-        Route::put('/update/{id}', [CabangController::class, 'update'])->name('update');
-        Route::delete('/delete/{id}', [CabangController::class, 'destroy'])->name('destroy');
-        Route::get('/get-perusahaan', [CabangController::class, 'getPerusahaan'])->name('get.perusahaan');
-        Route::get('/get-by-perusahaan/{id_perusahaan}', [CabangController::class, 'getByPerusahaan'])->name('get.by.perusahaan');
-    });
-
-    // Route Item
-    Route::prefix('inventory/item')->name('item.')->group(function () {
-        Route::get('/', [ItemController::class, 'index'])->name('index');
-        Route::post('/store', [ItemController::class, 'store'])->name('store');
-        Route::get('/edit/{id}', [ItemController::class, 'edit'])->name('edit');
-        Route::put('/update/{id}', [ItemController::class, 'update'])->name('update');
-        Route::delete('/delete/{id}', [ItemController::class, 'destroy'])->name('destroy');
-        Route::get('/profile/{id}', [ItemController::class, 'profile'])->name('profile');
-    });
-
-    // Route Gudang
-    Route::prefix('inventory/gudang')->name('gudang.')->group(function () {
-        Route::get('/', [GudangController::class, 'index'])->name('index');
-        Route::post('/store', [GudangController::class, 'store'])->name('store');
-        Route::get('/edit/{id}', [GudangController::class, 'edit'])->name('edit');
-        Route::put('/update/{id}', [GudangController::class, 'update'])->name('update');
-        Route::delete('/delete/{id}', [GudangController::class, 'destroy'])->name('destroy');
-    });
 
     // Route Kategori
     Route::prefix('frontend/news/kategori')->name('kategori.')->group(function () {
@@ -168,106 +93,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::delete('/delete/{id}', [KategoriController::class, 'destroy'])->name('destroy');
     });
 
-    // Route Jenis Program
-    Route::prefix('program/jenis-program')->name('jenis-program.')->group(function () {
-        Route::get('/', [JenisProgramController::class, 'index'])
-            ->name('index')
-            ->middleware('permission:view_jenis_program');
-        Route::post('/store', [JenisProgramController::class, 'store'])
-            ->name('store')
-            ->middleware('permission:approve_jenis_program');
-        Route::get('/edit/{id}', [JenisProgramController::class, 'edit'])
-            ->name('edit')
-            ->middleware('permission:edit_jenis_program');
-        Route::put('/update/{id}', [JenisProgramController::class, 'update'])
-            ->name('update')
-            ->middleware('permission:edit_jenis_program');
-        Route::delete('/delete/{id}', [JenisProgramController::class, 'destroy'])
-            ->name('destroy')
-            ->middleware('permission:delete_jenis_program');
-        Route::get('/show/{id}', [JenisProgramController::class, 'show'])
-            ->name('show')
-            ->middleware('permission:show_jenis_program');
-        Route::post('/approve/{id}', [JenisProgramController::class, 'approve'])
-            ->name('approve')
-            ->middleware('permission:approve_jenis_program');
-        Route::post('/reject/{id}', [JenisProgramController::class, 'reject'])
-            ->name('reject')
-            ->middleware('permission:reject_jenis_program');
-    });
-
-    // Route Program
-    Route::prefix('program/daftar-program')->name('daftar-program.')->group(function () {
-        Route::get('/', [ProgramController::class, 'index'])
-            ->name('index')
-            ->middleware('permission:view_daftar_program');
-        Route::post('/store', [ProgramController::class, 'store'])
-            ->name('store')
-            ->middleware('permission:approve_daftar_program');
-        Route::get('/edit/{id}', [ProgramController::class, 'edit'])
-            ->name('edit')
-            ->middleware('permission:edit_daftar_program');
-        Route::put('/update/{id}', [ProgramController::class, 'update'])
-            ->name('update')
-            ->middleware('permission:edit_daftar_program');
-        Route::delete('/delete/{id}', [ProgramController::class, 'destroy'])
-            ->name('destroy')
-            ->middleware('permission:delete_daftar_program');
-        Route::get('/show/{id}', [ProgramController::class, 'show'])
-            ->name('show')
-            ->middleware('permission:show_daftar_program');
-        Route::post('/approve/{id}', [ProgramController::class, 'approve'])
-            ->name('approve')
-            ->middleware('permission:approve_daftar_program');
-        Route::post('/reject/{id}', [ProgramController::class, 'reject'])
-            ->name('reject')
-            ->middleware('permission:reject_daftar_program');
-    });
-
-
-    // Route untuk mendapatkan data program berdasarkan ID
-    Route::get('/program/get-program/{id}', [ProgramController::class, 'getProgram'])
-        ->name('program.get-program')
-        ->middleware('auth');
-
-    // Route Program Requirement
-    Route::prefix('program/program-requirement')->name('program-requirement.')->group(function () {
-        Route::get('/', [ProgramReqController::class, 'index'])
-            ->name('index')
-            ->middleware('permission:view_program_requirement');
-        Route::post('/store', [ProgramReqController::class, 'store'])
-            ->name('store')
-            ->middleware('permission:approve_program_requirement');
-        Route::get('/edit/{id}', [ProgramReqController::class, 'edit'])
-            ->name('edit')
-            ->middleware('permission:edit_program_requirement');
-        Route::put('/update/{id}', [ProgramReqController::class, 'update'])
-            ->name('update')
-            ->middleware('permission:edit_program_requirement');
-        Route::delete('/delete/{id}', [ProgramReqController::class, 'destroy'])
-            ->name('destroy')
-            ->middleware('permission:delete_program_requirement');
-    });
-
-    // Route Program Registration
-    Route::prefix('program/program-registration')->name('program-registration.')->group(function () {
-        Route::get('/', [ProgramRegistController::class, 'index'])
-            ->name('index')
-            ->middleware('permission:view_program_registration');
-        Route::post('/store', [ProgramRegistController::class, 'store'])
-            ->name('store')
-            ->middleware('permission:create_program_registration');
-        Route::get('/edit/{id}', [ProgramRegistController::class, 'edit'])
-            ->name('edit')
-            ->middleware('permission:edit_program_registration');
-        Route::put('/update/{id}', [ProgramRegistController::class, 'update'])
-            ->name('update')
-            ->middleware('permission:edit_program_registration');
-        Route::delete('/delete/{id}', [ProgramRegistController::class, 'destroy'])
-            ->name('destroy')
-            ->middleware('permission:delete_program_registration');
-    });
-
     // Route Tag
     Route::prefix('frontend/news/tag')->name('tag.')->group(function () {
         Route::get('/', [TagController::class, 'index'])->name('index');
@@ -275,28 +100,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/edit/{id}', [TagController::class, 'edit'])->name('edit');
         Route::put('/update/{id}', [TagController::class, 'update'])->name('update');
         Route::delete('/delete/{id}', [TagController::class, 'destroy'])->name('destroy');
-    });
-
-    // Route Pelanggan
-    Route::prefix('sales/customer')->name('sales/customer.')->group(function () {
-        Route::get('/', [PelangganController::class, 'index'])->name('index');
-        Route::post('/store', [PelangganController::class, 'store'])->name('store');
-        Route::get('/edit/{id:uuid}', [PelangganController::class, 'edit'])->name('edit');
-        Route::put('/update/{id}', [PelangganController::class, 'update'])->name('update');
-        Route::delete('/delete/{id}', [PelangganController::class, 'destroy'])->name('destroy');
-        Route::get('/get-kota/{id_provinsi}', [PelangganController::class, 'getKotaByProvinsi'])->name('pelanggan.get-kota');
-        Route::get('/profile/{id}', [PelangganController::class, 'profile'])->name('profile');
-    });
-
-    // Route Vendor
-    Route::prefix('vendor')->name('vendor.')->group(function () {
-        Route::get('/', [VendorController::class, 'index'])->name('index');
-        Route::post('/store', [VendorController::class, 'store'])->name('store');
-        Route::get('/edit/{id:uuid}', [VendorController::class, 'edit'])->name('edit');
-        Route::put('/update/{id}', [VendorController::class, 'update'])->name('update');
-        Route::delete('/delete/{id}', [VendorController::class, 'destroy'])->name('destroy');
-        Route::get('/get-kota/{id_provinsi}', [VendorController::class, 'getKotaByProvinsi'])->name('vendor.get-kota');
-        Route::get('/profile/{id}', [VendorController::class, 'profile'])->name('profile');
     });
 
     // Route Service Type
@@ -332,6 +135,65 @@ Route::middleware(['auth', 'verified'])->group(function () {
             ->middleware('permission:delete_services');
     });
 
+    // Route Pricing
+    Route::prefix('frontend/pricing')->name('pricing.')->group(function () {
+        Route::get('/', [PricingController::class, 'index'])
+            ->name('index')
+            ->middleware('permission:view_pricing');
+        Route::post('/store', [PricingController::class, 'store'])
+            ->name('store')
+            ->middleware('permission:create_pricing');
+        Route::get('/edit/{id}', [PricingController::class, 'edit'])
+            ->name('edit')
+            ->middleware('permission:edit_pricing');
+        Route::put('/update/{id}', [PricingController::class, 'update'])
+            ->name('update')
+            ->middleware('permission:edit_pricing');
+        Route::delete('/delete/{id}', [PricingController::class, 'destroy'])
+            ->name('destroy')
+            ->middleware('permission:delete_pricing');
+    });
+
+    // Route Coverage Area
+    Route::prefix('frontend/coverage')->name('coverage.')->group(function () {
+        Route::get('/', [CoverageLocationController::class, 'index'])
+            ->name('index')
+            ->middleware('permission:view_coverage');
+        Route::get('/options', [CoverageLocationController::class, 'options'])
+            ->name('options')
+            ->middleware('permission:view_coverage');
+        Route::post('/store', [CoverageLocationController::class, 'store'])
+            ->name('store')
+            ->middleware('permission:create_coverage');
+        Route::get('/edit/{id}', [CoverageLocationController::class, 'edit'])
+            ->name('edit')
+            ->middleware('permission:edit_coverage');
+        Route::put('/update/{id}', [CoverageLocationController::class, 'update'])
+            ->name('update')
+            ->middleware('permission:edit_coverage');
+        Route::delete('/delete/{id}', [CoverageLocationController::class, 'destroy'])
+            ->name('destroy')
+            ->middleware('permission:delete_coverage');
+    });
+
+    Route::prefix('frontend/consultation')->name('consultation.')->group(function () {
+        Route::get('/', [MonoConsultationRequestController::class, 'index'])
+            ->name('index')
+            ->middleware('permission:view_consultation');
+        Route::post('/store', [MonoConsultationRequestController::class, 'store'])
+            ->name('store')
+            ->middleware('permission:create_consultation');
+        Route::get('/edit/{id}', [MonoConsultationRequestController::class, 'edit'])
+            ->name('edit')
+            ->middleware('permission:edit_consultation');
+        Route::put('/update/{id}', [MonoConsultationRequestController::class, 'update'])
+            ->name('update')
+            ->middleware('permission:edit_consultation');
+        Route::delete('/delete/{id}', [MonoConsultationRequestController::class, 'destroy'])
+            ->name('destroy')
+            ->middleware('permission:delete_consultation');
+    });
+
     // Route News
     Route::prefix('frontend/news')->name('news.')->group(function () {
         Route::get('/', [NewsController::class, 'index'])
@@ -351,61 +213,45 @@ Route::middleware(['auth', 'verified'])->group(function () {
             ->middleware('permission:delete_news');
     });
 
-    // Route About
+    // Route Company (Journey + Milestones)
     Route::prefix('frontend/profile/about')->name('about.')->group(function () {
         Route::get('/', [AboutController::class, 'index'])
             ->name('index')
             ->middleware('permission:view_profile');
-        Route::post('/store', [AboutController::class, 'store'])
-            ->name('store')
+        Route::put('/journey', [AboutController::class, 'updateJourney'])
+            ->name('journey.update')
+            ->middleware('permission:edit_profile');
+        Route::post('/milestones/store', [AboutController::class, 'storeMilestone'])
+            ->name('milestones.store')
             ->middleware('permission:create_profile');
-        Route::get('/edit/{id}', [AboutController::class, 'edit'])
-            ->name('edit')
+        Route::get('/milestones/edit/{id}', [AboutController::class, 'editMilestone'])
+            ->name('milestones.edit')
             ->middleware('permission:edit_profile');
-        Route::put('/update/{id}', [AboutController::class, 'update'])
-            ->name('update')
+        Route::put('/milestones/update/{id}', [AboutController::class, 'updateMilestone'])
+            ->name('milestones.update')
             ->middleware('permission:edit_profile');
-        Route::delete('/delete/{id}', [AboutController::class, 'destroy'])
-            ->name('destroy')
+        Route::delete('/milestones/delete/{id}', [AboutController::class, 'destroyMilestone'])
+            ->name('milestones.destroy')
             ->middleware('permission:delete_profile');
     });
 
-    // Route Visi Misi
-    Route::prefix('frontend/profile/visi-misi')->name('visi-misi.')->group(function () {
-        Route::get('/', [VisiMisiController::class, 'index'])
+    // Route Project
+    Route::prefix('frontend/project')->name('project.')->group(function () {
+        Route::get('/', [MonoProjectController::class, 'index'])
             ->name('index')
-            ->middleware('permission:view_profile');
-        Route::post('/store', [VisiMisiController::class, 'store'])
+            ->middleware('permission:view_project');
+        Route::post('/store', [MonoProjectController::class, 'store'])
             ->name('store')
-            ->middleware('permission:create_profile');
-        Route::get('/edit/{id}', [VisiMisiController::class, 'edit'])
+            ->middleware('permission:create_project');
+        Route::get('/edit/{id}', [MonoProjectController::class, 'edit'])
             ->name('edit')
-            ->middleware('permission:edit_profile');
-        Route::put('/update/{id}', [VisiMisiController::class, 'update'])
+            ->middleware('permission:edit_project');
+        Route::put('/update/{id}', [MonoProjectController::class, 'update'])
             ->name('update')
-            ->middleware('permission:edit_profile');
-        Route::delete('/delete/{id}', [VisiMisiController::class, 'destroy'])
+            ->middleware('permission:edit_project');
+        Route::delete('/delete/{id}', [MonoProjectController::class, 'destroy'])
             ->name('destroy')
-            ->middleware('permission:delete_profile');
-    });
-
-    // Route Education
-    Route::prefix('frontend/education')->name('education.')->group(function () {
-        Route::get('/', [EducationController::class, 'index'])
-            ->name('index')
-            ->middleware('permission:view_education');
-        Route::post('/store', [EducationController::class, 'store'])
-            ->name('store')
-            ->middleware('permission:create_education');
-        Route::get('/edit/{id}', [EducationController::class, 'edit'])
-            ->name('edit')
-            ->middleware('permission:edit_education');
-        Route::put('/update/{id}', [EducationController::class, 'update'])
-            ->name('update')
-            ->middleware('permission:edit_education');
-        Route::delete('/delete/{id}', [EducationController::class, 'destroy'])
-            ->name('destroy')
-            ->middleware('permission:delete_education');
+            ->middleware('permission:delete_project');
     });
 
     // Route Galeri
@@ -465,46 +311,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
             ->middleware('permission:delete_organisasi');
     });
 
-    // Route Experience
-    Route::prefix('frontend/experience')->name('experience.')->group(function () {
-        Route::get('/', [ExperienceController::class, 'index'])
-            ->name('index')
-            ->middleware('permission:view_experience');
-        Route::post('/store', [ExperienceController::class, 'store'])
-            ->name('store')
-            ->middleware('permission:create_experience');
-        Route::get('/edit/{id}', [ExperienceController::class, 'edit'])
-            ->name('edit')
-            ->middleware('permission:edit_experience');
-        Route::put('/update/{id}', [ExperienceController::class, 'update'])
-            ->name('update')
-            ->middleware('permission:edit_experience');
-        Route::delete('/delete/{id}', [ExperienceController::class, 'destroy'])
-            ->name('destroy')
-            ->middleware('permission:delete_experience');
-    });
-
     // Route Testimoni
     Route::prefix('frontend/testimoni')->name('testimoni.')->group(function () {
-        Route::get('/', [TestimoniController::class, 'index'])
-            ->name('index')
-            ->middleware('permission:view_testimoni');
-        Route::post('/store', [TestimoniController::class, 'store'])
-            ->name('store')
-            ->middleware('permission:create_testimoni');
-        Route::get('/edit/{id}', [TestimoniController::class, 'edit'])
-            ->name('edit')
-            ->middleware('permission:edit_testimoni');
-        Route::put('/update/{id}', [TestimoniController::class, 'update'])
-            ->name('update')
-            ->middleware('permission:edit_testimoni');
-        Route::delete('/delete/{id}', [TestimoniController::class, 'destroy'])
-            ->name('destroy')
-            ->middleware('permission:delete_testimoni');
-    });
-
-    // Route Testimoni
-    Route::prefix('internal/testimoni')->name('internal/testimoni.')->group(function () {
         Route::get('/', [TestimoniController::class, 'index'])
             ->name('index')
             ->middleware('permission:view_testimoni');
@@ -525,11 +333,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // Route User
     Route::prefix('/admin/users')->name('user.')->group(function () {
         Route::get('/profile/{id}', [UserController::class, 'profile'])->name('profile');
-    });
-
-    // Route Chat
-    Route::prefix('admin/chat')->name('chat.')->group(function () {
-        Route::get('/chat', [ChatLogController::class, 'index'])->name('index');
     });
 
     // Route Knowledge

@@ -8,7 +8,7 @@
             <script>
                 document.write(new Date().getFullYear());
             </script>
-            , made with ❤️ by <a href="#" target="_blank" class="footer-link">Kainnova Digital Solutions</a>
+            , made with ❤️ by <a href="#" target="_blank" class="footer-link">EPIKEPC Digital Solutions</a>
             </div>
             <div class="d-none d-lg-inline-block">
             <a href="https://themeforest.net/licenses/standard" class="footer-link me-4" target="_blank"

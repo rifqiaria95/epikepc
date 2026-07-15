@@ -40,7 +40,7 @@ class MenuGroupController extends Controller
 
         return response()->json([
             'success' => true,
-            'message' => 'Menu berhasil ditambahkan!',
+            'message' => 'Menu added successfully!',
             'menu'    => $menu
         ]);
     }
@@ -69,7 +69,7 @@ class MenuGroupController extends Controller
 
         return response()->json([
             'success' => true,
-            'message' => 'Menu berhasil diperbarui!'
+            'message' => 'Menu updated successfully!'
         ]);
     }
 
@@ -85,12 +85,12 @@ class MenuGroupController extends Controller
             ]);
         }
 
-        // Hapus data (Soft Delete)
+        // Delete data (Soft Delete)
         $menuGroup->delete();
 
         return response()->json([
             'status' => 200,
-            'message' => 'Data Menu Berhasil Dihapus'
+            'message' => 'Menu deleted successfully'
         ]);
     }
 }

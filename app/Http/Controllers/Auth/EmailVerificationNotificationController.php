@@ -14,21 +14,21 @@ class EmailVerificationNotificationController extends Controller
      */
     public function store(Request $request): RedirectResponse
     {
-        // Jika ada email dari session atau request
+        // Jika ada email dari session or request
         $email = $request->input('email') ?? session('email');
         
         if (!$email) {
-            return redirect()->route('login')->with('error', 'Email tidak ditemukan. Silakan login kembali.');
+            return redirect()->route('login')->with('error', 'Email not found. Please sign in again.');
         }
 
         $user = User::where('email', $email)->first();
         
         if (!$user) {
-            return redirect()->route('login')->with('error', 'User tidak ditemukan.');
+            return redirect()->route('login')->with('error', 'User not found.');
         }
 
         if ($user->hasVerifiedEmail()) {
-            return redirect()->route('login')->with('message', 'Email sudah diverifikasi. Silakan login.');
+            return redirect()->route('login')->with('message', 'Email already verified. Please sign in.');
         }
 
         $user->sendEmailVerificationNotification();

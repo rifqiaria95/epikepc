@@ -104,9 +104,9 @@
             <thead class="border-top">
             <tr>
                 <th>#</th>
-                <th>Nama Kategori</th>
+                <th>Category Name</th>
                 <th>Slug</th>
-                <th>Aksi</th>
+                <th>Actions</th>
             </tr>
             </thead>
         </table>
@@ -118,7 +118,7 @@
         id="offcanvasAddkategori"
         aria-labelledby="offcanvasAddUserLabel">
             <div class="offcanvas-header border-bottom">
-                <h5 id="offcanvasAddUserLabel" class="offcanvas-title">Tambah Kategori</h5>
+                <h5 id="offcanvasAddUserLabel" class="offcanvas-title">Add Category</h5>
                 <button
                 type="button"
                 class="btn-close text-reset"
@@ -130,13 +130,13 @@
                     @csrf
                     <input type="hidden" name="id" id="id">
                     <div class="mb-6">
-                        <label class="form-label" for="name">Nama Kategori</label>
-                        <input type="text" class="form-control" id="name" name="name" placeholder="Masukkan nama kategori">
+                        <label class="form-label" for="name">Category Name</label>
+                        <input type="text" class="form-control" id="name" name="name" placeholder="Enter nama kategori">
                         <div id="name-error" class="text-danger small"></div>
                     </div>
                     <div class="mb-6">
                         <label class="form-label" for="slug">Slug</label>
-                        <input type="text" class="form-control" id="slug" name="slug" placeholder="Masukkan slug">
+                        <input type="text" class="form-control" id="slug" name="slug" placeholder="Enter slug">
                         <div id="slug-error" class="text-danger small"></div>
                     </div>
                     <button type="submit" class="btn btn-primary me-3 data-submit">Submit</button>

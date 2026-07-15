@@ -11,13 +11,13 @@
 
     <meta name="csrf-token" content="{{ csrf_token() }}" />
 
-    <title>Kainnova Digital Solutions</title>
+    <title>EPIKEPC Digital Solutions</title>
 
     <meta name="description" content="" />
 
 
     <!-- Favicon -->
-    <link rel="icon" type="image/x-icon" href="{{ url('/assets/img/favicon/logo.ico') }}" />
+    <link rel="icon" type="image/x-icon" href="{{ url('/assets/img/favicon/icon-5.ico') }}" />
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />

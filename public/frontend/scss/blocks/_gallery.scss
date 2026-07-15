@@ -1,0 +1,74 @@
+/**
+ * Axial
+ * EPIKEPC is a universal template for factories, industry, construction, architecture, factories, mechanics, energy
+ * Exclusively on https://1.envato.market/axial-html
+ *
+ * @encoding        UTF-8
+ * @version         1.0.0
+ * @copyright       (C) 2018 - 2021 Merkulove ( https://merkulov.design/ ). All rights reserved.
+ * @license         Envato License https://1.envato.market/KYbje
+ * @contributors    Lamber Lilit (winter.rituel@gmail.com)
+ * @support         help@merkulov.design
+ **/
+// GALLERY SECTION
+
+.gallery {
+    &_list {
+        &-item {
+            aspect-ratio: 48 / 55;
+            position: relative;
+            cursor: pointer;
+            &:hover .text-wrapper {
+                opacity: 1;
+            }
+            .img-wrapper,
+            .img-wrapper img,
+            .text-wrapper {
+                width: 100%;
+                height: 100%;
+            }
+            .img-wrapper {
+                img {
+                    display: block;
+                    object-fit: cover;
+                }
+            }
+            .text-wrapper {
+                position: absolute;
+                top: 0;
+                left: 0;
+                background: rgba(0, 31, 63, .7);
+                color: #fff;
+                padding: 40px;
+                transition: opacity .4s ease-in-out;
+                opacity: 0;
+                .title {
+                    margin: 15px 0 20px;
+                }
+                .subtitle, .label {
+                    text-transform: uppercase;
+                    font-size: 18px;
+                    line-height: 23px;
+                    @include archSemi;
+                }
+                .label {
+                    color: $accent;
+                }
+                .subtitle {
+                    padding-left: 60px;
+                    position: relative;
+                    &:before {
+                        content: '';
+                        position: absolute;
+                        left: 0;
+                        top: 50%;
+                        transform: translateY(-50%);
+                        height: 1px;
+                        width: 40px;
+                        background: $accent;
+                    }
+                }
+            }
+        }
+    }
+}

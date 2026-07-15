@@ -52,7 +52,7 @@ class NewPasswordController extends Controller
         if (!$tokenRecord) {
             \Log::info('No token found in database for email: ' . $request->email);
             return back()->withInput($request->only('email'))
-                ->withErrors(['email' => 'Token reset password tidak ditemukan.']);
+                ->withErrors(['email' => 'Password reset token not found.']);
         }
 
         // Check if token is expired (60 minutes)
@@ -76,7 +76,7 @@ class NewPasswordController extends Controller
         if (!$user) {
             \Log::info('User not found for email: ' . $request->email);
             return back()->withInput($request->only('email'))
-                ->withErrors(['email' => 'User tidak ditemukan.']);
+                ->withErrors(['email' => 'User not found.']);
         }
 
         // Update the password
@@ -93,6 +93,6 @@ class NewPasswordController extends Controller
 
         \Log::info('Password reset successful for email: ' . $request->email);
 
-        return redirect()->route('login')->with('status', 'Password berhasil direset! Silakan login dengan password baru Anda.');
+        return redirect()->route('login')->with('status', 'Password reset successfully! Please log in with your new password.');
     }
 }

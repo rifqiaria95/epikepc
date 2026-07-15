@@ -1,0 +1,104 @@
+/**
+ * Axial
+ * EPIKEPC is a universal template for factories, industry, construction, architecture, factories, mechanics, energy
+ * Exclusively on https://1.envato.market/axial-html
+ *
+ * @encoding        UTF-8
+ * @version         1.0.0
+ * @copyright       (C) 2018 - 2021 Merkulove ( https://merkulov.design/ ). All rights reserved.
+ * @license         Envato License https://1.envato.market/KYbje
+ * @contributors    Lamber Lilit (winter.rituel@gmail.com)
+ * @support         help@merkulov.design
+ **/
+// LATEST POSTS COMPONENT
+
+.blog {
+    &_list {
+        margin-top: 40px;
+        &-item {
+            margin-top: 30px;
+            &[data-order="1"] {
+                margin-top: 0;
+            }
+            .wrapper {
+                height: 100%;
+            }
+            .img-wrapper {
+                max-height: 320px;
+                aspect-ratio: 41 / 32;
+                overflow: hidden;
+                img {
+                    display: block;
+                    height: 100%;
+                    width: 100%;
+                    object-fit: cover;
+                }
+            }
+            .text-wrapper {
+                flex-grow: 1;
+                .info {
+                    text-transform: uppercase;
+                    font-size: 14px;
+                    margin: 15px 0 10px;
+                    .category {
+                        line-height: 22px;
+                        @include archSemi;
+                        transition: color .3s ease-in-out;
+                        &:hover, &:focus {
+                            color: $accent;
+                        }
+                    }
+                    .divider {
+                        width: 5px;
+                        height: 5px;
+                        background: $accent;
+                        border-radius: 50%;
+                        display: inline-block;
+                        margin: 0 15px;
+                    }
+                    .date {
+                        color: $blackalt;
+                    }
+                }
+                .title {
+                    margin-bottom: 10px;
+                }
+                .preview {
+                    color: $blackalt;
+                }
+                .divider--link {
+                    padding-top: 15px;
+                    margin-top: 15px;
+                    border-top: 1px solid #C8C8C8;
+                }
+            }
+        }
+    }
+}
+
+// ------ MEDIA QUERIES
+
+@media screen and (min-width: 767.98px) {
+    .blog {
+        &_list {
+            margin: 40px -15px 0;
+            &-item {
+                margin-top: 40px;
+                padding: 0 15px;
+                &[data-order="2"] {
+                    margin-top: 0;
+                }
+            }
+        }
+    }
+}
+
+@media screen and (min-width: 991.98px) {
+    .blog {
+        &_list {
+            &-item {
+                margin-top: 0;
+            }
+        }
+    }
+}

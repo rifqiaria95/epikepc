@@ -60,7 +60,7 @@ class MigrateFilesToStorage extends Command
             $modelClass = "App\\Models\\{$model}";
             
             if (!class_exists($modelClass)) {
-                $this->error("Model {$modelClass} tidak ditemukan!");
+                $this->error("Model {$modelClass} not found!");
                 return 1;
             }
 
@@ -86,7 +86,7 @@ class MigrateFilesToStorage extends Command
             foreach ($records as $record) {
                 $oldPath = $record->{$field};
                 
-                // Skip jika sudah berupa URL atau path object storage
+                // Skip jika sudah berupa URL or path object storage
                 if ($this->isAlreadyInStorage($oldPath)) {
                     $skippedCount++;
                     $progressBar->advance();
@@ -96,7 +96,7 @@ class MigrateFilesToStorage extends Command
                 // Cek apakah file local masih ada
                 $localPath = public_path('images/' . $oldPath);
                 if (!file_exists($localPath)) {
-                    $this->error("File tidak ditemukan: {$localPath}");
+                    $this->error("File not found: {$localPath}");
                     $errorCount++;
                     $progressBar->advance();
                     continue;
@@ -114,7 +114,7 @@ class MigrateFilesToStorage extends Command
                         $record->update([$field => $newPath]);
                         $successCount++;
                     } else {
-                        $this->error("Gagal migrasi file {$oldPath}: " . $result['error']);
+                        $this->error("Failed to migrate file {$oldPath}: " . $result['error']);
                         $errorCount++;
                     }
                 } else {
@@ -129,7 +129,7 @@ class MigrateFilesToStorage extends Command
 
             // Tampilkan hasil
             $this->info("Hasil migrasi:");
-            $this->info("- Berhasil: {$successCount}");
+            $this->info("- Success: {$successCount}");
             $this->info("- Error: {$errorCount}");
             $this->info("- Dilewati: {$skippedCount}");
 
@@ -140,7 +140,7 @@ class MigrateFilesToStorage extends Command
             return 0;
 
         } catch (\Exception $e) {
-            $this->error("Terjadi kesalahan: " . $e->getMessage());
+            $this->error("An error occurred: " . $e->getMessage());
             return 1;
         }
     }

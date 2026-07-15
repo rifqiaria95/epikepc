@@ -1,0 +1,331 @@
+/**
+ * Axial
+ * EPIKEPC is a universal template for factories, industry, construction, architecture, factories, mechanics, energy
+ * Exclusively on https://1.envato.market/axial-html
+ *
+ * @encoding        UTF-8
+ * @version         1.0.0
+ * @copyright       (C) 2018 - 2021 Merkulove ( https://merkulov.design/ ). All rights reserved.
+ * @license         Envato License https://1.envato.market/KYbje
+ * @contributors    Lamber Lilit (winter.rituel@gmail.com)
+ * @support         help@merkulov.design
+ **/
+// HEADER
+
+.header {
+    &_navbar {
+        transition: all .3s ease-in-out;
+        padding: 10px 0;
+        position: fixed;
+        width: 100%;
+        top: 0;
+        left: 0;
+        z-index: 100000;
+        background: $primary;
+        &-nav {
+            width: 100%;
+            order: 3;
+            .link {
+                display: inline-block;
+                width: fit-content;
+                line-height: .9;
+            }
+            &_list {
+                max-height: 0;
+                margin-top: 0;
+                overflow: hidden;
+                transition: all .3s ease;
+                &.active {
+                    max-height: 90vh;
+                    margin-top: 30px;
+                    overflow-y: scroll;
+                }
+                .list-item {
+                    text-transform: uppercase;
+                    font-size: 14px;
+                    @include archSemi;
+                    padding: 20px 0;
+                    .dropdown {
+                        &-content {
+                            max-height: 0;
+                            overflow: hidden;
+                            transition: all .4s ease;
+                            display: flex;
+                            flex-direction: column;
+                            margin: 0 0 0 15px;
+                            &.active {
+                                max-height: 1000px;
+                                margin: 20px 0 0 15px;
+                            }
+                            .link {
+                                margin-bottom: 20px;
+                                &:last-of-type {
+                                    margin-bottom: 0;
+                                }
+                            }
+                        }
+                        &-trigger {
+                            text-transform: inherit;
+                            font-size: inherit;
+                            display: flex;
+                            width: 100%;
+                            &.active {
+                                .icon {
+                                    transform: rotate(-90deg);
+                                }
+                            }
+                            .icon {
+                                transform: rotate(90deg);
+                                display: inline-block;
+                                transition: all .3s ease-in-out;
+                                color: $accent;
+                                margin: 0 10px;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    &_extension {
+        padding: 100px 0 40px;
+        position: relative;
+        overflow: hidden;
+        .section_header {
+            position: relative;
+            z-index: 3;
+        }
+        .plan {
+            position: absolute;
+            width: 50%;
+            transform: rotate(153deg);
+            bottom: -22%;
+            right: 10%;
+            opacity: .8;
+            z-index: 1;
+        }
+        .breadcrumbs {
+            margin-top: 30px;
+            &_item {
+                font-weight: 500;
+                position: relative;
+                margin-right: 84px;
+                &:hover {
+                    &:before {
+                        width: 100%;
+                    }
+                }
+                &:before, &:after {
+                    content: '';
+                    position: absolute;
+                }
+                &:after {
+                    width: 30px;
+                    height: 2px;
+                    background: #fff;
+                    top: 50%;
+                    right: -58px;
+                    transform: translateY(-50%);
+                }
+                &:before {
+                    width: 0;
+                    height: 2px;
+                    background-color: $accent;
+                    bottom: -6px;
+                    transition: width .3s ease-in-out;
+                }
+                &--current {
+                    font-weight: 400;
+                    padding: 0;
+                    margin: 0;
+                    &:after, &:before {
+                        display: none;
+                    }
+                }
+            }
+        }
+    }
+}
+
+// ------ MEDIA QUERIES
+
+@media screen and (min-width: 575.98px) {
+    .header {
+        &_extension {
+            .plan {
+                bottom: -50%;
+            }
+        }
+    }
+}
+
+@media screen and (min-width: 767.98px) {
+    .header {
+        &_navbar {
+            padding: 15px 0;
+            &-nav {
+                &_list {
+                    &.active {
+                        max-height: 1000px;
+                        overflow-y: unset;
+                    }
+                }
+            }
+        }
+        &_extension {
+            .plan {
+                bottom: -73%;
+            }
+        }
+    }
+}
+
+@media screen and (min-width: 991.98px) {
+    .header {
+        .brand {
+            font-size: 0;
+        }
+        &_navbar {
+            background: transparent;
+            padding: 60px 0 0;
+            &.sticky {
+                padding: 20px 0;
+                background: $primary;
+            }
+            .hamburger {
+                display: none;
+            }
+            .link--single {
+                position: relative;
+                &:before {
+                    content: '';
+                    position: absolute;
+                    width: 0;
+                    height: 2px;
+                    background: $accent;
+                    left: 0;
+                    bottom: -6px;
+                    transition: width .3s ease-in-out;
+                }
+                &:hover, &:focus,
+                &.active {
+                    &:before {
+                        width: 100%;
+                    }
+                }
+            }
+            &-nav {
+                order: unset;
+                &_list {
+                    max-height: unset;
+                    display: flex;
+                    justify-content: flex-end;
+                    margin-left: 30px;
+                    .list-item {
+                        padding: 0;
+                        margin-right: 20px;
+                        font-size: 14px;
+                        @include archSemi;
+                        &:last-of-type {
+                            margin-right: 0;
+                        }
+                        .dropdown {
+                            &-content {
+                                position: absolute;
+                                width: unset;
+                                max-height: unset;
+                                visibility: hidden;
+                                opacity: 0;
+                                transition: opacity .3s ease-in-out;
+                                margin: 10px 0 0 0;
+                                padding: 15px;
+                                background: $primary;
+                                &:hover, &.visible {
+                                    visibility: visible;
+                                    opacity: 1;
+                                }
+                                &.active {
+                                    margin: 10px 0 0 0;
+                                }
+                                .link {
+                                    margin-bottom: 20px;
+                                    line-height: 22px;
+                                    &:last-of-type {
+                                        margin-bottom: 0;
+                                    }
+                                }
+                            }
+                            &-trigger {
+                                text-transform: inherit;
+                                font-size: inherit;
+                                &:hover, &:focus {
+                                    + .dropdown-content {
+                                        visibility: visible;
+                                        opacity: 1;
+                                    }
+                                    .icon {
+                                        transform: rotate(-90deg);
+                                    }
+                                }
+                                .icon {
+                                    transform: rotate(90deg);
+                                    display: inline-block;
+                                    transition: all .3s ease-in-out;
+                                    color: $accent;
+                                    margin-left: 10px;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        &_extension {
+            padding: 200px 0 80px;
+            position: relative;
+            overflow: hidden;
+            .plan {
+                bottom: -62%;
+            }
+            .breadcrumbs {
+                margin-top: 30px;
+            }
+        }
+    }
+}
+
+@media screen and (min-width: 1199.98px) {
+    .header {
+        .brand {
+            font-size: 28px;
+        }
+        &_extension {
+            padding: 200px 0 80px;
+            position: relative;
+            overflow: hidden;
+            .plan {
+                width: 651px;
+                bottom: -82%;
+                right: 128px;
+            }
+            .breadcrumbs {
+                margin-top: 30px;
+            }
+        }
+    }
+}
+
+@media screen and (min-width: 1399.98px) {
+    .header {
+        &_navbar {
+            &-nav {
+                &_list {
+                    justify-content: flex-end;
+                    .list-item {
+                        margin-right: 40px;
+                    }
+                }
+            }
+        }
+    }
+}

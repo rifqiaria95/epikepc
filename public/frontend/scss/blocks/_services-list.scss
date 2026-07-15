@@ -1,0 +1,116 @@
+/**
+ * Axial
+ * EPIKEPC is a universal template for factories, industry, construction, architecture, factories, mechanics, energy
+ * Exclusively on https://1.envato.market/axial-html
+ *
+ * @encoding        UTF-8
+ * @version         1.0.0
+ * @copyright       (C) 2018 - 2021 Merkulove ( https://merkulov.design/ ). All rights reserved.
+ * @license         Envato License https://1.envato.market/KYbje
+ * @contributors    Lamber Lilit (winter.rituel@gmail.com)
+ * @support         help@merkulov.design
+ **/
+// SERVICES SECTION
+
+.services {
+    &_list {
+        &-item {
+            margin-top: 30px;
+            &[data-order="1"] {
+                margin-top: 0;
+            }
+            .wrapper {
+                height: 100%;
+                border: 1px solid #C8C8C8;
+                padding: 30px;
+                transition: border-color .3s ease-in-out;
+
+                &:hover {
+                    border-color: $secondary;
+                }
+
+                .number {
+                    color: $lightgray;
+                    @include archExtra;
+                    font-size: 36px;
+                    line-height: 40px;
+                }
+
+                .title {
+                    margin: 20px 0;
+                }
+
+                .description {
+                    margin-bottom: 40px;
+                    color: $blackalt;
+                }
+            }
+        }
+    }
+}
+
+// ------ MEDIA QUERIES
+
+@media screen and (min-width: 575.98px) {
+    .services {
+        &_list {
+            &-item {
+                .wrapper {
+                    padding: 40px;
+                    .number {
+                        font-size: 40px;
+                        line-height: 50px;
+                    }
+                }
+            }
+        }
+    }
+}
+
+@media screen and (min-width: 767.98px) {
+    .services {
+        &_list {
+            margin: 0 -15px;
+            &-item {
+                padding: 0 15px;
+                &[data-order="2"] {
+                    margin-top: 0;
+                }
+                .wrapper {
+                    padding: 30px;
+                }
+            }
+        }
+    }
+}
+
+@media screen and (min-width: 991.98px) {
+    .services {
+        &_list {
+            margin: 0 -15px;
+            &-item {
+                padding: 0 15px;
+                margin-top: 30px;
+                .wrapper {
+                    padding: 40px;
+                    .number {
+                        font-size: 48px;
+                        line-height: 55px;
+                    }
+                }
+            }
+        }
+    }
+}
+
+@media screen and (min-width: 1199.98px) {
+    .services {
+        &_list {
+            &-item {
+                &[data-order="3"] {
+                    margin-top: 0;
+                }
+            }
+        }
+    }
+}

@@ -180,9 +180,9 @@
                 </div>
                 <!-- /Project table -->
 
-                <!-- Activity Timeline -->
+                <!-- Activity Teameline -->
                 <div class="card mb-6">
-                    <h5 class="card-header">User Activity Timeline</h5>
+                    <h5 class="card-header">User Activity Teameline</h5>
                     <div class="card-body pt-1">
                         <ul class="timeline mb-0">
                             <li class="timeline-item timeline-item-transparent">
@@ -270,7 +270,7 @@
                         </ul>
                     </div>
                 </div>
-                <!-- /Activity Timeline -->
+                <!-- /Activity Teameline -->
 
                 <!-- Invoice table -->
                 <div class="card mb-4">

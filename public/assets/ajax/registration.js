@@ -1,6 +1,6 @@
 $(document).ready(function () {
     // Initialize Select2 after page loads
-    setTimeout(function() {
+    setTeameout(function() {
         $('.select2').select2({
             dropdownParent: $('#multiStepsForm'),
             width: '100%'
@@ -147,7 +147,7 @@ $(document).ready(function () {
             return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
         }
     } else {
-        console.error('Element #multiStepsValidation tidak ditemukan');
+        console.error('Element #multiStepsValidation not found');
     }
 
     // Load provinsi data on page load
@@ -162,7 +162,7 @@ $(document).ready(function () {
                 console.log('Provinsi response:', response);
                 let provinsiSelect = $('#provinsi');
                 provinsiSelect.empty();
-                provinsiSelect.append('<option value="">Pilih Provinsi</option>');
+                provinsiSelect.append('<option value="">Select Province</option>');
                 
                 if (response.data && response.data.length > 0) {
                     $.each(response.data, function(index, item) {
@@ -213,7 +213,7 @@ $(document).ready(function () {
                 console.log('Kota response:', response);
                 let kotaSelect = $('#kota');
                 kotaSelect.empty();
-                kotaSelect.append('<option value="">Pilih Kota/Kabupaten</option>');
+                kotaSelect.append('<option value="">Select City/Regency</option>');
                 
                 if (response.status === 'success' && response.data && response.data.length > 0) {
                     $.each(response.data, function(index, item) {
@@ -265,7 +265,7 @@ $(document).ready(function () {
                 console.log('Kecamatan response:', response);
                 let kecamatanSelect = $('#kecamatan');
                 kecamatanSelect.empty();
-                kecamatanSelect.append('<option value="">Pilih Kecamatan</option>');
+                kecamatanSelect.append('<option value="">Select District</option>');
                 
                 if (response.status === 'success' && response.data && response.data.length > 0) {
                     $.each(response.data, function(index, item) {
@@ -295,7 +295,7 @@ $(document).ready(function () {
         resetDropdown(['kelurahan']);
         
         if (id_kecamatan && id_kecamatan !== '' && id_kecamatan !== 'undefined' && !isNaN(id_kecamatan)) {
-            loadKelurahan(id_kecamatan);
+            loadVillages(id_kecamatan);
             $('#kelurahan').prop('disabled', false);
         } else {
             console.log('Invalid kecamatan ID:', id_kecamatan);
@@ -303,7 +303,7 @@ $(document).ready(function () {
     });
 
     // Load kelurahan
-    function loadKelurahan(id_kecamatan) {
+    function loadVillages(id_kecamatan) {
         // Double check the parameter
         if (!id_kecamatan || id_kecamatan === 'undefined' || isNaN(id_kecamatan)) {
             console.error('Invalid id_kecamatan:', id_kecamatan);
@@ -314,10 +314,10 @@ $(document).ready(function () {
             url: '/api/kelurahan/' + id_kecamatan,
             method: 'GET',
             success: function(response) {
-                console.log('Kelurahan response:', response);
+                console.log('Villages response:', response);
                 let kelurahanSelect = $('#kelurahan');
                 kelurahanSelect.empty();
-                kelurahanSelect.append('<option value="">Pilih Kelurahan/Desa</option>');
+                kelurahanSelect.append('<option value="">Select Village</option>');
                 
                 if (response.status === 'success' && response.data && response.data.length > 0) {
                     $.each(response.data, function(index, item) {
@@ -342,7 +342,7 @@ $(document).ready(function () {
     function resetDropdown(dropdowns) {
         dropdowns.forEach(function(dropdown) {
             $('#' + dropdown).empty()
-                .append('<option value="">Pilih ' + getDropdownLabel(dropdown) + '</option>')
+                .append('<option value="">Select ' + getDropdownLabel(dropdown) + '</option>')
                 .prop('disabled', true)
                 .trigger('change.select2');
         });
@@ -350,9 +350,9 @@ $(document).ready(function () {
 
     function getDropdownLabel(dropdown) {
         switch(dropdown) {
-            case 'kota': return 'Kota/Kabupaten';
+            case 'kota': return 'Kota/Regencies';
             case 'kecamatan': return 'Kecamatan';
-            case 'kelurahan': return 'Kelurahan/Desa';
+            case 'kelurahan': return 'Villages/Desa';
             default: return '';
         }
     }
@@ -393,8 +393,8 @@ $(document).ready(function () {
                 if (response.status === 200) {
                     Swal.fire({
                         icon: 'success',
-                        title: 'Berhasil!',
-                        text: 'Pendaftaran berhasil! Silakan tunggu verifikasi admin.',
+                        title: 'Success!',
+                        text: 'Registration successful! Please wait for admin verification.',
                         confirmButtonText: 'OK'
                     }).then((result) => {
                         if (result.isConfirmed) {
@@ -405,7 +405,7 @@ $(document).ready(function () {
                     Swal.fire({
                         icon: 'error',
                         title: 'Error!',
-                        text: response.message || 'Terjadi kesalahan saat mendaftar'
+                        text: response.message || 'An error occurred during registration'
                     });
                 }
             },
@@ -437,7 +437,7 @@ $(document).ready(function () {
                     Swal.fire({
                         icon: 'error',
                         title: 'Error!',
-                        text: 'Terjadi kesalahan pada server'
+                        text: 'A server error occurred'
                     });
                 }
             },

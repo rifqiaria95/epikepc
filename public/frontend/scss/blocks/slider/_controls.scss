@@ -1,0 +1,58 @@
+/**
+ * Axial
+ * EPIKEPC is a universal template for factories, industry, construction, architecture, factories, mechanics, energy
+ * Exclusively on https://1.envato.market/axial-html
+ *
+ * @encoding        UTF-8
+ * @version         1.0.0
+ * @copyright       (C) 2018 - 2021 Merkulove ( https://merkulov.design/ ). All rights reserved.
+ * @license         Envato License https://1.envato.market/KYbje
+ * @contributors    Lamber Lilit (winter.rituel@gmail.com)
+ * @support         help@merkulov.design
+ **/
+// STYLING FOR THE TINY SLIDER CONTROLS (ARROWS)
+
+.tns-arrows {
+    display: flex;
+    align-items: center;
+
+    &_arrow {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 40px;
+        height: 40px;
+        border: 1px solid $primary;
+        font-size: 16px;
+        border-radius: 50%;
+        transition: all .3s ease-in-out;
+
+        .icon {
+            transition: all .2s ease;
+        }
+
+        &[aria-disabled="true"] {
+            color: $gray;
+            cursor: default;
+            border-color: #C8C8C8;
+        }
+
+        &--prev {
+            margin-right: 30px;
+            &:hover:not([aria-disabled="true"]) {
+                .icon {
+                    margin-right: 5px;
+                }
+            }
+        }
+
+        &--next {
+            &:hover:not([aria-disabled="true"]) {
+                .icon {
+                    margin-left: 5px;
+                }
+            }
+        }
+    }
+}
+

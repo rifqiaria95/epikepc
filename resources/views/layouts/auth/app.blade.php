@@ -16,7 +16,7 @@
     />
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>@yield('title') | Kainnova Digital Solutions</title>
+    <title>@yield('title') | EPIKEPC Digital Solutions</title>
 
     <meta name="description" content="" />
 

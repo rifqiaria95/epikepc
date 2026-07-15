@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="en">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Notifikasi Pendaftaran</title>
+    <title>Registration Notification</title>
 </head>
 <body style="margin: 0; padding: 0; font-family: Arial, sans-serif; background-color: #f8fafc; line-height: 1.6;">
     <!-- Email Wrapper -->
@@ -27,7 +27,7 @@
                                     </tr>
                                 </table>
                             @endif
-                            <h1 style="color: #ffffff; margin: 0; font-size: 28px; font-weight: 600;">Terima Kasih!</h1>
+                            <h1 style="color: #ffffff; margin: 0; font-size: 28px; font-weight: 600;">Thank You!</h1>
                         </td>
                     </tr>
                     
@@ -35,13 +35,13 @@
                     <tr>
                         <td style="padding: 40px 30px;">
                             <div style="font-size: 18px; color: #374151; margin-bottom: 20px; font-weight: 500;">
-                                Halo {{ $user->name }},
+                                Hello {{ $user->name }},
                             </div>
 
                             <div style="font-size: 16px; color: #6b7280; line-height: 1.7; margin-bottom: 30px;">
-                                <p style="margin: 0 0 15px 0;">Anda telah mendaftar dalam program <strong>{{ $program->name }}</strong>!</p>
+                                <p style="margin: 0 0 15px 0;">You have registered for the program <strong>{{ $program->name }}</strong>!</p>
                                 
-                                <p style="margin: 0 0 15px 0;">Mohon cek status pendaftaran Anda secara berkala melalui halaman program.</p>
+                                <p style="margin: 0 0 15px 0;">Please check your registration status regularly on the program page.</p>
                             </div>
                         </td>
                     </tr>
@@ -50,11 +50,11 @@
                     <tr>
                         <td style="background-color: #f9fafb; padding: 30px; text-align: center; border-top: 1px solid #e5e7eb; border-radius: 0 0 8px 8px;">
                             <p style="font-size: 14px; color: #9ca3af; margin: 0 0 10px 0;">
-                                Email ini dikirim secara otomatis. Jika Anda tidak mendaftar di {{ config('app.name') }}, 
-                                silakan abaikan email ini.
+                                This email was sent automatically. If you did not register at {{ config('app.name') }}, 
+                                please ignore this email.
                             </p>
                             <p style="font-size: 14px; color: #9ca3af; margin: 0;">
-                                &copy; {{ date('Y') }} {{ config('app.name') }}. Semua hak dilindungi.
+                                &copy; {{ date('Y') }} {{ config('app.name') }}. All rights reserved.
                             </p>
                         </td>
                     </tr>

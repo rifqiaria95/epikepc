@@ -1,0 +1,465 @@
+/**
+ * Axial
+ * EPIKEPC is a universal template for factories, industry, construction, architecture, factories, mechanics, energy
+ * Exclusively on https://1.envato.market/axial-html
+ *
+ * @encoding        UTF-8
+ * @version         1.0.0
+ * @copyright       (C) 2018 - 2021 Merkulove ( https://merkulov.design/ ). All rights reserved.
+ * @license         Envato License https://1.envato.market/KYbje
+ * @contributors    Lamber Lilit (winter.rituel@gmail.com)
+ * @support         help@merkulov.design
+ **/
+// POST CONTENT
+
+.post {
+    &_article {
+        .wrapper {
+            &--list {
+                margin: 20px 0 20px;
+            }
+
+            &--media {
+                aspect-ratio: 11 / 7;
+                flex-grow: 1;
+                max-height: 260px;
+                overflow: hidden;
+            }
+        }
+
+        &-img {
+            aspect-ratio: 85 / 57;
+            max-height: 570px;
+            overflow: hidden;
+            &_img {
+                width: 100%;
+            }
+        }
+
+        &-media {
+            display: block;
+            object-fit: cover;
+            width: 100%;
+        }
+
+        &-info {
+            margin: 20px 0 20px;
+            text-transform: uppercase;
+            color: $blackalt;
+            @include archSemi;
+            font-size: 14px;
+            line-height: 22px;
+            .link {
+                transition: color .3s ease-in-out;
+                &:hover {
+                    color: $secondary;
+                }
+            }
+
+            .comments {
+                &_icon {
+                    display: none;
+                }
+            }
+
+            .date, .author, .comments, .divider {
+                margin-top: 10px;
+            }
+        }
+
+        &-header {
+            margin: 20px 0;
+            color: $black;
+        }
+
+        &-text {
+            &:last-of-type {
+                margin-top: 20px;
+            }
+        }
+
+        &-list {
+            margin-bottom: 20px;
+
+            &_item {
+                margin-bottom: 15px;
+
+                &:last-of-type {
+                    margin-bottom: 0;
+                }
+
+                .icon {
+                    margin-right: 10px;
+                    color: $primary;
+                }
+            }
+        }
+
+        &-quote {
+            padding: 20px;
+            margin-top: 20px;
+            margin-bottom: 30px;
+
+            &_quote {
+                quotes: none;
+                @include archBold;
+                font-size: 26px;
+                line-height: 32px;
+            }
+
+            &_author {
+                display: block;
+                text-transform: uppercase;
+                margin-top: 30px;
+                padding-left: 60px;
+                position: relative;
+                @include archSemi;
+                font-size: 14px;
+                line-height: 22px;
+
+                &:before {
+                    content: '';
+                    position: absolute;
+                    left: 0;
+                    top: 50%;
+                    transform: translateY(-50%);
+                    height: 2px;
+                    width: 40px;
+                    background: $accent;
+                }
+            }
+        }
+
+        &-footer {
+            margin-top: 68px;
+
+            &_tags {
+                margin-bottom: 15px;
+                color: $blackalt;
+
+                .tag {
+                    display: block;
+                    text-transform: uppercase;
+                    padding: 10px 20px;
+                    border: 1px solid #E9E6E6;
+                    margin-right: 10px;
+                    font-size: 14px;
+                    line-height: 22px;
+                    transition: all .3s ease-in-out;
+                    margin-top: 10px;
+                    &:hover {
+                        transform: scale(.9);
+                        border-color: $primary;
+                    }
+                }
+            }
+
+            .socials {
+                width: 100%;
+            }
+        }
+    }
+
+    &_author {
+        padding: 40px 0;
+        border-top: 1px solid #E9E6E6;
+        border-bottom: 1px solid #E9E6E6;
+        text-align: center;
+        &-avatar {
+            border-radius: 50%;
+            width: 80px;
+            height: 80px;
+            display: inline-block;
+            margin-bottom: 15px;
+        }
+
+        &-about {
+
+            .name {
+                margin-bottom: 15px;
+                @include archBold;
+            }
+
+            .bio {
+                color: #162739;
+            }
+        }
+
+        .btn {
+            width: 100%;
+            margin: 15px 0 0;
+        }
+    }
+
+    &_nav {
+        padding: 80px 0;
+
+        &-item {
+            &:first-of-type {
+                margin-bottom: 10px;
+            }
+            &:hover {
+                .label {
+                    color: $blackalt;
+                }
+            }
+
+            &_control {
+                border-radius: 50%;
+                min-width: 40px;
+                min-height: 40px;
+                border: 1px solid $gray;
+                color: $gray;
+                transition: all .3s ease-in-out;
+                font-size: 16px;
+
+                &--prev {
+                    margin-right: 20px;
+                }
+
+                &--next {
+                    margin-left: 20px;
+                    .post_nav-item_hint {
+                        text-align: right;
+                    }
+                }
+
+                &:hover,
+                &:focus {
+                    border-color: $primary;
+                    color: $primary;
+                }
+            }
+
+            &_hint {
+                font-family: $accentFont;
+
+                .label {
+                    display: inline-block;
+                    text-transform: uppercase;
+                    color: $gray;
+                    font-weight: 500;
+                    font-size: 14px;
+                    line-height: 22px;
+                    transition: color .3s ease-in-out;
+                }
+                .title {
+                    font-weight: 600;
+                    font-size: 18px;
+                    line-height: 23px;
+                }
+            }
+        }
+    }
+}
+
+// ------ MEDIA QUERIES
+
+@media screen and (min-width: 575.98px) {
+    .post {
+        &_article {
+
+            &-quote {
+                padding: 40px;
+            }
+
+            &-footer {
+                &_tags {
+                    margin-bottom: 40px;
+                }
+            }
+        }
+
+        &_author {
+
+            &-avatar {
+                margin-bottom: 0;
+                margin-right: 30px;
+            }
+
+            &-about {
+                text-align: left;
+            }
+
+            .btn {
+                width: unset;
+                margin: 0 0 0 15px;
+            }
+        }
+
+        &_nav {
+            &-item {
+                &:first-of-type {
+                    margin-bottom: 0;
+                }
+                &--next {
+                    text-align: right;
+                }
+
+                &_hint {
+                    .label {
+                        margin-bottom: 11px;
+                    }
+                }
+            }
+        }
+    }
+}
+
+@media screen and (min-width: 767.98px) {
+    .post {
+        &_article {
+            &-quote {
+                padding: 60px;
+            }
+
+            &-list {
+                margin-right: 47px;
+                margin-bottom: 0;
+            }
+
+            &-footer {
+                &_tags {
+                    margin-bottom: 0;
+
+                    .tag {
+                        margin-top: 20px;
+                        margin-right: 20px;
+                    }
+                }
+
+                .socials {
+                    width: unset;
+                }
+            }
+        }
+
+        &_author {
+            padding: 40px 0;
+
+            &-avatar {
+                margin-bottom: 0;
+                margin-right: 30px;
+            }
+
+            &-about {
+                text-align: left;
+            }
+
+            .btn {
+                width: unset;
+                margin: 0 0 0 15px;
+            }
+        }
+
+        &_nav {
+            &-item {
+                &--next {
+                    text-align: right;
+                }
+
+                &_hint {
+                    .label {
+                        margin-bottom: 10px;
+                    }
+
+                    .title {
+                        max-width: 205px;
+                    }
+                }
+            }
+        }
+    }
+}
+
+@media screen and (min-width: 991.98px) {
+    .post {
+        .wrapper {
+            &--list {
+                margin: 30px 0;
+            }
+        }
+        &_article {
+            &-quote {
+                &_quote {
+                    font-size: 30px;
+                    line-height: 40px;
+                }
+            }
+            &-list {
+                margin-right: 0;
+                margin-bottom: 30px;
+            }
+
+            &-footer {
+
+                .socials {
+                    margin-top: 30px;
+                    width: 100%;
+                }
+            }
+        }
+
+        &_author {
+
+            &-avatar {
+                margin-bottom: 0;
+                margin-right: 30px;
+            }
+
+            &-about {
+                .name {
+                    margin-bottom: 15px;
+                    display: inline-block;
+                }
+                .bio {
+                    max-width: 473px;
+                }
+            }
+        }
+    }
+}
+
+@media screen and (min-width: 1199.98px) {
+    .post {
+        &_article {
+            &-quote {
+                padding: 80px;
+            }
+
+            &-list {
+                margin-right: 54px;
+                margin-bottom: 0;
+            }
+
+            &-footer {
+
+                .socials {
+                    margin: 0;
+                    width: auto;
+                }
+            }
+        }
+    }
+}
+
+@media screen and (min-width: 1399.98px) {
+    .post {
+        &_article {
+
+            &-list {
+                margin-right: 94px;
+            }
+
+            &-footer {
+                &_tags {
+                    flex-grow: 1;
+                    .tag {
+                        margin-top: 0;
+                    }
+                }
+            }
+
+        }
+    }
+}

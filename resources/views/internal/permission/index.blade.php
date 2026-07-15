@@ -135,7 +135,7 @@
                             <th>Menu Group</th>
                             <th>Menu Detail</th>
                             <th>Assgined To</th>
-                            <th>Aksi</th>
+                            <th>Actions</th>
                         </tr>
                     </thead>
                 </table>
@@ -146,7 +146,7 @@
                 <div class="modal-dialog modal-dialog-centered modal-md">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h5 class="modal-title text-center" id="myModalLabel18">Tambah Permission</h5>
+                            <h5 class="modal-title text-center" id="myModalLabel18">Add Permission</h5>
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <form id="formPermission" name="formPermission" class="form-horizontal"
@@ -158,16 +158,16 @@
                                     value="web">
 
                                 <div class="row g-3">
-                                    <!-- Nama Permission -->
+                                    <!-- Permission Name -->
                                     <div class="col-md-12">
-                                        <label class="form-label">Nama Permission</label>
+                                        <label class="form-label">Permission Name</label>
                                         <input type="text" id="name" name="name" class="name form-control"
                                             value="" required>
                                     </div>
                                     <div class="col-md-12">
                                         <label class="form-label">Menu Groups</label>
                                         <select id="menu_groups" name="menu_groups" class="select2 form-select">
-                                            <option disabled selected>Pilih Menu Groups</option>
+                                            <option disabled selected>Select Menu Groups</option>
                                             @foreach ($menuGroups as $group)
                                                 <option value="{{ $group->id }}">{{ $group->name }}</option>
                                             @endforeach
@@ -176,7 +176,7 @@
                                     <div class="col-md-12">
                                         <label class="form-label">Menu Details</label>
                                         <select id="menu_details" name="menu_details" class="select2 form-select">
-                                            <option selected disabled>Pilih Menu Details</option>
+                                            <option selected disabled>Select Menu Details</option>
                                             @foreach ($menuDetails as $detail)
                                                 <option value="{{ $detail->id }}">{{ $detail->name }}</option>
                                             @endforeach
@@ -187,7 +187,7 @@
                             </div>
                             <div class="modal-footer">
                                 <button type="submit" class="btn btn-primary btn-block" id="btn-simpan"
-                                    value="create">Simpan
+                                    value="create">Save
                                 </button>
                             </div>
                         </form>

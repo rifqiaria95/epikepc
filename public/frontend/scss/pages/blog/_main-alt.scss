@@ -1,0 +1,184 @@
+/**
+ * Axial
+ * EPIKEPC is a universal template for factories, industry, construction, architecture, factories, mechanics, energy
+ * Exclusively on https://1.envato.market/axial-html
+ *
+ * @encoding        UTF-8
+ * @version         1.0.0
+ * @copyright       (C) 2018 - 2021 Merkulove ( https://merkulov.design/ ). All rights reserved.
+ * @license         Envato License https://1.envato.market/KYbje
+ * @contributors    Lamber Lilit (winter.rituel@gmail.com)
+ * @support         help@merkulov.design
+ **/
+// BLOG CONTENT
+
+.blog {
+    &_feed {
+        &-item {
+            margin-top: 40px;
+            &[data-order="1"] {
+                margin-top: 0;
+            }
+            &_wrapper {
+                .img-wrapper {
+                    aspect-ratio: 41 / 28;
+                    flex-grow: 1;
+                    overflow: hidden;
+                    margin-bottom: 18px;
+                    img {
+                        display: block;
+                        object-fit: cover;
+                        width: 100%;
+                    }
+                }
+                .text-wrapper {
+                    .info {
+                        margin-bottom: 10px;
+                        text-transform: uppercase;
+                        color: $blackalt;
+                        font-size: 14px;
+                        line-height: 28px;
+                        .divider {
+                            border-radius: 50%;
+                            background-color: $accent;
+                            width: 5px;
+                            height: 5px;
+                            display: inline-block;
+                            margin: 0 15px;
+                        }
+                        .category {
+                            transition: color .3s ease-in-out;
+                            color: $primary;
+                            @include archSemi;
+                            &:hover {
+                                color: $accent;
+                            }
+                        }
+                    }
+                    .title {
+                        margin-bottom: 10px;
+                    }
+                    .text {
+                        margin-bottom: 20px;
+                        padding-bottom: 15px;
+                        color: #162739;
+                    }
+                    .link {
+                        @include archSemi;
+                        font-size: 18px;
+                        line-height: 23px;
+                    }
+                }
+            }
+        }
+    }
+}
+
+// ------ MEDIA QUERIES
+
+@media screen and (min-width: 575.98px) {
+    .blog {
+        &_feed {
+            &-item {
+                &_wrapper {
+                    .img-wrapper,
+                    .text-wrapper {
+                        width: 50%;
+                    }
+                    .img-wrapper {
+                        flex-shrink: 1;
+                        flex-grow: unset;
+                        margin-bottom: 0;
+                    }
+                    .text-wrapper {
+                        margin-left: 15px;
+                        flex-grow: 1;
+                    }
+                }
+            }
+        }
+    }
+}
+
+@media screen and (min-width: 767.98px) {
+    .blog {
+        &_feed {
+            margin: 0 -15px;
+            &-item {
+                padding: 0 15px;
+                &[data-order="2"] {
+                    margin-top: 0;
+                }
+                &_wrapper {
+                    height: 100%;
+                    .img-wrapper {
+                        margin-bottom: 17px;
+                        width: 100%;
+                    }
+                    .text-wrapper {
+                        margin-left: 0;
+                        flex-grow: 2;
+                        .text {
+                            margin-bottom: 10px;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+@media screen and (min-width: 991.98px) {
+    .blog {
+        .wrapper--content {
+            max-width: calc(100% - 380px - 30px);
+        }
+        &_feed {
+            &-item {
+                &[data-order="2"] {
+                    margin-top: 40px;
+                }
+                &_wrapper {
+                    .text-wrapper,
+                    .img-wrapper {
+                        width: 100%;
+                    }
+                    .img-wrapper {
+                        margin-bottom: 15px;
+                        max-height: 280px;
+                    }
+                    .text-wrapper {
+                        margin-left: 0;
+                        .text {
+                            margin-bottom: 10px;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+@media screen and (min-width: 1199.98px) {
+    .blog {
+        &_feed {
+            &-item {
+                &_wrapper {
+                    .text-wrapper,
+                    .img-wrapper {
+                        width: 50%;
+                    }
+                    .img-wrapper {
+                        margin-bottom: 0;
+                    }
+                    .text-wrapper {
+                        margin-left: 15px;
+                        .info {
+                            margin-bottom: 30px;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

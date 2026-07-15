@@ -4,116 +4,36 @@
     <link rel="stylesheet" href="{{ asset('/assets/vendor/libs/@form-validation/form-validation.css') }}" />
 @endsection
 @section('content')
-    <!-- Content -->
     <div class="container-xxl flex-grow-1 container-p-y">
-        <div class="row g-6 mb-6">
-            <div class="col-sm-6 col-xl-3">
-                <div class="card">
-                    <div class="card-body">
-                        <div class="d-flex align-items-start justify-content-between">
-                            <div class="content-left">
-                                <span class="text-heading">Session</span>
-                                <div class="d-flex align-items-center my-1">
-                                    <h4 class="mb-0 me-2">21,459</h4>
-                                    <p class="text-success mb-0">(+29%)</p>
-                                </div>
-                                <small class="mb-0">Total Galeri</small>
-                            </div>
-                            <div class="avatar">
-                                <span class="avatar-initial rounded bg-label-primary">
-                                    <i class="ti ti-pegawais ti-26px"></i>
-                                </span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-sm-6 col-xl-3">
-                <div class="card">
-                    <div class="card-body">
-                        <div class="d-flex align-items-start justify-content-between">
-                            <div class="content-left">
-                                <span class="text-heading">Paid Galeri</span>
-                                <div class="d-flex align-items-center my-1">
-                                    <h4 class="mb-0 me-2">4,567</h4>
-                                    <p class="text-success mb-0">(+18%)</p>
-                                </div>
-                                <small class="mb-0">Last week analytics </small>
-                            </div>
-                            <div class="avatar">
-                                <span class="avatar-initial rounded bg-label-danger">
-                                    <i class="ti ti-pegawai-plus ti-26px"></i>
-                                </span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-sm-6 col-xl-3">
-                <div class="card">
-                    <div class="card-body">
-                        <div class="d-flex align-items-start justify-content-between">
-                            <div class="content-left">
-                                <span class="text-heading">Active Galeri</span>
-                                <div class="d-flex align-items-center my-1">
-                                    <h4 class="mb-0 me-2">{{ totalPegawai() }}</h4>
-                                    <p class="text-danger mb-0">(-14%)</p>
-                                </div>
-                                <small class="mb-0">Last week analytics</small>
-                            </div>
-                            <div class="avatar">
-                                <span class="avatar-initial rounded bg-label-success">
-                                    <i class="ti ti-pegawai-check ti-26px"></i>
-                                </span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-sm-6 col-xl-3">
-                <div class="card">
-                    <div class="card-body">
-                        <div class="d-flex align-items-start justify-content-between">
-                            <div class="content-left">
-                                <span class="text-heading">Pending Galeri</span>
-                                <div class="d-flex align-items-center my-1">
-                                    <h4 class="mb-0 me-2">237</h4>
-                                    <p class="text-success mb-0">(+42%)</p>
-                                </div>
-                                <small class="mb-0">Last week analytics</small>
-                            </div>
-                            <div class="avatar">
-                                <span class="avatar-initial rounded bg-label-warning">
-                                    <i class="ti ti-pegawai-search ti-26px"></i>
-                                </span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!-- Galeri List Table -->
+        @include('internal.partials.stat-cards', [
+            'stats' => [
+                ['label' => 'Total Gallery', 'value' => $totalGallery, 'hint' => 'All gallery items', 'icon' => 'ti-photo', 'color' => 'primary'],
+                ['label' => 'With Category', 'value' => $withCategory, 'hint' => 'Has category assigned', 'icon' => 'ti-category', 'color' => 'success'],
+                ['label' => 'With Image', 'value' => $withImage, 'hint' => 'Has photo', 'icon' => 'ti-camera', 'color' => 'info'],
+                ['label' => 'Recent', 'value' => $recentGallery, 'hint' => 'Last 30 days', 'icon' => 'ti-clock', 'color' => 'warning'],
+            ],
+        ])
         <div class="card">
             <div class="card-header border-bottom">
                 <h5 class="card-title mb-0">Filters</h5>
                 <div class="d-flex justify-content-between align-items-center row pt-4 gap-4 gap-md-0">
-                    <div class="col-md-4 Galeri_role"></div>
-                    <div class="col-md-4 Galeri_plan"></div>
-                    <div class="col-md-4 Galeri_status"></div>
+                    <div class="col-md-4 Gallery_role"></div>
+                    <div class="col-md-4 Gallery_plan"></div>
+                    <div class="col-md-4 Gallery_status"></div>
                 </div>
             </div>
             <div class="card-datatable table-responsive">
-                <table id="TableGaleri" class="datatables-galeri table">
+                <table id="TableGallery" class="datatables-galeri table">
                     <thead class="border-top">
                         <tr>
                             <th>#</th>
                             <th>Image</th>
                             <th>Title</th>
-                            <th>Kategori</th>
+                            <th>Category</th>
                             <th>Subtitle</th>
                             <th>Description</th>
                             <th>Created By</th>
-                            <th>Aksi</th>
+                            <th>Actions</th>
                         </tr>
                     </thead>
                 </table>
@@ -123,10 +43,10 @@
                 <div class="modal-dialog modal-dialog-centered modal-lg">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h4 class="modal-title" id="modal-judul">Tambah Galeri</h4>
+                            <h4 class="modal-title" id="modal-judul">Add Gallery</h4>
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
-                        <form id="formGaleri" class="form-horizontal" enctype="multipart/form-data">
+                        <form id="formGallery" class="form-horizontal" enctype="multipart/form-data">
                             @csrf
                             <div class="modal-body">
                                 <input type="hidden" name="id" id="id">
@@ -140,7 +60,7 @@
                                                     <button type="button" class="nav-link active" role="tab"
                                                         data-bs-toggle="tab" data-bs-target="#navs-top-home"
                                                         aria-controls="navs-top-home" aria-selected="true">
-                                                        Detail Galeri
+                                                        Gallery Details
                                                     </button>
                                                 </li>
                                             </ul>
@@ -151,23 +71,23 @@
                                                         <div class="col-xl-4 mb-6">
                                                             <label class="form-label" for="title">Title</label>
                                                             <input type="text" class="form-control" id="title"
-                                                                placeholder="Masukkan judul galeri" name="title"
+                                                                placeholder="Enter judul galeri" name="title"
                                                                 aria-label="Title" />
                                                             <div class="text-danger small" id="title-error"></div>
                                                         </div>
                                                         <div class="col-xl-4 mb-6">
                                                             <label class="form-label" for="subtitle">Subtitle</label>
                                                             <input type="text" class="form-control" id="subtitle"
-                                                                placeholder="Masukkan subtitle galeri" name="subtitle"
+                                                                placeholder="Enter subtitle galeri" name="subtitle"
                                                                 aria-label="Subtitle" />
                                                             <div class="text-danger small" id="subtitle-error"></div>
                                                         </div>
                                                         <div class="col-xl-4 mb-6">
                                                             <label class="form-label"
-                                                                for="kategori_galeri_id">Kategori</label>
+                                                                for="kategori_galeri_id">Category</label>
                                                             <select id="kategori_galeri_id" class="form-select select2"
                                                                 name="kategori_galeri_id">
-                                                                <option value="">Pilih Kategori</option>
+                                                                <option value="">Select Category</option>
                                                                 @foreach ($kategoriGaleri as $kategori)
                                                                     <option value="{{ $kategori->id }}">
                                                                         {{ $kategori->name }}</option>
@@ -178,14 +98,14 @@
                                                             <label class="form-label" for="image">Image</label>
                                                             <input type="file" id="image" class="form-control"
                                                                 aria-label="Image" name="image" accept="image/*" />
-                                                            <div class="form-text">Upload gambar untuk image (JPG, PNG,
+                                                            <div class="form-text">Upload image (JPG, PNG,
                                                                 GIF)</div>
                                                             <div class="text-danger small" id="image-error"></div>
                                                         </div>
                                                         <div class="col-xl-12 mb-6">
                                                             <label class="form-label"
                                                                 for="description">Description</label>
-                                                            <textarea class="form-control" id="description" placeholder="Masukkan deskripsi galeri..." name="description"
+                                                            <textarea class="form-control" id="description" placeholder="Enter deskripsi galeri..." name="description"
                                                                 aria-label="Description" rows="10"></textarea>
                                                             <div class="text-danger small" id="description-error"></div>
                                                         </div>
@@ -199,7 +119,7 @@
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                                 <button type="submit" class="btn btn-primary btn-block" id="btn-simpan"
-                                    value="create">Simpan
+                                    value="create">Save
                                 </button>
                             </div>
                         </form>

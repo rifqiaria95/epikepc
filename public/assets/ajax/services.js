@@ -15,7 +15,7 @@ $(document).ready(function () {
                 <div class="card-header d-flex justify-content-between align-items-center">
                     <h5 class="mb-0">Detail Item #${index + 1}</h5>
                     <button type="button" class="btn btn-sm btn-danger btn-remove-detail" data-index="${index}">
-                        <i class="ti ti-trash me-1"></i>Hapus
+                        <i class="ti ti-trash me-1"></i>Delete
                     </button>
                 </div>
                 <div class="card-body">
@@ -24,27 +24,27 @@ $(document).ready(function () {
                             <label class="form-label">Title</label>
                             <input type="text" class="form-control detail-title" 
                                 name="service_details[${index}][title]"
-                                placeholder="Masukkan title service detail" />
+                                placeholder="Enter title service detail" />
                         </div>
                         <div class="col-xl-4 mb-3">
                             <label class="form-label">Subtitle</label>
                             <input type="text" class="form-control detail-subtitle" 
                                 name="service_details[${index}][subtitle]"
-                                placeholder="Masukkan subtitle service detail" />
+                                placeholder="Enter subtitle service detail" />
                         </div>
                         <div class="col-xl-4 mb-3">
                             <label class="form-label">Price</label>
                             <input type="text" class="form-control detail-price" 
                                 name="service_details[${index}][price]"
                                 data-price-raw=""
-                                placeholder="Masukkan harga service" />
+                                placeholder="Enter harga service" />
                         </div>
                         <div class="col-xl-12 mb-3">
                             <label class="form-label">Description</label>
                             <textarea class="form-control detail-description" 
                                 name="service_details[${index}][description]"
                                 id="detail_description_${index}"
-                                placeholder="Masukkan deskripsi service detail..." rows="10"></textarea>
+                                placeholder="Enter deskripsi service detail..." rows="10"></textarea>
                         </div>
                     </div>
                 </div>
@@ -95,7 +95,7 @@ $(document).ready(function () {
                     cleavePrice.setRawValue(priceValueToSet.toString());
                 }
                 
-                // Simpan instance cleave untuk digunakan nanti
+                // Save instance cleave untuk digunakan nanti
                 $priceInput.data('cleave', cleavePrice);
             }
         }, 100);
@@ -130,7 +130,7 @@ $(document).ready(function () {
             return;
         }
         
-        // Hapus Cleave instance jika ada
+        // Delete Cleave instance jika ada
         var $priceInput = $item.find('.detail-price');
         if ($priceInput.length > 0) {
             var cleaveInstance = $priceInput.data('cleave');
@@ -143,7 +143,7 @@ $(document).ready(function () {
             }
         }
         
-        // Hapus TinyMCE instance jika ada - cari berdasarkan textarea di dalam item
+        // Delete TinyMCE instance jika ada - cari berdasarkan textarea di dalam item
         var $textarea = $item.find('.detail-description');
         if ($textarea.length > 0) {
             var editorId = $textarea.attr('id');
@@ -159,7 +159,7 @@ $(document).ready(function () {
             }
         }
         
-        // Hapus item dari DOM
+        // Delete item dari DOM
         var domElement = $item[0];
         
         if (!domElement) {
@@ -168,7 +168,7 @@ $(document).ready(function () {
         
         var parentElement = domElement.parentNode;
         
-        // Hapus dari DOM menggunakan native method
+        // Delete dari DOM menggunakan native method
         if (parentElement) {
             try {
                 parentElement.removeChild(domElement);
@@ -332,11 +332,11 @@ $(document).ready(function () {
         }
         
         if ($item.length === 0) {
-            toastr.error('Gagal menemukan detail item untuk dihapus');
+            toastr.error('Failed to find detail item to delete');
             return false;
         }
         
-        // Simpan reference langsung ke DOM element untuk memastikan tetap ada
+        // Save reference langsung ke DOM element untuk memastikan tetap ada
         var itemElement = $item[0];
         var itemDataIndex = $item.attr('data-index') || $item.data('index');
         
@@ -346,7 +346,7 @@ $(document).ready(function () {
         }
         var itemId = itemElement.id;
         
-        // Simpan reference ke jQuery object dan DOM element sebelum async operation
+        // Save reference ke jQuery object dan DOM element sebelum async operation
         var $itemToRemove = $item;
         var itemToRemoveElement = itemElement;
         var itemToRemoveId = itemId;
@@ -376,7 +376,7 @@ $(document).ready(function () {
                 if ($foundItem.length > 0) {
                     removeDetailItem($foundItem);
                 } else {
-                    toastr.error('Gagal menghapus detail item');
+                    toastr.error('Failed to delete detail item');
                 }
             }
         };
@@ -392,12 +392,12 @@ $(document).ready(function () {
             }
             
             var swalPromise = Swal.fire({
-                title: 'Apakah Anda yakin?',
-                text: "Detail item ini akan dihapus!",
+                title: 'Are you sure?',
+                text: "This detail item will be deleted!",
                 icon: 'warning',
                 showCancelButton: true,
-                confirmButtonText: 'Ya, Hapus',
-                cancelButtonText: 'Batal',
+                confirmButtonText: 'Ya, Delete',
+                cancelButtonText: 'Cancel',
                 customClass: {
                     confirmButton: 'btn btn-danger',
                     cancelButton: 'btn btn-secondary',
@@ -449,7 +449,7 @@ $(document).ready(function () {
         return false;
     });
 
-    // Clear detail items saat tombol "Tambah Service" diklik
+    // Clear detail items saat tombol "Add Service" diklik
     $(document).on('click', '.add-new', function() {
         clearAllDetailItems();
     });
@@ -611,7 +611,7 @@ $(document).ready(function () {
               ]
             },
             {
-              text: '<i class="ti ti-plus me-0 me-sm-1 ti-xs"></i><span class="d-none d-sm-inline-block">Tambah Service</span>',
+              text: '<i class="ti ti-plus me-0 me-sm-1 ti-xs"></i><span class="d-none d-sm-inline-block">Add Service</span>',
               className: 'add-new btn btn-primary waves-effect waves-light',
               attr: {
                 'data-bs-toggle': 'modal',
@@ -699,7 +699,7 @@ $(document).ready(function () {
                         buttons += '<a href="javascript:;" class="dropdown-item" onclick="ViewData(' + full.id + ')"><i class="ti ti-edit ti-md"></i>Edit</a>';
                       }
                     if (canDelete) {
-                      buttons += '<a href="javascript:;" class="dropdown-item delete-record" data-id="' + full.id + '"><i class="ti ti-trash ti-md"></i>Hapus</a>';
+                      buttons += '<a href="javascript:;" class="dropdown-item delete-record" data-id="' + full.id + '"><i class="ti ti-trash ti-md"></i>Delete</a>';
                     }
                     buttons += '</div>';
 
@@ -719,7 +719,7 @@ $(document).ready(function () {
     if ($('#service_type_id').length) {
         $('#service_type_id').select2({
             dropdownParent: $('body'),
-            placeholder: 'Pilih Service Type',
+            placeholder: 'Select Service Type',
             allowClear: true,
             width: '100%'
         });
@@ -779,7 +779,7 @@ $(document).ready(function () {
                         }, 300);
                     });
                 } else {
-                    toastr.error('Data service tidak ditemukan.');
+                    toastr.error('Service data not found.');
                 }
             },
             error: function(xhr, status, error) {
@@ -796,17 +796,17 @@ $(document).ready(function () {
     $('#formServices').on('submit', function(e){
         e.preventDefault();
 
-        // Tambahkan loader pada tombol submit
+        // Addkan loader pada tombol submit
         var submitBtn = $(this).find('button[type="submit"]');
         var originalText = submitBtn.html();
-        submitBtn.html('<i class="ti ti-loader ti-spin me-2"></i>Menyimpan...').prop('disabled', true);
+        submitBtn.html('<i class="ti ti-loader ti-spin me-2"></i>Saving...').prop('disabled', true);
 
         $('#formServices .form-control, #formServices .form-select').removeClass('is-invalid');
         $('#formServices .text-danger.small').text('');
 
         // Save semua TinyMCE content sebelum form submission
         if (typeof tinymce !== 'undefined') {
-            // Simpan semua editor detail description
+            // Save semua editor detail description
             $('#service-details-container .detail-description').each(function() {
                 var editorId = $(this).attr('id');
                 if (editorId && tinymce.get(editorId)) {
@@ -836,7 +836,7 @@ $(document).ready(function () {
         $('#service-details-container .detail-price').each(function() {
             var $priceInput = $(this);
             var rawValue = getRawPriceValue($priceInput);
-            // Set nilai raw ke hidden input atau langsung ke formData
+            // Set nilai raw ke hidden input or langsung ke formData
             $priceInput.attr('data-price-raw', rawValue);
         });
 
@@ -874,9 +874,9 @@ $(document).ready(function () {
                 if (response.status === 200) {
                     $('#tambahModal').modal('hide');
                     $('#TableServices').DataTable().ajax.reload();
-                    toastr.success('Data berhasil disimpan!');
+                    toastr.success('Data saved successfully!');
                 } else {
-                    toastr.error('Terjadi kesalahan, silakan coba lagi!');
+                    toastr.error('Something went wrong, please try again.');
                 }
                 // Kembalikan tombol ke kondisi semula
                 submitBtn.html(originalText).prop('disabled', false);
@@ -889,7 +889,7 @@ $(document).ready(function () {
                       $('#' + key + '-error').text(value[0]);
                   });
               } else {
-                  toastr.error('Gagal menyimpan data!');
+                  toastr.error('Failed to save data.');
               }
               // Kembalikan tombol ke kondisi semula
               submitBtn.html(originalText).prop('disabled', false);
@@ -900,7 +900,7 @@ $(document).ready(function () {
     $('#tambahModal').on('hidden.bs.modal', function () {
         $('#formServices')[0].reset();
         $('#id').val('');
-        $('#modal-judul').text('Tambah Service');
+        $('#modal-judul').text('Add Service');
         $('#formServices .form-control, #formServices .form-select').removeClass('is-invalid');
         $('#formServices .text-danger.small').text('');
 
@@ -931,7 +931,7 @@ $(document).ready(function () {
         if ($('#service_type_id').length && !$('#service_type_id').hasClass('select2-hidden-accessible')) {
             $('#service_type_id').select2({
                 dropdownParent: $('body'),
-                placeholder: 'Pilih Service Type',
+                placeholder: 'Select Service Type',
                 allowClear: true,
                 width: '100%'
             });
@@ -1097,15 +1097,15 @@ $(document).ready(function () {
         var id = $(this).data('id');
 
         Swal.fire({
-            title: 'Apakah Anda yakin?',
-            text: "Data service akan dihapus!",
+            title: 'Are you sure?',
+            text: "Service data will be deleted!",
             icon: 'warning',
             customClass: {
                 confirmButton: 'btn btn-primary waves-effect waves-light ml-3',
                 cancelButton: 'btn btn-label-secondary waves-effect waves-light'
             },
             showCancelButton: true,
-            cancelButtonText: 'Batal',
+            cancelButtonText: 'Cancel',
             buttonsStyling: false,
             didRender: function () {
                 $('.swal2-actions').css('gap', '10px');
@@ -1141,7 +1141,7 @@ $(document).ready(function () {
                     error: function () {
                         Swal.fire(
                             'Oops!',
-                            'Terjadi kesalahan saat menghapus data.',
+                            'An error occurred while deleting data.',
                             'error'
                         );
                     }

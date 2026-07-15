@@ -36,7 +36,7 @@ class KategoriController extends Controller
 
         return response()->json([
             'success'  => true,
-            'message'  => 'Kategori berhasil ditambahkan!',
+            'message'  => 'Category added successfully!',
             'kategori' => $kategori
         ]);
     }
@@ -60,7 +60,7 @@ class KategoriController extends Controller
 
         return response()->json([
             'success' => true,
-            'message' => 'Kategori berhasil diperbarui!'
+            'message' => 'Category updated successfully!'
         ]);
     }
 
@@ -74,12 +74,12 @@ class KategoriController extends Controller
             $kategori->delete();
             return response()->json([
                 'status'    => 200,
-                'message'   => 'Sukses! Data kategori berhasil dihapus'
+                'message'   => 'Category deleted successfully'
             ]);
         } else {
             return response()->json([
                 'status'    => 404,
-                'errors'    => 'Error! Data kategori tidak ditemukan'
+                'errors'    => 'Error! Category data not found'
             ]);
         }
     }

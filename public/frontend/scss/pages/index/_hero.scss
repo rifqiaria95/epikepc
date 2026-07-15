@@ -1,0 +1,277 @@
+/**
+ * Axial
+ * EPIKEPC is a universal template for factories, industry, construction, architecture, factories, mechanics, energy
+ * Exclusively on https://1.envato.market/axial-html
+ *
+ * @encoding        UTF-8
+ * @version         1.0.0
+ * @copyright       (C) 2018 - 2021 Merkulove ( https://merkulov.design/ ). All rights reserved.
+ * @license         Envato License https://1.envato.market/KYbje
+ * @contributors    Lamber Lilit (winter.rituel@gmail.com)
+ * @support         help@merkulov.design
+ **/
+// HERO SECTION
+
+@include keyframes(slideUp) {
+    0% {
+        bottom: -1000%;
+    }
+    100% {
+        bottom: -15%;
+    }
+}
+
+@include keyframes(slideUp-md) {
+    0% {
+        bottom: -1000%;
+    }
+    100% {
+        bottom: -5%;
+    }
+}
+
+
+.hero {
+    padding: 100px 0 0;
+    position: relative;
+    overflow: hidden;
+    &_container {
+        padding-bottom: 200px;
+        position: relative;
+    }
+    &_header {
+        position: relative;
+        z-index: 100;
+        .title {
+            @include archExtra;
+        }
+        .text {
+            text-shadow: 0 0 5px $primary;
+        }
+        .btn {
+            width: 100%;
+        }
+    }
+    .plan {
+        position: absolute;
+        display: none;
+    }
+    &_building {
+        position: absolute;
+        right: -50%;
+        bottom: -15%;
+        max-height: 50%;
+        animation-name: slideUp;
+        animation-duration: 3s;
+        animation-timing-function: ease-in-out;
+    }
+    &_info {
+        color: $black;
+        position: relative;
+        .wrapper {
+            padding: 20px;
+        }
+        &-numbers {
+            margin: 15px 0;
+            &_group {
+                width: 100%;
+                &:first-of-type {
+                    margin: 30px 0;
+                }
+                .number {
+                    @include archBold;
+                    color: $accent;
+                }
+                .label {
+                    color: #fff;
+                    font-weight: 700;
+                    letter-spacing: 0.5px;
+                }
+                .number, .label {
+                    display: block;
+                }
+            }
+        }
+        &-card {
+            display: none;
+            background: radial-gradient(97.35% 239.81% at 1.55% 6.12%, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0.52) 100%);
+            backdrop-filter: blur(80px);
+            overflow: hidden;
+            &_underlay {
+                position: absolute;
+                width: 100%;
+                height: 100%;
+                background: radial-gradient(97.35% 239.81% at 1.55% 6.12%, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0.52) 100%);
+                top: 0;
+                left: 0;
+                z-index: -1;
+            }
+            .hero_building--mini {
+                position: absolute;
+                transform: rotate(2deg);
+                right: -14%;
+                top: 30%;
+                max-height: 80%;
+            }
+            .info, .square {
+                display: block;
+            }
+            .square {
+                @include archExtra;
+                font-size: 28px;
+                line-height: 32px;
+                margin: 15px 0 5px;
+                sup {
+                    font-size: 16px;
+                    position: relative;
+                    bottom: 2px;
+                }
+            }
+            .info {
+                font-weight: 500;
+            }
+            .link-arrow {
+                margin-top: 30px;
+                display: inline-block;
+            }
+        }
+    }
+}
+
+// ------ MEDIA QUERIES
+
+@media screen and (min-width: 575.98px) {
+    .hero {
+        .plan {
+            display: block;
+            opacity: 0.5;
+            transform: rotate(154deg);
+            max-width: 50%;
+            bottom: -10%;
+            left: -10%;
+        }
+        &_building {
+            right: -50%;
+            max-height: 65%;
+        }
+        &_header {
+            .btn {
+                width: unset;
+            }
+        }
+        &_info {
+            &-card {
+                max-width: 388px;
+                width: 100%;
+                margin: 0 auto;
+            }
+        }
+    }
+}
+
+@media screen and (min-width: 767.98px) {
+    .hero {
+        padding: 200px 0 0;
+        &_container {
+            padding-bottom: 128px;
+        }
+        &_building {
+            right: 0;
+            max-height: 60%;
+            bottom: -5%;
+            animation-name: slideUp-md;
+        }
+        &_info {
+            margin-top: 0;
+            &-card {
+                display: flex;
+                flex-direction: column;
+                align-items: flex-start;
+                margin: 189px auto 0;
+                .hero_building--mini {
+                    right: -25%;
+                }
+                .wrapper {
+                    padding: 30px;
+                }
+            }
+            &-numbers {
+                margin: 0;
+                &_group {
+                    &:first-of-type {
+                        margin-right: 0;
+                        margin-top: 0;
+                        margin-bottom: 30px;
+                    }
+                    .label {
+                        text-align: right;
+                    }
+                }
+            }
+        }
+    }
+}
+
+@media screen and (min-width: 991.98px) {
+    .hero {
+        .plan {
+            bottom: -20%;
+        }
+        &_building {
+            right: 4%;
+            max-height: 70%;
+        }
+        &_info {
+            &-numbers {
+                &_group {
+                    .label {
+                        line-height: 25px;
+                    }
+                }
+            }
+            &-card {
+                .hero_building--mini {
+                    right: -14%;
+                }
+                .wrapper {
+                    padding: 40px;
+                }
+                .square {
+                    font-size: 36px;
+                    line-height: 40px;
+                }
+                .info {
+                    font-size: 18px;
+                    line-height: 22px;
+                }
+            }
+        }
+    }
+}
+
+@media screen and (min-width: 1199.98px) {
+    .hero {
+        padding: 279px 0 0;
+        .plan {
+            max-width: 60%;
+            left: -15%;
+            bottom: -35%;
+        }
+        &_building {
+            right: 0;
+            max-height: 80%;
+        }
+        &_header {
+            flex-grow: 1;
+            .title {
+                max-width: 550px;
+            }
+            .text {
+                max-width: 471px;
+            }
+        }
+        &_info {
+            min-width: 388px;
+        }
+    }
+}

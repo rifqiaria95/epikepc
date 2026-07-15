@@ -13,7 +13,7 @@ class RolePermissionSeeder extends Seeder
 {
     public function run()
     {
-        // Hapus data lama
+        // Delete data lama
         DB::table('role_has_permissions')->delete();
         DB::table('model_has_roles')->delete();
         DB::table('model_has_permissions')->delete();
@@ -42,7 +42,7 @@ class RolePermissionSeeder extends Seeder
             $permissionsToCreate[] = ['name' => "show_{$baseName}"];
         }
 
-        // Tambahkan izin administratif standar jika belum ada
+        // Addkan izin administratif standar jika belum ada
         $adminPermissions = [
             'view_role', 'create_role', 'edit_role', 'delete_role', 'show_role',
             'view_menu_group', 'create_menu_group', 'edit_menu_group', 'delete_menu_group', 'show_menu_group',

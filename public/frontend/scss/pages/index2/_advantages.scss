@@ -1,0 +1,139 @@
+/**
+ * Axial
+ * EPIKEPC is a universal template for factories, industry, construction, architecture, factories, mechanics, energy
+ * Exclusively on https://1.envato.market/axial-html
+ *
+ * @encoding        UTF-8
+ * @version         1.0.0
+ * @copyright       (C) 2018 - 2021 Merkulove ( https://merkulov.design/ ). All rights reserved.
+ * @license         Envato License https://1.envato.market/KYbje
+ * @contributors    Lamber Lilit (winter.rituel@gmail.com)
+ * @support         help@merkulov.design
+ **/
+// ADVANTAGES SECTION
+
+.advantages {
+
+    &_header {
+        &-list {
+            margin: 30px 0 40px;
+            padding: 40px;
+            background: #F8F8F8;
+
+            &_item {
+                margin-bottom: 15px;
+
+                &:last-of-type {
+                    margin-bottom: 0;
+                }
+
+                .number, .label {
+                    display: block;
+                }
+
+                .number {
+                    color: $secondary;
+                    margin-bottom: 5px;
+                    @include archBold;
+                }
+
+                .label {
+                    color: $blackalt;
+                    font-weight: 500;
+                }
+            }
+        }
+    }
+
+    &_list {
+        &-list {
+            margin-top: 40px;
+
+            &_item {
+                margin-bottom: 30px;
+
+                &:last-of-type {
+                    margin-bottom: 0;
+                }
+
+                .number {
+                    color: #C8C8C8;
+                    @include archExtra;
+                    margin-right: 20px;
+                }
+
+                .title {
+                    margin-bottom: 10px;
+                }
+            }
+        }
+    }
+}
+
+// ------ MEDIA QUERIES
+
+@media screen and (min-width: 575.98px) {
+    .advantages {
+        &_header {
+            &-list {
+                &_item {
+                    .number {
+                        margin-bottom: 10px;
+                    }
+
+                    .label {
+                        max-width: 170px;
+                    }
+                }
+            }
+        }
+    }
+}
+
+@media screen and (min-width: 767.98px) {
+    .advantages {
+        &_header {
+            &-list {
+                margin: 40px 0;
+                &_item {
+                    width: calc(50% - 15px);
+                }
+            }
+        }
+    }
+}
+
+@media screen and (min-width: 991.98px) {
+    .advantages {
+        &_header {
+            flex-grow: 1;
+            &-list {
+                &_item {
+                    width: unset;
+                    margin: 0;
+                }
+            }
+        }
+    }
+}
+
+@media screen and (min-width: 1199.98px) {
+    .advantages {
+        &_header {
+            max-width: 600px;
+            margin-right: 60px;
+            &-list {
+                padding: 80px;
+                margin: 40px 0 0;
+                &_item {
+                    &:first-of-type, &:nth-of-type(2) {
+                        margin-bottom: 60px;
+                    }
+                }
+            }
+        }
+        &_list {
+            padding: 30px 0;
+        }
+    }
+}

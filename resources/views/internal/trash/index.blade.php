@@ -106,10 +106,10 @@
                 <table id="deletedTable" class="datatables-users table">
                     <thead class="border-top">
                         <tr>
-                            <th>Nama</th>
-                            <th>Kategori</th>
-                            <th>Waktu Dihapus</th>
-                            <th>Aksi</th>
+                            <th>Name</th>
+                            <th>Category</th>
+                            <th>Deleted At</th>
+                            <th>Actions</th>
                         </tr>
                     </thead>
 
@@ -126,10 +126,10 @@
                             @csrf
                             <div class="modal-body">
                                 <input type="hidden" name="id" id="id">
-                                <ul class="alert alert-warning d-none" id="modalJudulEdit"></ul>
+                                <ul class="alert alert-warning d-none" id="modalTitleEdit"></ul>
                                 <div class="row g-3">
                                     <div class="col-md-6">
-                                        <label class="form-label">Nama</label>
+                                        <label class="form-label">Name</label>
                                         <input type="text" id="name" name="name" class="name form-control" value="" required>
                                     </div>
                                     <div class="col-md-6">
@@ -140,7 +140,7 @@
                                         <fieldset class="form-group">
                                             <label class="form-label">Role</label>
                                             <select class="select2 form-select" name="role" id="role" required>
-                                                <option value="">Pilih Role</option>
+                                                <option value="">Select Role</option>
                                             </select>
                                         </fieldset>
                                     </div>
@@ -148,7 +148,7 @@
                                         <fieldset class="form-group">
                                             <label class="form-label">Status</label>
                                             <select class="select2 form-select" name="active" id="active" required>
-                                                <option>Pilih Role</option>
+                                                <option>Select Role</option>
                                                 <option value="0">Inactive</option>
                                                 <option value="1">Active</option>
                                             </select>
@@ -161,7 +161,7 @@
                                 </div>
                             </div>
                             <div class="modal-footer">
-                                <button type="submit" class="btn btn-primary btn-block" id="btn-update" value="create">Simpan
+                                <button type="submit" class="btn btn-primary btn-block" id="btn-update" value="create">Save
                                 </button>
                             </div>
                         </form>

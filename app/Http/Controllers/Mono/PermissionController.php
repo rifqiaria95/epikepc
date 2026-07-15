@@ -80,7 +80,7 @@ class PermissionController extends Controller
 
         return response()->json([
             'success'    => true,
-            'message'    => 'Permission berhasil ditambahkan!',
+            'message'    => 'Permission added successfully!',
             'permission' => $permission
         ]);
     }
@@ -131,7 +131,7 @@ class PermissionController extends Controller
 
         return response()->json([
             'success' => true,
-            'message' => 'Permission berhasil diperbarui!'
+            'message' => 'Permission updated successfully!'
         ]);
     }
 
@@ -145,18 +145,18 @@ class PermissionController extends Controller
             $permission->menuDetails()->detach();
             $permission->menuGroups()->detach();
 
-            // Hapus permission
+            // Delete permission
             $permission->delete();
 
             return response()->json([
                 'status'  => 200,
-                'message' => 'Sukses! Data permission berhasil dihapus'
+                'message' => 'Permission deleted successfully'
             ]);
 
         } catch (\Exception $e) {
             return response()->json([
                 'status'  => 500,
-                'message' => 'Terjadi kesalahan: ' . $e->getMessage()
+                'message' => 'An error occurred: ' . $e->getMessage()
             ]);
         }
     }
@@ -190,9 +190,9 @@ class PermissionController extends Controller
                 }
             }
 
-            $message = "Berhasil menghapus {$deletedCount} permission";
+            $message = "Successfully deleted {$deletedCount} permission";
             if ($failedCount > 0) {
-                $message .= ", {$failedCount} permission gagal dihapus";
+                $message .= ", {$failedCount} permission failed to delete";
             }
 
             return response()->json([
@@ -205,7 +205,7 @@ class PermissionController extends Controller
         } catch (\Exception $e) {
             return response()->json([
                 'status' => 500,
-                'message' => 'Terjadi kesalahan: ' . $e->getMessage()
+                'message' => 'An error occurred: ' . $e->getMessage()
             ]);
         }
     }

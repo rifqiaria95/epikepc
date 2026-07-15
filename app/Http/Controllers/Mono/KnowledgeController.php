@@ -50,7 +50,7 @@ class KnowledgeController extends Controller
 
         return response()->json([
             'success'  => true,
-            'message'  => 'Knowledge berhasil ditambahkan!',
+            'message'  => 'Knowledge article added successfully!',
             'knowledge' => $knowledge
         ]);
     }
@@ -74,7 +74,7 @@ class KnowledgeController extends Controller
 
         return response()->json([
             'success' => true,
-            'message' => 'Knowledge berhasil diperbarui!'
+            'message' => 'Knowledge article updated successfully!'
         ]);
     }
 
@@ -88,12 +88,12 @@ class KnowledgeController extends Controller
             $knowledge->delete();
             return response()->json([
                 'status'    => 200,
-                'message'   => 'Sukses! Data knowledge berhasil dihapus'
+                'message'   => 'Knowledge article deleted successfully'
             ]);
         } else {
             return response()->json([
                 'status'    => 404,
-                'errors'    => 'Error! Data knowledge tidak ditemukan'
+                'errors'    => 'Error! Knowledge data not found'
             ]);
         }
     }

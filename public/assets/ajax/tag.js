@@ -165,7 +165,7 @@ $(document).ready(function () {
                 ]
             },
             {
-                text: '<i class="ti ti-plus me-0 me-sm-1 ti-xs"></i><span class="d-none d-sm-inline-block">Tambah tag</span>',
+                text: '<i class="ti ti-plus me-0 me-sm-1 ti-xs"></i><span class="d-none d-sm-inline-block">Add tag</span>',
                 className: 'add-new btn btn-primary waves-effect waves-light',
                 attr: {
                     'data-bs-toggle': 'offcanvas',
@@ -241,7 +241,7 @@ $(document).ready(function () {
     $('.card').on('click', '.dt-action-buttons .add-new', function() {
         $('#id').val('');
         $('#formTag')[0].reset();
-        $('#offcanvasAddtagLabel').text('Tambah Tag');
+        $('#offcanvasAddtagLabel').text('Add Tag');
         $('.data-submit').text('Submit');
         $('.form-control, .form-select').removeClass('is-invalid');
         $('.text-danger').text('');
@@ -270,19 +270,19 @@ $(document).ready(function () {
                 }
             },
             error: function () {
-                toastr.error('Gagal mengambil data!');
+                toastr.error('Failed to fetch data!');
             }
         });
     }
 
-    // Submit Form: Tambah & Update
+    // Submit Form: Add & Update
     $("#formTag").submit(function (e) {
         e.preventDefault();
 
-        // Tambahkan loader pada tombol submit
+        // Addkan loader pada tombol submit
         var submitBtn = $(this).find('button[type="submit"]');
         var originalText = submitBtn.html();
-        submitBtn.html('<i class="ti ti-loader ti-spin me-2"></i>Menyimpan...').prop('disabled', true);
+        submitBtn.html('<i class="ti ti-loader ti-spin me-2"></i>Saving...').prop('disabled', true);
 
         $('.form-control, .form-select').removeClass('is-invalid');
         $('.text-danger').text('');
@@ -327,7 +327,7 @@ $(document).ready(function () {
                         $('#' + key + '-error').text(value[0]);
                     });
                 } else {
-                    toastr.error('Gagal menyimpan data!');
+                    toastr.error('Failed to save data.');
                 }
                 // Kembalikan tombol ke kondisi semula
                 submitBtn.html(originalText).prop('disabled', false);
@@ -339,14 +339,14 @@ $(document).ready(function () {
         let id = $(this).data('id');
 
         Swal.fire({
-            title: 'Apakah Anda yakin?',
-            text: "Data tag akan dihapus!",
+            title: 'Are you sure?',
+            text: "Tag data will be deleted!",
             icon: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#d33',
             cancelButtonColor: '#3085d6',
             confirmButtonText: 'Ya, hapus!',
-            cancelButtonText: 'Batal'
+            cancelButtonText: 'Cancel'
         }).then((result) => {
             if (result.isConfirmed) {
                 $.ajax({
@@ -360,7 +360,7 @@ $(document).ready(function () {
                         if (response.status === 200) {
                             Swal.fire(
                                 'Deleted!',
-                                'Data Tag Berhasil Dihapus.',
+                                'Tag deleted successfully.',
                                 'success'
                             );
                             $('#Tabletag').DataTable().ajax.reload(null, false);
@@ -375,7 +375,7 @@ $(document).ready(function () {
                     error: function () {
                         Swal.fire(
                             'Oops!',
-                            'Terjadi kesalahan saat menghapus data.',
+                            'An error occurred while deleting data.',
                             'error'
                         );
                     }

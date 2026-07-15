@@ -141,7 +141,7 @@
                             <th>Tag</th>
                             <th>Status</th>
                             <th>Published At</th>
-                            <th>Aksi</th>
+                            <th>Actions</th>
                         </tr>
                     </thead>
                 </table>
@@ -151,7 +151,7 @@
                 <div class="modal-dialog modal-dialog-centered modal-xl">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h4 class="modal-title" id="modal-judul">Tambah Berita</h4>
+                            <h4 class="modal-title" id="modal-judul">Add News</h4>
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <form id="formNews" class="form-horizontal" enctype="multipart/form-data">
@@ -168,7 +168,7 @@
                                                     <button type="button" class="nav-link active" role="tab"
                                                         data-bs-toggle="tab" data-bs-target="#navs-top-home"
                                                         aria-controls="navs-top-home" aria-selected="true">
-                                                        Detail Berita
+                                                        News Details
                                                     </button>
                                                 </li>
                                             </ul>
@@ -179,23 +179,23 @@
                                                         <div class="col-xl-6 mb-6">
                                                             <label class="form-label" for="title">Title</label>
                                                             <input type="text" class="form-control" id="title"
-                                                                placeholder="Masukkan judul berita" name="title"
+                                                                placeholder="Enter judul berita" name="title"
                                                                 aria-label="Title" />
                                                         </div>
                                                         <div class="col-xl-6 mb-6">
                                                             <label class="form-label" for="slug">Slug</label>
                                                             <input type="text" class="form-control" id="slug"
-                                                                placeholder="slug-berita-otomatis" name="slug"
+                                                                placeholder="auto-generated-news-slug" name="slug"
                                                                 aria-label="Slug" />
                                                         </div>
                                                         <div class="col-xl-12 mb-6">
                                                             <label class="form-label" for="content">Content</label>
-                                                            <textarea class="form-control" id="content" placeholder="Masukkan konten berita..." name="content"
+                                                            <textarea class="form-control" id="content" placeholder="Enter konten berita..." name="content"
                                                                 aria-label="Content" rows="10"></textarea>
                                                         </div>
                                                         <div class="col-xl-12 mb-6">
                                                             <label class="form-label" for="summary">Summary</label>
-                                                            <textarea class="form-control" id="summary" placeholder="Masukkan ringkasan berita..." aria-label="Summary"
+                                                            <textarea class="form-control" id="summary" placeholder="Enter ringkasan berita..." aria-label="Summary"
                                                                 name="summary" rows="3"></textarea>
                                                         </div>
                                                     </div>
@@ -205,13 +205,13 @@
                                                             <input type="file" id="thumbnail" class="form-control"
                                                                 aria-label="Thumbnail" name="thumbnail"
                                                                 accept="image/*" />
-                                                            <div class="form-text">Upload gambar untuk thumbnail berita
+                                                            <div class="form-text">Upload image for news thumbnail
                                                                 (JPG, PNG, GIF)</div>
                                                         </div>
                                                         <div class="col-xl-6 mb-6">
                                                             <label class="form-label" for="status">Status</label>
                                                             <select class="form-select" id="status" name="status">
-                                                                <option value="">Pilih Status</option>
+                                                                <option value="">Select Status</option>
                                                                 <option value="draft">Draft</option>
                                                                 <option value="published">Published</option>
                                                                 <option value="archived">Archived</option>
@@ -220,10 +220,10 @@
                                                     </div>
                                                     <div class="row">
                                                         <div class="col-xl-6 mb-6">
-                                                            <label class="form-label" for="category_id">Kategori</label>
+                                                            <label class="form-label" for="category_id">Category</label>
                                                             <select id="category_id" class="form-select"
                                                                 name="category_id">
-                                                                <option value="">Pilih Kategori</option>
+                                                                <option value="">Select Category</option>
                                                                 @foreach ($kategori as $category)
                                                                     <option value="{{ $category->id }}">
                                                                         {{ $category->name }}</option>
@@ -270,7 +270,7 @@
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                                 <button type="submit" class="btn btn-primary btn-block" id="btn-simpan"
-                                    value="create">Simpan
+                                    value="create">Save
                                 </button>
                             </div>
                         </form>
@@ -312,7 +312,7 @@
             let now = new Date();
 
             // Format datetime untuk input datetime-local (YYYY-MM-DDTHH:MM)
-            let formattedDateTime = now.getFullYear() + '-' +
+            let formattedDateTeame = now.getFullYear() + '-' +
                 String(now.getMonth() + 1).padStart(2, '0') + '-' +
                 String(now.getDate()).padStart(2, '0') + 'T' +
                 String(now.getHours()).padStart(2, '0') + ':' +
@@ -321,14 +321,14 @@
             if (status === 'published') {
                 // Jika status published dan published_at masih kosong, isi dengan datetime sekarang
                 if (!$('#published_at').val()) {
-                    $('#published_at').val(formattedDateTime);
+                    $('#published_at').val(formattedDateTeame);
                 }
                 // Clear archived_at jika ada
                 $('#archived_at').val('');
             } else if (status === 'archived') {
                 // Jika status archived dan archived_at masih kosong, isi dengan datetime sekarang
                 if (!$('#archived_at').val()) {
-                    $('#archived_at').val(formattedDateTime);
+                    $('#archived_at').val(formattedDateTeame);
                 }
             } else if (status === 'draft') {
                 // Jika status draft, clear both fields

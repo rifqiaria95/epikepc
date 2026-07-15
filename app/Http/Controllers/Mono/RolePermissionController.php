@@ -80,14 +80,14 @@ class RolePermissionController extends Controller
 
             return response()->json([
                 'success' => true,
-                'message' => 'Role berhasil ditambahkan!',
+                'message' => 'Role added successfully!',
                 'role'    => $role
             ]);
         } catch (\Exception $e) {
             DB::rollBack();
             return response()->json([
                 'success' => false,
-                'message' => 'Gagal menambahkan role!',
+                'message' => 'Failed to add role!',
                 'error'   => $e->getMessage()
             ], 500);
         }
@@ -135,7 +135,7 @@ class RolePermissionController extends Controller
 
         return response()->json([
             'success' => true,
-            'message' => 'Role berhasil diperbarui!'
+            'message' => 'Role updated successfully!'
         ]);
     }
 
@@ -146,7 +146,7 @@ class RolePermissionController extends Controller
         if (!$role) {
             return response()->json([
                 'status'  => 404,
-                'message' => 'Error! Data role tidak ditemukan'
+                'message' => 'Error! Role data not found'
             ]);
         }
 
@@ -154,12 +154,12 @@ class RolePermissionController extends Controller
             $role->delete();
             return response()->json([
                 'status'  => 200,
-                'message' => 'Sukses! Data role berhasil dihapus'
+                'message' => 'Role deleted successfully'
             ]);
         } catch (\Exception $e) {
             return response()->json([
                 'status'  => 500,
-                'message' => 'Terjadi kesalahan saat menghapus data: ' . $e->getMessage()
+                'message' => 'An error occurred while deleting data: ' . $e->getMessage()
             ]);
         }
     }

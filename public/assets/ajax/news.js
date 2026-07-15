@@ -162,7 +162,7 @@ $(document).ready(function () {
               ]
             },
             {
-              text: '<i class="ti ti-plus me-0 me-sm-1 ti-xs"></i><span class="d-none d-sm-inline-block">Tambah Berita</span>',
+              text: '<i class="ti ti-plus me-0 me-sm-1 ti-xs"></i><span class="d-none d-sm-inline-block">Add News</span>',
               className: 'add-new btn btn-primary waves-effect waves-light',
               attr: {
                 'data-bs-toggle': 'modal',
@@ -294,7 +294,7 @@ $(document).ready(function () {
                         buttons += '<a href="javascript:;" class="dropdown-item" onclick="ViewData(\'' + full.id + '\')"><i class="ti ti-edit ti-md"></i>Edit</a>';
                       }
                     if (canDelete) {
-                      buttons += '<a href="javascript:;" class="dropdown-item delete-record" data-id="' + full.id + '"><i class="ti ti-trash ti-md"></i>Hapus</a>';
+                      buttons += '<a href="javascript:;" class="dropdown-item delete-record" data-id="' + full.id + '"><i class="ti ti-trash ti-md"></i>Delete</a>';
                     }
                     buttons += '</div>';
 
@@ -323,14 +323,14 @@ $(document).ready(function () {
         // Inisialisasi ulang Select2 dengan body sebagai parent
         $('#category_id').select2({
             dropdownParent: $('body'),
-            placeholder: 'Pilih Kategori',
+            placeholder: 'Select Category',
             allowClear: true,
             width: '100%'
         });
 
         $('#tags_id').select2({
             dropdownParent: $('body'),
-            placeholder: 'Pilih Tag',
+            placeholder: 'Select Tag',
             allowClear: true,
             width: '100%'
         });
@@ -380,7 +380,7 @@ $(document).ready(function () {
                     initializeSelect2();
 
                     // Handle category as array (multiple categories)
-                    setTimeout(function() {
+                    setTeameout(function() {
                         if (news.category_id && Array.isArray(news.category_id)) {
                             var categoryValue = news.category_id.length > 0 ? news.category_id[0] : '';
                             $('#category_id').val(categoryValue).trigger('change');
@@ -402,7 +402,7 @@ $(document).ready(function () {
                     }, 100);
                 } catch (e) {
                         // Fallback: set values after a short delay
-                        setTimeout(function() {
+                        setTeameout(function() {
                             try {
                                 // Handle category fallback
                                 if (news.category_id && Array.isArray(news.category_id)) {
@@ -452,11 +452,11 @@ $(document).ready(function () {
                         $('#archived_at').val('');
                     }
 
-                    $('#modal-judul').text('Edit Berita');
+                    $('#modal-judul').text('Edit News');
 
                     $('#tambahModal').modal('show');
                 } else {
-                    toastr.error('Data news tidak ditemukan.');
+                    toastr.error('News data not found.');
                 }
             },
             error: function(xhr, status, error) {
@@ -473,10 +473,10 @@ $(document).ready(function () {
     $('#formNews').on('submit', function(e){
         e.preventDefault();
 
-        // Tambahkan loader pada tombol submit
+        // Addkan loader pada tombol submit
         var submitBtn = $(this).find('button[type="submit"]');
         var originalText = submitBtn.html();
-        submitBtn.html('<i class="ti ti-loader ti-spin me-2"></i>Menyimpan...').prop('disabled', true);
+        submitBtn.html('<i class="ti ti-loader ti-spin me-2"></i>Saving...').prop('disabled', true);
 
         $('#formNews .form-control, #formNews .form-select').removeClass('is-invalid');
         $('#formNews .text-danger.small').text('');
@@ -510,9 +510,9 @@ $(document).ready(function () {
                 if (response.status === 200) {
                     $('#tambahModal').modal('hide');
                     $('#TableNews').DataTable().ajax.reload();
-                    toastr.success('Data berhasil disimpan!');
+                    toastr.success('Data saved successfully!');
                 } else {
-                    toastr.error('Terjadi kesalahan, silakan coba lagi!');
+                    toastr.error('Something went wrong, please try again.');
                 }
                 // Kembalikan tombol ke kondisi semula
                 submitBtn.html(originalText).prop('disabled', false);
@@ -525,7 +525,7 @@ $(document).ready(function () {
                       $('#' + key + '-error').text(value[0]);
                   });
               } else {
-                  toastr.error('Gagal menyimpan data!');
+                  toastr.error('Failed to save data.');
               }
               // Kembalikan tombol ke kondisi semula
               submitBtn.html(originalText).prop('disabled', false);
@@ -536,7 +536,7 @@ $(document).ready(function () {
     $('#tambahModal').on('hidden.bs.modal', function () {
         $('#formNews')[0].reset();
         $('#id').val('');
-        $('#modal-judul').text('Tambah Berita');
+        $('#modal-judul').text('Add News');
         $('#formNews .form-control, #formNews .form-select').removeClass('is-invalid');
         $('#formNews .text-danger.small').text('');
 
@@ -565,15 +565,15 @@ $(document).ready(function () {
         var id = $(this).data('id');
 
         Swal.fire({
-            title: 'Apakah Anda yakin?',
-            text: "Data news akan dihapus!",
+            title: 'Are you sure?',
+            text: "News data will be deleted!",
             icon: 'warning',
             customClass: {
                 confirmButton: 'btn btn-primary waves-effect waves-light ml-3',
                 cancelButton: 'btn btn-label-secondary waves-effect waves-light'
             },
             showCancelButton: true,
-            cancelButtonText: 'Batal',
+            cancelButtonText: 'Cancel',
             buttonsStyling: false,
             didRender: function () {
                 $('.swal2-actions').css('gap', '10px');
@@ -609,7 +609,7 @@ $(document).ready(function () {
                     error: function () {
                         Swal.fire(
                             'Oops!',
-                            'Terjadi kesalahan saat menghapus data.',
+                            'An error occurred while deleting data.',
                             'error'
                         );
                     }

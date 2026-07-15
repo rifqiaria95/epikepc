@@ -108,7 +108,7 @@ class UserController extends Controller
             );
 
             if (!$uploadResult['success']) {
-                throw new \Exception('Gagal upload avatar: ' . $uploadResult['error']);
+                throw new \Exception('Failed to upload avatar: ' . $uploadResult['error']);
             }
 
             $user->update(['avatar' => $uploadResult['path']]);
@@ -121,7 +121,7 @@ class UserController extends Controller
 
         return response()->json([
             'status' => 200,
-            'message' => 'Data user berhasil disimpan',
+            'message' => 'User saved successfully',
             'user_id' => $user->id
         ]);
     }
@@ -162,10 +162,10 @@ class UserController extends Controller
             );
 
             if (!$uploadResult['success']) {
-                throw new \Exception('Gagal upload avatar: ' . $uploadResult['error']);
+                throw new \Exception('Failed to upload avatar: ' . $uploadResult['error']);
             }
 
-            // Hapus avatar lama jika ada
+            // Delete avatar lama jika ada
             if ($user->avatar) {
                 $this->fileStorageService->deleteFile($user->avatar);
             }
@@ -175,7 +175,7 @@ class UserController extends Controller
 
         return response()->json([
             'status'  => 200,
-            'message' => 'Data user berhasil diubah'
+            'message' => 'User updated successfully'
         ]);
     }
 
@@ -198,7 +198,7 @@ class UserController extends Controller
 
         return response()->json([
             'status' => 200,
-            'message' => 'Data User Berhasil Dihapus'
+            'message' => 'User deleted successfully'
         ]);
     }
 

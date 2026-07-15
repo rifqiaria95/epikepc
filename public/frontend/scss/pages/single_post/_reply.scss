@@ -1,0 +1,105 @@
+/**
+ * Axial
+ * EPIKEPC is a universal template for factories, industry, construction, architecture, factories, mechanics, energy
+ * Exclusively on https://1.envato.market/axial-html
+ *
+ * @encoding        UTF-8
+ * @version         1.0.0
+ * @copyright       (C) 2018 - 2021 Merkulove ( https://merkulov.design/ ). All rights reserved.
+ * @license         Envato License https://1.envato.market/KYbje
+ * @contributors    Lamber Lilit (winter.rituel@gmail.com)
+ * @support         help@merkulov.design
+ **/
+// REPLY SECTION
+
+.post {
+    &_reply {
+        &-title {
+            margin-bottom: 30px;
+        }
+        &-form {
+            font-size: inherit;
+            line-height: inherit;
+            &_field:not([type="checkbox"]), &_btn {
+                width: 100%;
+            }
+            &_field:not([type="checkbox"]) {
+                padding: 15px 20px;
+                border: 1px solid $gray;
+                margin-bottom: 30px;
+            }
+            &_field {
+                font-size: inherit;
+                line-height: inherit;
+                transition: border-color .3s ease-in-out;
+                &::placeholder {
+                    color: $gray;
+                    font-size: inherit;
+                    transition: opacity .3s ease-in-out;
+                }
+                &:focus {
+                    border-color: $blackalt;
+                    &::placeholder {
+                        opacity: 0;
+                    }
+                }
+                &[data-type="message"] {
+                    min-height: 160px;
+                }
+                &[type="checkbox"] {
+                    display: none;
+                    &:checked {
+                        & + label {
+                            &:before {
+                                color: $secondary;
+                            }
+                        }
+                    }
+                    & + label {
+                        cursor: pointer;
+                        &:before {
+                            content: "\e90a";
+                            color: transparent;
+                            font-family: 'icomoon';
+                            width: 18px;
+                            height: 18px;
+                            border: 1px solid #C8C8C8;
+                            margin-right: 20px;
+                            text-align: center;
+                            display: inline-flex;
+                            justify-content: center;
+                            align-items: center;
+                            transition: color .3s ease-in-out;
+                        }
+                    }
+                }
+            }
+            &_btn {
+                margin-top: 40px;
+            }
+            label {
+                color: #162739;
+            }
+        }
+    }
+}
+
+// ------ MEDIA QUERIES
+
+@media screen and (min-width: 575.98px) {
+    .post {
+        &_reply {
+            &-form {
+                &_field {
+                    &[data-type="name"],
+                    &[data-type="email"] {
+                        width: calc(50% - 15px);
+                    }
+                }
+                &_btn {
+                    max-width: 211px;
+                }
+            }
+        }
+    }
+}

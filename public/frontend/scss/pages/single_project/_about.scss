@@ -1,0 +1,199 @@
+/**
+ * Axial
+ * EPIKEPC is a universal template for factories, industry, construction, architecture, factories, mechanics, energy
+ * Exclusively on https://1.envato.market/axial-html
+ *
+ * @encoding        UTF-8
+ * @version         1.0.0
+ * @copyright       (C) 2018 - 2021 Merkulove ( https://merkulov.design/ ). All rights reserved.
+ * @license         Envato License https://1.envato.market/KYbje
+ * @contributors    Lamber Lilit (winter.rituel@gmail.com)
+ * @support         help@merkulov.design
+ **/
+// ABOUT SECTION
+
+.about {
+    padding-bottom: 80px;
+
+    &_article {
+        &-img {
+            margin-bottom: 30px;
+
+            &_img {
+                display: block;
+                width: 100%;
+                object-fit: cover;
+                max-height: 430px;
+            }
+        }
+
+        &-header {
+            margin-bottom: 20px;
+            margin-top: 30px;
+
+            &:first-of-type {
+                margin-top: 0;
+            }
+        }
+
+        &-list {
+            margin-top: 27px;
+
+            &_item {
+                margin-bottom: 15px;
+
+                .icon {
+                    color: $secondary;
+                    margin-right: 10px;
+                }
+
+                &:last-of-type {
+                    margin-bottom: 0;
+                }
+            }
+        }
+
+        &-text, &-list {
+            color: $blackalt;
+        }
+    }
+
+    &_aside {
+        margin-top: 30px;
+
+        .wrapper {
+            height: 100%;
+            padding: 30px;
+
+            &--helper {
+                width: 100%;
+            }
+        }
+    }
+
+    &_info {
+        margin-bottom: 30px;
+
+        .wrapper {
+            border: 1px solid #C8C8C8;
+            width: 100%;
+        }
+
+        &-title {
+            margin-bottom: 30px;
+        }
+
+        &-table {
+            width: 100%;
+
+            &_row {
+                .property {
+                    color: #162739;
+                }
+
+                .value {
+                    text-transform: uppercase;
+                    font-size: 18px;
+                    line-height: 23px;
+                    @include archSemi;
+                    margin-bottom: 20px;
+                }
+
+                .property, .value {
+                    width: 100%;
+                    display: block;
+                    text-align: left;
+                }
+            }
+        }
+
+        .link {
+            margin-top: 10px;
+            @include archSemi;
+        }
+    }
+
+    &_contact {
+        order: 3;
+
+        &-title, .contact-info {
+            margin-bottom: 30px;
+        }
+    }
+}
+
+// ------ MEDIA QUERIES
+
+@media screen and (min-width: 575.98px) {
+    .about {
+        &_aside {
+            .wrapper {
+                padding: 40px;
+            }
+        }
+
+        &_info {
+            &-table {
+                &_row {
+                    padding-bottom: 35px;
+                    display: table;
+                    width: 100%;
+
+                    .property, .value {
+                        width: unset;
+                        display: table-cell;
+                        text-align: unset;
+                    }
+
+                    .value {
+                        text-align: right;
+                    }
+                }
+            }
+
+            .link {
+                margin-top: 10px;
+                @include archSemi;
+            }
+        }
+    }
+}
+
+
+@media screen and (min-width: 991.98px) {
+    .about {
+        &_article {
+            margin-right: 30px;
+            flex-shrink: 1;
+        }
+
+        &_aside {
+            margin-top: 0;
+        }
+
+        &_info, &_contact {
+            &-title {
+                margin-bottom: 40px;
+            }
+        }
+
+        &_contact {
+            .contact-info {
+                margin-bottom: 40px;
+            }
+        }
+    }
+}
+
+@media screen and (min-width: 1199.98px) {
+    .about {
+        &_article {
+            margin-right: 60px;
+        }
+
+        &_aside {
+            flex-grow: 1;
+            max-width: 410px;
+        }
+    }
+}

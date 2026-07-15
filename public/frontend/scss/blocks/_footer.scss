@@ -1,0 +1,238 @@
+/**
+ * Axial
+ * EPIKEPC is a universal template for factories, industry, construction, architecture, factories, mechanics, energy
+ * Exclusively on https://1.envato.market/axial-html
+ *
+ * @encoding        UTF-8
+ * @version         1.0.0
+ * @copyright       (C) 2018 - 2021 Merkulove ( https://merkulov.design/ ). All rights reserved.
+ * @license         Envato License https://1.envato.market/KYbje
+ * @contributors    Lamber Lilit (winter.rituel@gmail.com)
+ * @support         help@merkulov.design
+ **/
+// FOOTER COMPONENT
+
+.footer {
+    padding-top: 80px;
+    padding-bottom: 60px;
+    text-align: center;
+
+    &_main {
+        &-block {
+            margin-bottom: 40px;
+
+            &:last-of-type {
+                margin-bottom: 0;
+            }
+
+
+            &_title, .brand {
+                margin-bottom: 20px;
+            }
+
+            &_form {
+                margin-top: 20px;
+
+                .field, .btn {
+                    width: 100%;
+                }
+
+                .field {
+                    background: #fff;
+                    border: 1px solid transparent;
+                    padding: 17px 19px;
+                    transition: all .3s ease-in-out;
+                    color: $black;
+                    font-size: inherit;
+                    line-height: inherit;
+                    margin-bottom: 20px;
+
+                    &::placeholder {
+                        color: $gray;
+                        transition: opacity .3s ease-in-out;
+                        font-size: 16px;
+                        line-height: 23px;
+                    }
+
+                    &:focus {
+                        border-color: $accent;
+
+                        &::placeholder {
+                            opacity: 0;
+                        }
+                    }
+
+                    &.error {
+                        border-color: red;
+                    }
+                }
+
+                .btn {
+                    padding: 18px 20px;
+
+                    &:hover, &:focus {
+                        background: lighten($accent, 10%);
+                    }
+                }
+            }
+
+            .group-wrapper {
+                &:first-of-type {
+                    margin-bottom: 15px;
+                }
+
+                .icon {
+                    color: $accent;
+                    font-size: 18px;
+                    margin-right: 10px;
+                    margin-top: 5px;
+                }
+
+                .group {
+                    text-align: left;
+                    line-height: 23px;
+
+                    a, span {
+                        display: inline-block;
+                    }
+
+                    a {
+                        transition: opacity .3s ease-in-out;
+
+                        &:hover, &:focus {
+                            opacity: .8;
+                        }
+                    }
+                }
+            }
+
+            &_nav {
+                .list-item {
+                    margin-bottom: 13px;
+
+                    &:last-of-type {
+                        margin-bottom: 0;
+                    }
+
+                    .link {
+                        @include archSemi;
+                        font-size: 14px;
+                        line-height: 22px;
+                        text-transform: uppercase;
+                        letter-spacing: 1px;
+                        position: relative;
+
+                        &::before {
+                            content: '\e902';
+                            font-family: "icomoon";
+                            position: absolute;
+                            font-size: 14px;
+                            color: $accent;
+                            left: -15px;
+                            top: 50%;
+                            transform: translateY(-50%);
+                            transition: opacity .3s ease-in-out;
+                            opacity: 0;
+                        }
+
+                        &:hover, &:focus {
+                            &:before {
+                                opacity: 1;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    &_secondary {
+        border-top: 1px solid $gray;
+        margin-top: 60px;
+        padding-top: 60px;
+
+        &-copyright {
+            text-align: center;
+            margin: 0 0 40px;
+
+            span {
+                display: inline-block;
+            }
+        }
+    }
+}
+
+@media screen and (min-width: 575.98px) {
+    .footer {
+        &_main {
+            &-block {
+                &_subtitle {
+                    width: 100%;
+                    margin: 0 auto;
+                    &--newsletter {
+                        max-width: 330px;
+                    }
+                    &--brand {
+                        max-width: 314px;
+                    }
+                }
+
+                &_form {
+                    max-width: 330px;
+                    width: 100%;
+                    margin: 20px auto 0;
+                    .field {
+                        margin-bottom: 0;
+                    }
+
+                    .btn {
+                        width: auto;
+                    }
+                }
+
+            }
+        }
+    }
+}
+
+@media screen and (min-width: 767.98px) {
+    .footer {
+        text-align: left;
+        &_main {
+            padding-bottom: 80px;
+            &-block {
+                margin: 0;
+                &_subtitle {
+                    &--brand {
+                        max-width: 314px;
+                        margin: 0 auto 30px 0;
+                    }
+                }
+            }
+        }
+        &_secondary {
+            margin: 0;
+            padding-top: 60px;
+            &-copyright {
+                max-width: 350px;
+                text-align: left;
+                margin: 0;
+            }
+
+        }
+    }
+}
+
+@media screen and (min-width: 1199.98px) {
+    .footer {
+        &_main {
+            &-block {
+                &_subtitle {
+                    &--brand {
+                        margin: 0 auto 0 0;
+                    }
+                }
+            }
+        }
+    }
+}

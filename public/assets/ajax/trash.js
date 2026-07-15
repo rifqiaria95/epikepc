@@ -36,14 +36,14 @@ $(document).ready(function () {
         let kategori = $(this).data('kategori');
 
         Swal.fire({
-            title: 'Kembalikan data?',
+            title: 'Restore data?',
             text: "Data akan dikembalikan!",
             icon: 'info',
             showCancelButton: true,
             confirmButtonColor: '#28a745',
             cancelButtonColor: '#d33',
             confirmButtonText: 'Ya, restore!',
-            cancelButtonText: 'Batal'
+            cancelButtonText: 'Cancel'
         }).then((result) => {
             if (result.isConfirmed) {
                 $.ajax({
@@ -59,7 +59,7 @@ $(document).ready(function () {
                         $('#deletedTable').DataTable().ajax.reload();
                     },
                     error: function () {
-                        Swal.fire('Oops!', 'Terjadi kesalahan.', 'error');
+                        Swal.fire('Oops!', 'An error occurred.', 'error');
                     }
                 });
             }
@@ -71,14 +71,14 @@ $(document).ready(function () {
         let kategori = $(this).data('kategori');
 
         Swal.fire({
-            title: 'Hapus data?',
-            text: "Data akan dihapus!",
+            title: 'Delete data?',
+            text: "Data will be deleted!",
             icon: 'info',
             showCancelButton: true,
             confirmButtonColor: '#dc3545',
             cancelButtonColor: '#d33',
             confirmButtonText: 'Ya, hapus!',
-            cancelButtonText: 'Batal'
+            cancelButtonText: 'Cancel'
         }).then((result) => {
             if (result.isConfirmed) {
                 $.ajax({
@@ -94,7 +94,7 @@ $(document).ready(function () {
                         $('#deletedTable').DataTable().ajax.reload();
                     },
                     error: function () {
-                        Swal.fire('Oops!', 'Terjadi kesalahan.', 'error');
+                        Swal.fire('Oops!', 'An error occurred.', 'error');
                     }
                 });
             }

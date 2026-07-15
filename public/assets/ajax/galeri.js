@@ -11,7 +11,7 @@ $(document).ready(function () {
 });
 
 $(document).ready(function () {
-    $('#TableGaleri').DataTable({
+    $('#TableGallery').DataTable({
         dom:
             '<"row me-2"' +
             '<"col-md-2"<"me-3"l>>' +
@@ -168,7 +168,7 @@ $(document).ready(function () {
               ]
             },
             {
-              text: '<i class="ti ti-plus me-0 me-sm-1 ti-xs"></i><span class="d-none d-sm-inline-block">Tambah Galeri</span>',
+              text: '<i class="ti ti-plus me-0 me-sm-1 ti-xs"></i><span class="d-none d-sm-inline-block">Add Gallery</span>',
               className: 'add-new btn btn-primary waves-effect waves-light',
               attr: {
                 'data-bs-toggle': 'modal',
@@ -279,10 +279,10 @@ $(document).ready(function () {
                   buttons += '<a href="javascript:;" class="btn btn-icon btn-text-secondary waves-effect waves-light rounded-pill dropdown-toggle hide-arrow" data-bs-toggle="dropdown"><i class="ti ti-dots-vertical ti-md"></i></a>';
                     buttons += '<div class="dropdown-menu dropdown-menu-end m-0">';
                     if (canEdit) {
-                      buttons += '<a href="javascript:;" class="dropdown-item" onclick="editGaleri(' + full.id + ')"><i class="ti ti-edit ti-md"></i>Edit</a>';
+                      buttons += '<a href="javascript:;" class="dropdown-item" onclick="editGallery(' + full.id + ')"><i class="ti ti-edit ti-md"></i>Edit</a>';
                     }
                     if (canDelete) {
-                      buttons += '<a href="javascript:;" class="dropdown-item delete-record" data-id="' + full.id + '"><i class="ti ti-trash ti-md"></i>Hapus</a>';
+                      buttons += '<a href="javascript:;" class="dropdown-item delete-record" data-id="' + full.id + '"><i class="ti ti-trash ti-md"></i>Delete</a>';
                     }
                     buttons += '</div>';
 
@@ -302,18 +302,18 @@ $(document).ready(function () {
         dropdownParent: $('#tambahModal')
     });
 
-    $('#formGaleri').on('submit', function(e){
+    $('#formGallery').on('submit', function(e){
         e.preventDefault();
 
         // Show loader on button
         let submitBtn = $('#btn-simpan');
         let originalText = submitBtn.html();
-        submitBtn.html('<i class="ti ti-loader ti-spin me-2"></i>Menyimpan...');
+        submitBtn.html('<i class="ti ti-loader ti-spin me-2"></i>Saving...');
         submitBtn.prop('disabled', true);
 
         // Clear previous errors
-        $('#formGaleri .form-control, #formGaleri .form-select').removeClass('is-invalid');
-        $('#formGaleri .text-danger.small').text('');
+        $('#formGallery .form-control, #formGallery .form-select').removeClass('is-invalid');
+        $('#formGallery .text-danger.small').text('');
         setTinyMCEError(false);
 
         // Trigger TinyMCE to save content to textarea
@@ -344,18 +344,18 @@ $(document).ready(function () {
             success: function(response){
                 if (response.status === 200) {
                     $('#tambahModal').modal('hide');
-                    $('#TableGaleri').DataTable().ajax.reload();
-                    toastr.success('Data berhasil disimpan!');
+                    $('#TableGallery').DataTable().ajax.reload();
+                    toastr.success('Data saved successfully!');
                 } else {
-                    toastr.error('Terjadi kesalahan, silakan coba lagi!');
+                    toastr.error('Something went wrong, please try again.');
                 }
             },
             error: function (xhr) {
               if (xhr.status === 422) {
                   let errors = xhr.responseJSON.errors;
                   // Clear previous errors
-                  $('#formGaleri .form-control, #formGaleri .form-select').removeClass('is-invalid');
-                  $('#formGaleri .text-danger.small').text('');
+                  $('#formGallery .form-control, #formGallery .form-select').removeClass('is-invalid');
+                  $('#formGallery .text-danger.small').text('');
                   setTinyMCEError(false);
 
                   $.each(errors, function (key, value) {
@@ -368,7 +368,7 @@ $(document).ready(function () {
                       }
                   });
               } else {
-                  toastr.error('Gagal menyimpan data!');
+                  toastr.error('Failed to save data.');
               }
             },
             complete: function() {
@@ -380,13 +380,13 @@ $(document).ready(function () {
     });
 
     $('#tambahModal').on('hidden.bs.modal', function () {
-        $('#formGaleri')[0].reset();
+        $('#formGallery')[0].reset();
         $('#id').val('');
-        $('#modal-judul').text('Tambah Galeri');
+        $('#modal-judul').text('Add Gallery');
 
         // Clear errors
-        $('#formGaleri .form-control, #formGaleri .form-select').removeClass('is-invalid');
-        $('#formGaleri .text-danger.small').text('');
+        $('#formGallery .form-control, #formGallery .form-select').removeClass('is-invalid');
+        $('#formGallery .text-danger.small').text('');
         setTinyMCEError(false);
 
         // Clear TinyMCE content
@@ -396,10 +396,10 @@ $(document).ready(function () {
     });
 });
 
-function editGaleri(id) {
+function editGallery(id) {
     // Clear previous errors
-    $('#formGaleri .form-control, #formGaleri .form-select').removeClass('is-invalid');
-    $('#formGaleri .text-danger.small').text('');
+    $('#formGallery .form-control, #formGallery .form-select').removeClass('is-invalid');
+    $('#formGallery .text-danger.small').text('');
     setTinyMCEError(false);
 
     $.ajax({
@@ -419,14 +419,14 @@ function editGaleri(id) {
                     $('#description').val(galeri.description);
                 }
 
-                $('#modal-judul').text('Edit Galeri');
+                $('#modal-judul').text('Edit Gallery');
                 $('#tambahModal').modal('show');
             } else {
-                toastr.error('Data galeri tidak ditemukan.');
+                toastr.error('Gallery data not found.');
             }
         },
         error: function() {
-            toastr.error('Terjadi kesalahan saat mengambil data.');
+            toastr.error('An error occurred while fetching data.');
         }
     });
 }
@@ -435,15 +435,15 @@ $(document).on('click', '.delete-record', function () {
     let id = $(this).data('id');
 
     Swal.fire({
-        title: 'Apakah Anda yakin?',
-        text: "Data galeri akan dihapus!",
+        title: 'Are you sure?',
+        text: "Gallery data will be deleted!",
         icon: 'warning',
         customClass: {
             confirmButton: 'btn btn-primary waves-effect waves-light ml-3',
             cancelButton: 'btn btn-label-secondary waves-effect waves-light'
         },
         showCancelButton: true,
-        cancelButtonText: 'Batal',
+        cancelButtonText: 'Cancel',
         buttonsStyling: false,
         didRender: function () {
             $('.swal2-actions').css('gap', '10px');
@@ -467,7 +467,7 @@ $(document).on('click', '.delete-record', function () {
                               confirmButton: 'btn btn-success waves-effect waves-light'
                             }
                         });
-                        $('#TableGaleri').DataTable().ajax.reload();
+                        $('#TableGallery').DataTable().ajax.reload();
                     } else {
                         Swal.fire(
                             'Error!',
@@ -479,7 +479,7 @@ $(document).on('click', '.delete-record', function () {
                 error: function () {
                     Swal.fire(
                         'Oops!',
-                        'Terjadi kesalahan saat menghapus data.',
+                        'An error occurred while deleting data.',
                         'error'
                     );
                 }

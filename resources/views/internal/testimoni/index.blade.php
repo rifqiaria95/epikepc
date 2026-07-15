@@ -108,11 +108,11 @@
                         <tr>
                             <th>#</th>
                             <th>Gambar</th>
-                            <th>Nama</th>
+                            <th>Name</th>
                             <th>Testimoni</th>
-                            <th>Instansi</th>
+                            <th>Institution</th>
                             <th>Created By</th>
-                            <th>Aksi</th>
+                            <th>Actions</th>
                         </tr>
                     </thead>
                 </table>
@@ -122,7 +122,7 @@
                 <div class="modal-dialog modal-dialog-centered modal-xl">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h4 class="modal-title" id="modal-judul">Tambah Testimoni</h4>
+                            <h4 class="modal-title" id="modal-judul">Add Testimoni</h4>
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <form id="formTestimoni" class="form-horizontal" enctype="multipart/form-data">
@@ -148,22 +148,22 @@
                                                     role="tabpanel">
                                                     <div class="row">
                                                         <div class="col-xl-6 mb-6">
-                                                            <label class="form-label" for="nama">Nama</label>
+                                                            <label class="form-label" for="nama">Name</label>
                                                             <input type="text" class="form-control" id="nama"
-                                                                placeholder="Masukkan Subjek" name="nama"
-                                                                aria-label="Nama" />
+                                                                placeholder="Enter Subjek" name="nama"
+                                                                aria-label="Name" />
                                                             <div class="text-danger small" id="nama-error"></div>
                                                         </div>
                                                         <div class="col-xl-6 mb-6">
-                                                            <label class="form-label" for="instansi">Instansi</label>
+                                                            <label class="form-label" for="instansi">Institution</label>
                                                             <input type="text" class="form-control" id="instansi"
-                                                                placeholder="Masukkan institusi" aria-label="Instansi"
+                                                                placeholder="Enter institusi" aria-label="Institution"
                                                                 name="instansi" />
                                                             <div class="text-danger small" id="instansi-error"></div>
                                                         </div>
                                                         <div class="col-xl-12 mb-6">
                                                             <label class="form-label" for="testimoni">Testimoni</label>
-                                                            <textarea class="form-control" id="testimoni" placeholder="Masukkan testimoni" name="testimoni"
+                                                            <textarea class="form-control" id="testimoni" placeholder="Enter testimoni" name="testimoni"
                                                                 aria-label="Testimoni" rows="10"></textarea>
                                                             <div class="text-danger small" id="testimoni-error"></div>
                                                         </div>
@@ -171,7 +171,7 @@
                                                             <label class="form-label" for="gambar">Gambar</label>
                                                             <input type="file" id="gambar" class="form-control"
                                                                 aria-label="Gambar" name="gambar" accept="image/*" />
-                                                            <div class="form-text">Upload gambar untuk gambar (JPG, PNG,
+                                                            <div class="form-text">Upload image (JPG, PNG,
                                                                 GIF)</div>
                                                             <div class="text-danger small" id="gambar-error"></div>
                                                         </div>
@@ -185,7 +185,7 @@
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                                 <button type="submit" class="btn btn-primary btn-block" id="btn-simpan"
-                                    value="create">Simpan
+                                    value="create">Save
                                 </button>
                             </div>
                         </form>

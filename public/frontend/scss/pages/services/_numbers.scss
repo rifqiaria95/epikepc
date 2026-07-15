@@ -1,0 +1,81 @@
+/**
+ * Axial
+ * EPIKEPC is a universal template for factories, industry, construction, architecture, factories, mechanics, energy
+ * Exclusively on https://1.envato.market/axial-html
+ *
+ * @encoding        UTF-8
+ * @version         1.0.0
+ * @copyright       (C) 2018 - 2021 Merkulove ( https://merkulov.design/ ). All rights reserved.
+ * @license         Envato License https://1.envato.market/KYbje
+ * @contributors    Lamber Lilit (winter.rituel@gmail.com)
+ * @support         help@merkulov.design
+ **/
+// NUMBERS SECTION
+
+.numbers {
+    &_header {
+        .text {
+            margin: 30px 0 0;
+        }
+    }
+    &_list {
+        &-item {
+            margin-bottom: 25px;
+            &:last-of-type {
+                margin-bottom: 0;
+            }
+            .number {
+                margin-bottom: 10px;
+                @include archExtra;
+            }
+            .label {
+                font-weight: 500;
+            }
+        }
+    }
+    &_video {
+        max-height: 600px;
+        aspect-ratio: 13 / 6;
+        overflow: hidden;
+        position: relative;
+        margin-top: 50px;
+        &-thumb {
+            width: 100%;
+            display: block;
+            object-fit: cover;
+        }
+        .btn-play {
+            border-color: $accent;
+            i {
+                color: $accent;
+            }
+            &:hover,
+            &:focus {
+                border-color: $primary;
+                i {
+                    color: $primary;
+                }
+            }
+        }
+    }
+}
+
+// ------ MEDIA QUERIES
+
+@media screen and (min-width: 991.98px){
+    .numbers {
+        &_list {
+            margin-top: 0;
+            &-item {
+                &[data-order="3"],
+                &[data-order="4"] {
+                    margin-bottom: 0;
+                }
+                .number {
+                    font-size: 58px;
+                    line-height: 60px;
+                }
+            }
+        }
+    }
+}

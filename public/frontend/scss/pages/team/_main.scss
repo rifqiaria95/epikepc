@@ -1,0 +1,99 @@
+/**
+ * Axial
+ * EPIKEPC is a universal template for factories, industry, construction, architecture, factories, mechanics, energy
+ * Exclusively on https://1.envato.market/axial-html
+ *
+ * @encoding        UTF-8
+ * @version         1.0.0
+ * @copyright       (C) 2018 - 2021 Merkulove ( https://merkulov.design/ ). All rights reserved.
+ * @license         Envato License https://1.envato.market/KYbje
+ * @contributors    Lamber Lilit (winter.rituel@gmail.com)
+ * @support         help@merkulov.design
+ **/
+// TEAM CONTENT
+
+.team {
+
+    &_list {
+        &-item {
+            margin-top: 30px;
+            &[data-order="1"] {
+            margin-top: 0;
+        }
+            .wrapper {
+                height: 100%;
+            }
+
+            .img-wrapper {
+                img {
+                    width: 100%;
+                    display: block;
+                    object-fit: cover;
+                }
+            }
+
+            .text-wrapper {
+                border: 1px solid #C8C8C8;
+                border-top: none;
+                padding: 30px;
+                text-align: center;
+                overflow: hidden;
+                width: 100%;
+                word-break: break-all;
+
+                .name, .position {
+                    display: block;
+                }
+
+                .name {
+                    @include archBold;
+                    margin-bottom: 10px;
+                }
+
+                .position {
+                    font-size: 18px;
+                    line-height: 23px;
+                    @include archSemi;
+                    color: $secondary;
+                }
+
+                .text {
+                    margin: 15px 0 20px;
+                }
+            }
+        }
+    }
+
+}
+
+// ------ MEDIA QUERIES
+
+@media screen and (min-width: 767.98px) {
+    .team {
+        &_list {
+            margin: 0 -15px;
+            &-item {
+                padding: 0 15px;
+                &[data-order="2"] {
+                    margin-top: 0;
+                }
+                .text-wrapper {
+                    text-align: left;
+                }
+            }
+        }
+    }
+}
+
+
+@media screen and (min-width: 1199.98px) {
+    .team {
+        &_list {
+            &-item {
+                &[data-order="3"] {
+                    margin-top: 0;
+                }
+            }
+        }
+    }
+}

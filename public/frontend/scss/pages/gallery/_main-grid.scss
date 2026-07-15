@@ -1,0 +1,107 @@
+/**
+ * Axial
+ * EPIKEPC is a universal template for factories, industry, construction, architecture, factories, mechanics, energy
+ * Exclusively on https://1.envato.market/axial-html
+ *
+ * @encoding        UTF-8
+ * @version         1.0.0
+ * @copyright       (C) 2018 - 2021 Merkulove ( https://merkulov.design/ ). All rights reserved.
+ * @license         Envato License https://1.envato.market/KYbje
+ * @contributors    Lamber Lilit (winter.rituel@gmail.com)
+ * @support         help@merkulov.design
+ **/
+// GALLERY GRID
+
+.gallery {
+    &_grid {
+        grid-template-columns: 1fr;
+        grid-auto-rows: 1fr;
+        grid-gap: 30px;
+
+        &-item {
+            max-height: 470px;
+
+            &_trigger {
+                width: 100%;
+                height: 100%;
+                display: inline-block;
+                position: relative;
+
+                .overlay {
+                    position: absolute;
+                    width: 100%;
+                    height: 100%;
+                    top: 0;
+                    left: 0;
+                    padding: 20px;
+                    color: #fff;
+                    background: rgba(0, 31, 63, 0.5);
+                    opacity: 0;
+                    transition: opacity .3s ease-in-out;
+
+                    &_caption {
+                        @include archBold;
+                    }
+
+                    &_label {
+                        text-transform: uppercase;
+                        color: $accent;
+                        margin-top: 20px;
+                        @include archSemi;
+                        font-size: 18px;
+                        line-height: 23px;
+                    }
+
+                }
+
+                &:hover .overlay {
+                    opacity: 1;
+                }
+            }
+
+            &_img {
+                display: block;
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+            }
+        }
+    }
+}
+
+// ------ MEDIA QUERIES
+
+@media screen and (min-width: 575.98px) {
+    .gallery {
+        &_grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+}
+
+@media screen and (min-width: 767.98px) {
+    .gallery {
+
+        &_grid {
+            grid-template-columns: repeat(3, 1fr);
+        }
+    }
+}
+
+@media screen and (min-width: 991.98px) {
+    .gallery {
+
+        &_grid {
+
+            &-item {
+                &_trigger {
+
+                    .overlay {
+                        padding: 40px;
+                    }
+
+                }
+            }
+        }
+    }
+}

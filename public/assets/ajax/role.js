@@ -162,7 +162,7 @@ $(document).ready(function () {
               ]
             },
             {
-                text: '<i class="ti ti-plus me-0 me-sm-1 ti-xs"></i><span class="d-none d-sm-inline-block">Tambah Role</span>',
+                text: '<i class="ti ti-plus me-0 me-sm-1 ti-xs"></i><span class="d-none d-sm-inline-block">Add Role</span>',
                 className: 'add-new btn btn-primary waves-effect waves-light',
                 action: function () {  // Gunakan event action agar tetap bisa dipanggil dalam DataTables
                     ViewData(0);
@@ -206,7 +206,7 @@ $(document).ready(function () {
                         buttons += '<a href="javascript:;" class="dropdown-item" onclick="ViewData(' + full.id + ')"><i class="ti ti-edit ti-md"></i>Edit</a>';
                     }
                     if (canDelete) {
-                        buttons += '<a href="javascript:;" class="dropdown-item delete-record" data-id="' + full.id + '"><i class="ti ti-trash ti-md"></i>Hapus</a>';
+                        buttons += '<a href="javascript:;" class="dropdown-item delete-record" data-id="' + full.id + '"><i class="ti ti-trash ti-md"></i>Delete</a>';
                     }
                     buttons += '</div>';
 
@@ -266,7 +266,7 @@ $(document).ready(function () {
         
         // Event listener untuk perubahan halaman DataTable
         $('#permissionsTable').on('page.dt', function () {
-            setTimeout(function() {
+            setTeameout(function() {
                 restoreCheckboxState();
                 updateSelectAllState();
             }, 100);
@@ -274,14 +274,14 @@ $(document).ready(function () {
         
         // Event listener untuk pencarian DataTable  
         $('#permissionsTable').on('search.dt', function () {
-            setTimeout(function() {
+            setTeameout(function() {
                 restoreCheckboxState();
                 updateSelectAllState();
             }, 100);
         });
         
         // Reset Select All checkbox saat modal dibuka
-        setTimeout(function() {
+        setTeameout(function() {
             updateSelectAllState();
         }, 100);
     });
@@ -390,7 +390,7 @@ $(document).ready(function () {
             // Tidak ada yang di-check
             $('#selectAll').prop('checked', false).prop('indeterminate', false);
         } else if (checkedCount === totalCheckboxes) {
-            // Semua di-check
+            // All di-check
             $('#selectAll').prop('checked', true).prop('indeterminate', false);
         } else {
             // Sebagian di-check (indeterminate state)
@@ -398,13 +398,13 @@ $(document).ready(function () {
         }
     }
 
-    // Fungsi untuk menampilkan data ke dalam modal (Tambah/Edit)
+    // Fungsi untuk menampilkan data ke dalam modal (Add/Edit)
     window.ViewData = function (id) {
         $('#tambahModal').modal('show');
 
         if (id === 0) {
-            // Mode Tambah
-            $('#modal-judul').text('Tambah Role');
+            // Mode Add
+            $('#modal-judul').text('Add Role');
             $('#formRole')[0].reset();
             $('#btn-update').val('create');
             
@@ -426,11 +426,11 @@ $(document).ready(function () {
                 success: function (response) {
 
                     if (!response.role) {
-                        toastr.error("Role tidak ditemukan.");
+                        toastr.error("Role not found.");
                         return;
                     }
 
-                    // Set Nama Role
+                    // Set Role Name
                     $("#id").val(response.role.id);
                     $("#name").val(response.role.name);
 
@@ -442,7 +442,7 @@ $(document).ready(function () {
 
                     // Centang checkbox sesuai permission yang dimiliki role
                     response.rolePermissions.forEach(function(permissionId) {
-                        // Tambahkan ke selectedPermissions Set
+                        // Addkan ke selectedPermissions Set
                         selectedPermissions.add(permissionId.toString());
                         $("input.permission-checkbox[value='" + permissionId + "']").prop("checked", true);
                     });
@@ -456,26 +456,26 @@ $(document).ready(function () {
                     }
 
                     // Update Select All checkbox berdasarkan permission yang dipilih  
-                    setTimeout(function() {
+                    setTeameout(function() {
                         updateSelectAllState();
                     }, 200);
 
                 },
                 error: function (xhr) {
-                    toastr.error("Gagal mengambil data role.");
+                    toastr.error("Failed to fetch role data.");
                 }
             });
         }
     }
 
-    // Submit Form: Tambah & Update
+    // Submit Form: Add & Update
     $(document).ready(function () {
         $("#formRole").on("submit", function (e) {
             e.preventDefault();
 
             let formData = new FormData();
             
-            // Tambahkan field form biasa
+            // Addkan field form biasa
             formData.append("name", $("#name").val());
             
             let id = $("#id").val();
@@ -483,10 +483,10 @@ $(document).ready(function () {
                 formData.append("id", id);
             }
             
-            // Tambahkan CSRF token
+            // Addkan CSRF token
             formData.append("_token", $('meta[name="csrf-token"]').attr('content'));
             
-            // Tambahkan semua permission yang dipilih dari selectedPermissions Set
+            // Addkan semua permission yang dipilih dari selectedPermissions Set
             selectedPermissions.forEach(function(permissionId) {
                 formData.append("permissions[]", permissionId);
             });
@@ -539,15 +539,15 @@ $(document).ready(function () {
         let id = $(this).data('id');
 
         Swal.fire({
-            title: 'Apakah Anda yakin?',
-            text: "Data role akan dihapus!",
+            title: 'Are you sure?',
+            text: "Role data will be deleted!",
             icon: 'warning',
             customClass: {
                 confirmButton: 'btn btn-primary waves-effect waves-light',
                 cancelButton: 'btn btn-label-secondary waves-effect waves-light'
             },
             showCancelButton: true,
-            cancelButtonText: 'Batal',
+            cancelButtonText: 'Cancel',
             buttonsStyling: false
         }).then((result) => {
             if (result.isConfirmed) {
@@ -577,7 +577,7 @@ $(document).ready(function () {
                         }
                     },
                     error: function (xhr) {
-                        let errorMessage = 'Terjadi kesalahan saat menghapus data.';
+                        let errorMessage = 'An error occurred while deleting data.';
                         if (xhr.responseJSON && xhr.responseJSON.message) {
                             errorMessage = xhr.responseJSON.message;
                         }

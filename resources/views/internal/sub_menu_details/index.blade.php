@@ -104,13 +104,13 @@
             <thead class="border-top">
             <tr>
                 <th>#</th>
-                <th>Nama Menu</th>
+                <th>Menu Name</th>
                 <th>Route</th>
                 <th>Posisi</th>
                 <th>Menu Group</th>
                 <th>Menu Detail</th>
                 <th>Status</th>
-                <th>Aksi</th>
+                <th>Actions</th>
             </tr>
             </thead>
         </table>
@@ -133,13 +133,13 @@
                 <form id="formSubMenuDetails" name="formSubMenuDetails" enctype="multipart/form-data">
                     @csrf
                     <div class="mb-6">
-                        <label class="form-label" for="nama_menu">Nama Menu</label>
-                        <input type="text" class="form-control" id="nama_menu" name="name" placeholder="Masukkan nama menu" required>
+                        <label class="form-label" for="nama_menu">Menu Name</label>
+                        <input type="text" class="form-control" id="nama_menu" name="name" placeholder="Enter nama menu" required>
                     </div>
                     <div class="mb-6">
                         <label class="form-label" for="menu_group_id">Menu Group</label>
                         <select id="menu_group_id" class="select2 form-select" name="menu_group_id">
-                            <option selected disabled>Pilih Menu Group</option>
+                            <option selected disabled>Select Menu Group</option>
                             @foreach ($menuGroup as $mg)
                                 <option value="{{ $mg->id }}">{{ $mg->name }}</option>
                             @endforeach
@@ -148,7 +148,7 @@
                     <div class="mb-6">
                         <label class="form-label" for="menu_detail_id">Menu Detail</label>
                         <select id="menu_detail_id" class="select2 form-select" name="menu_detail_id">
-                            <option selected disabled>Pilih Menu Detail</option>
+                            <option selected disabled>Select Menu Detail</option>
                             @foreach ($menuDetail as $md)
                                 <option value="{{ $md->id }}">{{ $md->name }}</option>
                             @endforeach
@@ -166,7 +166,7 @@
                         <fieldset class="form-group">
                             <label class="form-label">Status</label>
                             <select class="select form-select" name="status" id="status" required>
-                                <option>Pilih Status</option>
+                                <option>Select Status</option>
                                 <option value="0">Inactive</option>
                                 <option value="1">Active</option>
                             </select>

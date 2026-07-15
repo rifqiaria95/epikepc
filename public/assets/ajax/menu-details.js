@@ -15,12 +15,12 @@ $(document).ready(function () {
         dom:
             '<"row me-2"' +
             '<"col-md-2"<"me-3"l>>' +
-            // Tambahkan flex dan gap agar search dan button terpisah rapi
+            // Addkan flex dan gap agar search dan button terpisah rapi
             '<"col-md-10"' +
                 '<"dt-action-buttons d-flex align-items-center justify-content-end flex-md-row flex-column mb-3 mb-md-3 gap-2"' +
                     // Search box
                     'f' +
-                    // Button Hapus Terpilih
+                    // Button Delete Terpilih
                     '<"ms-md-3 me-2" B>' +
                 '>' +
             '>' +
@@ -36,14 +36,14 @@ $(document).ready(function () {
         },
         buttons: [
             {
-                text: '<i class="ti ti-trash me-0 me-sm-1 ti-xs"></i><span class="d-none d-sm-inline-block">Hapus Terpilih</span>',
+                text: '<i class="ti ti-trash me-0 me-sm-1 ti-xs"></i><span class="d-none d-sm-inline-block">Delete Terpilih</span>',
                 className: 'btn btn-danger waves-effect waves-light delete-selected me-3',
                 action: function () {
                     deleteSelectedRecords();
                 }
             },
             {
-                text: '<i class="ti ti-plus me-0 me-sm-1 ti-xs"></i><span class="d-none d-sm-inline-block">Tambah Menu</span>',
+                text: '<i class="ti ti-plus me-0 me-sm-1 ti-xs"></i><span class="d-none d-sm-inline-block">Add Menu</span>',
                 className: 'add-new btn btn-primary waves-effect waves-light ms-2',
                 attr: {
                     'data-bs-toggle': 'offcanvas',
@@ -120,7 +120,7 @@ $(document).ready(function () {
                       buttons += '<a href="javascript:;" class="dropdown-item" onclick="ViewData(' + full.id + ')"><i class="ti ti-edit ti-md"></i>Edit</a>';
                     }
                     if (canDelete) {
-                      buttons += '<a href="javascript:;" class="dropdown-item delete-record" data-id="' + full.id + '"><i class="ti ti-trash ti-md"></i>Hapus</a>';
+                      buttons += '<a href="javascript:;" class="dropdown-item delete-record" data-id="' + full.id + '"><i class="ti ti-trash ti-md"></i>Delete</a>';
                     }
                     buttons += '</div>';
 
@@ -155,10 +155,10 @@ $(document).ready(function () {
         
         if (checkedCount > 0) {
             deleteButton.addClass('show');
-            deleteButton.find('span').text(`Hapus Terpilih (${checkedCount})`);
+            deleteButton.find('span').text(`Delete Terpilih (${checkedCount})`);
         } else {
             deleteButton.removeClass('show');
-            deleteButton.find('span').text('Hapus Terpilih');
+            deleteButton.find('span').text('Delete Terpilih');
         }
     }
 
@@ -173,8 +173,8 @@ $(document).ready(function () {
         $('#offcanvasAddMenu').offcanvas('show');
 
         if (id === 0) {
-            // Mode Insert (Tambah Data)
-            $('#modal-judul').text('Tambah Item');
+            // Mode Insert (Add Data)
+            $('#modal-judul').text('Add Item');
             $('#formMenuDetails')[0].reset();
             $('#btn-simpan').val('create');
         } else {
@@ -202,20 +202,20 @@ $(document).ready(function () {
                     }
                 },
                 error: function () {
-                    toastr.error('Gagal mengambil data!');
+                    toastr.error('Failed to fetch data!');
                 }
             });
         }
     };
 
-    // Submit Form: Tambah & Update
+    // Submit Form: Add & Update
     $("#formMenuDetails").submit(function (e) {
         e.preventDefault();
 
-        // Tambahkan loader pada tombol submit
+        // Addkan loader pada tombol submit
         var submitBtn = $(this).find('button[type="submit"]');
         var originalText = submitBtn.html();
-        submitBtn.html('<i class="ti ti-loader ti-spin me-2"></i>Menyimpan...').prop('disabled', true);
+        submitBtn.html('<i class="ti ti-loader ti-spin me-2"></i>Saving...').prop('disabled', true);
 
         let formData = new FormData(this);
         let url      = selectedId ? `admin/menu-detail/update/${selectedId}` : "admin/menu-detail/store";
@@ -234,7 +234,7 @@ $(document).ready(function () {
                     $("#formMenuDetails")[0].reset();
                     $("#offcanvasAddMenu").offcanvas("hide");
 
-                    // Reset tombol ke mode Tambah
+                    // Reset tombol ke mode Add
                     $(".data-submit").text("Submit").removeAttr("id");
                     selectedId = null;
                 }
@@ -242,7 +242,7 @@ $(document).ready(function () {
                 submitBtn.html(originalText).prop('disabled', false);
             },
             error: function () {
-                toastr.error('Gagal menyimpan data!');
+                toastr.error('Failed to save data.');
                 // Kembalikan tombol ke kondisi semula
                 submitBtn.html(originalText).prop('disabled', false);
             }
@@ -253,14 +253,14 @@ $(document).ready(function () {
         let id = $(this).data('id');
 
         Swal.fire({
-            title: 'Apakah Anda yakin?',
-            text: "Data menu_details akan dihapus!",
+            title: 'Are you sure?',
+            text: "Menu details data will be deleted!",
             icon: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#d33',
             cancelButtonColor: '#3085d6',
             confirmButtonText: 'Ya, hapus!',
-            cancelButtonText: 'Batal'
+            cancelButtonText: 'Cancel'
         }).then((result) => {
             if (result.isConfirmed) {
                 $.ajax({
@@ -279,7 +279,7 @@ $(document).ready(function () {
                         }
                     },
                     error: function () {
-                        toastr.error('Terjadi kesalahan saat menghapus data.');
+                        toastr.error('An error occurred while deleting data.');
                     }
                 });
             }
@@ -300,7 +300,7 @@ $(document).ready(function () {
             Swal.fire({
                 icon: 'warning',
                 title: 'Peringatan!',
-                text: 'Silakan pilih data yang akan dihapus terlebih dahulu.',
+                text: 'Please select data to delete first.',
                 customClass: {
                     confirmButton: 'btn btn-warning waves-effect waves-light'
                 }
@@ -309,7 +309,7 @@ $(document).ready(function () {
         }
 
         Swal.fire({
-            title: 'Apakah Anda yakin?',
+            title: 'Are you sure?',
             text: `Anda akan menghapus ${selectedIds.length} data menu detail yang dipilih!`,
             icon: 'warning',
             customClass: {
@@ -317,8 +317,8 @@ $(document).ready(function () {
                 cancelButton: 'btn btn-label-secondary waves-effect waves-light'
             },
             showCancelButton: true,
-            cancelButtonText: 'Batal',
-            confirmButtonText: 'Ya, Hapus!',
+            cancelButtonText: 'Cancel',
+            confirmButtonText: 'Ya, Delete!',
             buttonsStyling: false,
             didRender: function () {
                 $('.swal2-actions').css('gap', '10px');
@@ -346,7 +346,7 @@ $(document).ready(function () {
                         }
                     },
                     error: function (xhr) {
-                        let errorMessage = 'Terjadi kesalahan saat menghapus data.';
+                        let errorMessage = 'An error occurred while deleting data.';
                         if (xhr.responseJSON && xhr.responseJSON.message) {
                             errorMessage = xhr.responseJSON.message;
                         }

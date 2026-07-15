@@ -33,12 +33,12 @@ class TestEmailVerification extends Command
         $user = User::where('email', $email)->first();
         
         if (!$user) {
-            $this->error("User dengan email {$email} tidak ditemukan!");
+            $this->error("User with email {$email} not found!");
             return 1;
         }
         
         if ($user->hasVerifiedEmail()) {
-            $this->info("User {$user->name} sudah memverifikasi email.");
+            $this->info("User {$user->name} has already verified email.");
             
             $confirm = $this->confirm('Apakah Anda ingin tetap mengirim email test?');
             if (!$confirm) {
@@ -53,10 +53,10 @@ class TestEmailVerification extends Command
             $this->info("✅ Email verification berhasil dikirim ke: {$user->email}");
             $this->info("👤 Nama: {$user->name}");
             $this->line("");
-            $this->info("📧 Silakan cek email Anda (atau log mail jika menggunakan log driver)");
+            $this->info("📧 Please check your email (or mail log if using log driver)");
             
         } catch (\Exception $e) {
-            $this->error("❌ Gagal mengirim email: " . $e->getMessage());
+            $this->error("❌ Failed to send email: " . $e->getMessage());
             return 1;
         }
         

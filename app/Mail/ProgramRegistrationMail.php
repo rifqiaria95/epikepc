@@ -33,7 +33,7 @@ class ProgramRegistrationMail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Notifikasi Pendaftaran Program - ' . $this->program->name,
+            subject: 'Registration Notification Program - ' . $this->program->name,
         );
     }
 

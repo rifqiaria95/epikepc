@@ -2,238 +2,226 @@
 
 namespace App\Http\Controllers\Mono;
 
-use Illuminate\Http\Request;
-use App\Models\About;
-use App\Http\Requests\AboutRequest;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\File;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\CompanyJourneyRequest;
+use App\Http\Requests\CompanyMilestoneRequest;
+use App\Models\CompanyJourney;
+use App\Models\CompanyMilestone;
 use App\Services\FileStorageService;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class AboutController extends Controller
 {
-    protected $fileStorageService;
-
-    public function __construct(FileStorageService $fileStorageService)
+    public function __construct(protected FileStorageService $fileStorageService)
     {
-        $this->fileStorageService = $fileStorageService;
     }
 
     public function index(Request $request)
     {
-        // Menampilkan Data about
-        $about = About::withoutTrashed()->with(['creator', 'updater', 'deleter']);
-
-        // Jika request adalah ajax, maka return data dalam bentuk json
-        if ($request->ajax()) {
-            return datatables()->of($about)
-                ->addColumn('created_by', function ($data) {
-                    return optional($data->creator)->name ?? '-';
-                })
-                ->addColumn('updated_by', function ($data) {
-                    return optional($data->updater)->name ?? '-';
-                })
-                ->addColumn('deleted_by', function ($data) {
-                    return optional($data->deleter)->name ?? '-';
-                })
-                ->editColumn('image', function ($data) {
-                    // Kembalikan URL gambar saja; rendering <img> ditangani di frontend about.js
-                    if ($data->image) {
-                        return $this->fileStorageService->getFileUrl($data->image);
-                    }
-                    return null;
-                })
-                ->addColumn('aksi', function ($data) {
-                    $button = '';
-                    return $button;
-                })
-                ->rawColumns(['created_by', 'updated_by', 'deleted_by', 'aksi'])
-                ->addIndexColumn()
-                ->toJson();
+        if ($request->ajax() && $request->get('type') === 'milestones') {
+            return $this->milestonesDatatable();
         }
 
-        // Jika request bukan ajax, maka return view
-        return view('internal/about.index', compact(['about']));
+        $journey = CompanyJourney::query()->firstOrCreate(
+            ['id' => 1],
+            CompanyJourney::defaults()
+        );
+
+        if ($journey->video_poster) {
+            $journey->poster_url = $this->fileStorageService->getFileUrl($journey->video_poster);
+        }
+
+        $baseQuery = CompanyMilestone::query()->withoutTrashed();
+
+        return view('internal.about.index', [
+            'journey'           => $journey,
+            'totalMilestones'   => (clone $baseQuery)->count(),
+            'activeMilestones'  => (clone $baseQuery)->where('is_active', true)->count(),
+            'inactiveMilestones'=> (clone $baseQuery)->where('is_active', false)->count(),
+            'recentMilestones'  => (clone $baseQuery)->where('created_at', '>=', now()->subDays(30))->count(),
+        ]);
     }
 
-    // Menambahkan data about
-    public function store(AboutRequest $request)
+    public function updateJourney(CompanyJourneyRequest $request): JsonResponse
     {
-        $validatedData = $request->validated();
+        $uploadedPath = null;
 
         try {
             DB::beginTransaction();
 
-            // Upload image ke object storage jika ada, jika tidak ada maka throw error
-            if ($request->hasFile('image')) {
+            $journey = CompanyJourney::query()->firstOrCreate(
+                ['id' => 1],
+                CompanyJourney::defaults()
+            );
+
+            $validated = $request->validated();
+            $validated['is_active'] = $request->boolean('is_active', true);
+
+            if ($request->hasFile('video_poster')) {
                 $uploadResult = $this->fileStorageService->uploadImage(
-                    $request->file('image'),
-                    'about/images'
+                    $request->file('video_poster'),
+                    'company-journey/posters'
                 );
 
-                if (!$uploadResult['success']) {
-                    throw new \Exception('Gagal upload image: ' . $uploadResult['error']);
+                if (! $uploadResult['success']) {
+                    throw new \RuntimeException('Failed to upload poster: ' . $uploadResult['error']);
                 }
 
-                $validatedData['image'] = $uploadResult['path'];
-            }
-
-            // Set created_by berdasarkan user yang sedang login, jika tidak ada maka throw error
-            $validatedData['created_by'] = auth()->id();
-
-            // Create About
-            $about = About::create($validatedData);
-
-            DB::commit();
-
-            return response()->json([
-                'status' => 200,
-                'message' => 'Data about berhasil disimpan!',
-                'data' => $about
-            ]);
-        } catch (\Exception $e) {
-            DB::rollBack();
-
-            // Hapus file yang sudah diupload jika ada error, jika tidak ada maka throw error
-            if (isset($uploadResult) && $uploadResult['success']) {
-                $this->fileStorageService->deleteFile($uploadResult['path']);
-            }
-
-            return response()->json([
-                'status' => 500,
-                'message' => 'Terjadi kesalahan pada server.',
-                'error' => $e->getMessage()
-            ], 500);
-        }
-    }
-
-    // Mengedit data about
-    public function edit($id)
-    {
-        try {
-            $about = About::with(['creator', 'updater', 'deleter'])->where('id', $id)->first();
-
-            if (!$about) {
-                return response()->json([
-                    'status' => 404,
-                    'message' => 'Data about tidak ditemukan'
-                ], 404);
-            }
-
-            // Format data untuk frontend, jika tidak ada maka throw error
-            $aboutData = $about->toArray();
-
-            return response()->json([
-                'success' => true,
-                'about' => $aboutData
-            ]);
-        } catch (\Exception $e) {
-            return response()->json([
-                'status' => 500,
-                'message' => 'Terjadi kesalahan pada server.',
-                'error' => $e->getMessage()
-            ], 500);
-        }
-    }
-
-    // Mengubah data about
-    public function update($id, AboutRequest $request)
-    {
-        try {
-            DB::beginTransaction();
-
-            $about = About::findOrFail($id);
-            $validatedData = $request->validated();
-            $oldImage = $about->image;
-
-            // Upload image baru ke object storage jika ada, jika tidak ada maka throw error
-            if ($request->hasFile('image')) {
-                $uploadResult = $this->fileStorageService->uploadImage(
-                    $request->file('image'),
-                    'about/images'
-                );
-
-                if (!$uploadResult['success']) {
-                    throw new \Exception('Gagal upload image: ' . $uploadResult['error']);
+                if ($journey->video_poster) {
+                    $this->fileStorageService->deleteFile($journey->video_poster);
                 }
 
-                $validatedData['image'] = $uploadResult['path'];
-
-                // Hapus image lama jika ada, jika tidak ada maka throw error
-                if ($oldImage) {
-                    $this->fileStorageService->deleteFile($oldImage);
-                }
+                $validated['video_poster'] = $uploadResult['path'];
+                $uploadedPath = $uploadResult['path'];
             }
 
-            // Set updated_by berdasarkan user yang sedang login, jika tidak ada maka throw error
-            $validatedData['updated_by'] = auth()->id();
+            $validated['updated_by'] = Auth::id();
 
-            // Update about
-            $about->update($validatedData);
+            if (! $journey->exists || ! $journey->created_by) {
+                $validated['created_by'] = Auth::id();
+            }
+
+            $journey->fill($validated);
+            $journey->save();
 
             DB::commit();
 
             return response()->json([
                 'status'  => 200,
-                'message' => 'Data about berhasil diubah'
+                'message' => 'Company Journey settings saved successfully.',
+                'data'    => $journey->fresh(),
             ]);
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             DB::rollBack();
 
-            // Hapus file yang sudah diupload jika ada error, jika tidak ada maka throw error
-            if (isset($uploadResult) && $uploadResult['success']) {
-                $this->fileStorageService->deleteFile($uploadResult['path']);
+            if ($uploadedPath) {
+                $this->fileStorageService->deleteFile($uploadedPath);
             }
 
-            return response()->json([
-                'status' => 500,
-                'message' => 'Terjadi kesalahan pada server.',
-                'error' => $e->getMessage()
-            ], 500);
+            return $this->errorResponse($e);
         }
     }
 
-    // Menghapus data about
-    public function destroy($id)
+    public function storeMilestone(CompanyMilestoneRequest $request): JsonResponse
+    {
+        return $this->persistMilestone($request);
+    }
+
+    public function editMilestone(int $id): JsonResponse
+    {
+        try {
+            $milestone = CompanyMilestone::query()
+                ->withoutTrashed()
+                ->select(['id', 'year', 'title', 'description', 'sort_order', 'is_active'])
+                ->findOrFail($id);
+
+            return response()->json([
+                'success'   => true,
+                'milestone' => $milestone,
+            ]);
+        } catch (\Throwable $e) {
+            return $this->errorResponse($e);
+        }
+    }
+
+    public function updateMilestone(int $id, CompanyMilestoneRequest $request): JsonResponse
+    {
+        return $this->persistMilestone($request, $id);
+    }
+
+    public function destroyMilestone(int $id): JsonResponse
     {
         try {
             DB::beginTransaction();
 
-            $about = About::where('id', $id)->first();
-
-            if (!$about) {
-                return response()->json([
-                    'status' => 404,
-                    'errors' => 'Data About Tidak Ditemukan'
-                ]);
-            }
-
-            // Hapus image dari object storage jika ada, jika tidak ada maka throw error
-            if ($about->image) {
-                $this->fileStorageService->deleteFile($about->image);
-            }
-
-            // Set deleted_by berdasarkan user yang sedang login, jika tidak ada maka throw error
-            $about->deleted_by = auth()->id();
-            $about->save();
-
-            // Hapus data (Soft Delete), jika tidak ada maka throw error
-            $about->delete();
+            $milestone = CompanyMilestone::query()->withoutTrashed()->findOrFail($id);
+            $milestone->deleted_by = Auth::id();
+            $milestone->save();
+            $milestone->delete();
 
             DB::commit();
 
             return response()->json([
-                'status' => 200,
-                'message' => 'Data About Berhasil Dihapus'
+                'status'  => 200,
+                'message' => 'Milestone deleted successfully.',
             ]);
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             DB::rollBack();
 
-            return response()->json([
-                'status' => 500,
-                'message' => 'Terjadi kesalahan pada server.',
-                'error' => $e->getMessage()
-            ], 500);
+            return $this->errorResponse($e);
         }
+    }
+
+    private function milestonesDatatable(): JsonResponse
+    {
+        $query = CompanyMilestone::query()
+            ->withoutTrashed()
+            ->select(['id', 'year', 'title', 'description', 'sort_order', 'is_active', 'created_at'])
+            ->with(['creator:id,name']);
+
+        return datatables()->of($query)
+            ->addColumn('created_by_name', fn ($row) => $row->creator?->name ?? '-')
+            ->editColumn('is_active', function ($row) {
+                return $row->is_active
+                    ? '<span class="badge bg-label-success">Active</span>'
+                    : '<span class="badge bg-label-secondary">Inactive</span>';
+            })
+            ->editColumn('description', fn ($row) => str($row->description)->limit(80))
+            ->addColumn('aksi', fn () => '')
+            ->rawColumns(['is_active', 'aksi'])
+            ->addIndexColumn()
+            ->toJson();
+    }
+
+    private function persistMilestone(CompanyMilestoneRequest $request, ?int $id = null): JsonResponse
+    {
+        try {
+            DB::beginTransaction();
+
+            $milestone = $id
+                ? CompanyMilestone::query()->withoutTrashed()->findOrFail($id)
+                : new CompanyMilestone();
+
+            $validated = $request->validated();
+            $validated['is_active'] = $request->boolean('is_active', true);
+
+            if ($milestone->exists) {
+                $validated['updated_by'] = Auth::id();
+                $milestone->update($validated);
+                $message = 'Milestone updated successfully.';
+            } else {
+                if (! isset($validated['sort_order'])) {
+                    $validated['sort_order'] = (int) CompanyMilestone::query()->max('sort_order') + 1;
+                }
+
+                $validated['created_by'] = Auth::id();
+                $milestone = CompanyMilestone::create($validated);
+                $message = 'Milestone saved successfully.';
+            }
+
+            DB::commit();
+
+            return response()->json([
+                'status'  => 200,
+                'message' => $message,
+                'data'    => $milestone,
+            ]);
+        } catch (\Throwable $e) {
+            DB::rollBack();
+
+            return $this->errorResponse($e);
+        }
+    }
+
+    private function errorResponse(\Throwable $e): JsonResponse
+    {
+        return response()->json([
+            'status'  => 500,
+            'message' => 'A server error occurred.',
+            'error'   => $e->getMessage(),
+        ], 500);
     }
 }

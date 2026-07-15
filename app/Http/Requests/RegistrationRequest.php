@@ -118,15 +118,15 @@ class RegistrationRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'name.required' => 'Nama lengkap wajib diisi.',
-            'name.max' => 'Nama lengkap maksimal 255 karakter.',
+            'name.required' => 'Full name is required.',
+            'name.max' => 'Full name may not exceed 255 characters.',
             
-            'email.required' => 'Email wajib diisi.',
+            'email.required' => 'Email is required.',
             'email.email' => 'Format email tidak valid.',
             'email.unique' => 'Email sudah terdaftar.',
             'email.max' => 'Email maksimal 255 karakter.',
             
-            'password.required' => 'Password wajib diisi.',
+            'password.required' => 'Password is required.',
             'password.min' => 'Password minimal 8 karakter.',
             'password.confirmed' => 'Konfirmasi password tidak cocok.',
             
@@ -155,8 +155,8 @@ class RegistrationRequest extends FormRequest
             'penghasilan.numeric' => 'Penghasilan harus berupa angka.',
             'penghasilan.min' => 'Penghasilan tidak boleh negatif.',
             
-            'alamat.required' => 'Alamat wajib diisi.',
-            'alamat.max' => 'Alamat maksimal 500 karakter.',
+            'alamat.required' => 'Address wajib diisi.',
+            'alamat.max' => 'Address maksimal 500 karakter.',
             
             'rt.required' => 'RT wajib diisi.',
             'rt.max' => 'RT maksimal 3 karakter.',
@@ -167,19 +167,19 @@ class RegistrationRequest extends FormRequest
             'rw.regex' => 'RW hanya boleh berisi angka.',
             
             'id_provinsi.required' => 'Provinsi wajib dipilih.',
-            'id_kota.required' => 'Kota/Kabupaten wajib dipilih.',
+            'id_kota.required' => 'Kota/Regencies wajib dipilih.',
             'id_kecamatan.required' => 'Kecamatan wajib dipilih.',
-            'id_kelurahan.required' => 'Kelurahan/Desa wajib dipilih.',
+            'id_kelurahan.required' => 'Villages/Desa wajib dipilih.',
             
             'foto_ktp.image' => 'File foto KTP harus berupa gambar.',
-            'foto_ktp.mimes' => 'Format foto KTP harus jpg, jpeg, atau png.',
+            'foto_ktp.mimes' => 'Format foto KTP harus jpg, jpeg, or png.',
             'foto_ktp.max' => 'Ukuran foto KTP maksimal 2MB.',
             
             'foto_kk.image' => 'File foto Kartu Keluarga harus berupa gambar.',
-            'foto_kk.mimes' => 'Format foto Kartu Keluarga harus jpg, jpeg, atau png.',
+            'foto_kk.mimes' => 'Format foto Kartu Keluarga harus jpg, jpeg, or png.',
             'foto_kk.max' => 'Ukuran foto Kartu Keluarga maksimal 2MB.',
             
-            'active.in' => 'Status aktif harus 0 atau 1.'
+            'active.in' => 'Status aktif harus 0 or 1.'
         ];
     }
 }

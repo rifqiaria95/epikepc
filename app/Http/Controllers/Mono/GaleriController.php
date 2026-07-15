@@ -7,232 +7,191 @@ use App\Http\Requests\GaleriRequest;
 use App\Models\Galeri;
 use App\Models\KategoriGaleri;
 use App\Services\FileStorageService;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class GaleriController extends Controller
 {
-    protected $fileStorageService;
-
-    public function __construct(FileStorageService $fileStorageService)
+    public function __construct(protected FileStorageService $fileStorageService)
     {
-        $this->fileStorageService = $fileStorageService;
     }
 
     public function index(Request $request)
     {
-        // Menampilkan Data galeri
-        $galeri = Galeri::withoutTrashed()->with(['createdBy', 'updatedBy', 'deletedBy', 'kategoriGaleri']);
-        $kategoriGaleri = KategoriGaleri::select('id', 'name')->get();
+        $kategoriGaleri = KategoriGaleri::query()
+            ->select(['id', 'name'])
+            ->orderBy('name')
+            ->get();
 
         if ($request->ajax()) {
-            return datatables()->of($galeri)
-                ->addColumn('created_by', function ($data) {
-                    return optional($data->createdBy)->name ?? '-';
-                })
-                ->addColumn('updated_by', function ($data) {
-                    return optional($data->updatedBy)->name ?? '-';
-                })
-                ->addColumn('deleted_by', function ($data) {
-                    return optional($data->deletedBy)->name ?? '-';
-                })
-                ->addColumn('kategori_galeri', function ($data) {
-                    return optional($data->kategoriGaleri)->name ?? '-';
-                })
-                ->editColumn('image', function ($data) {
-                    // Return HTML img tag untuk thumbnail
-                    if ($data->image) {
-                        $imageUrl = $this->fileStorageService->getFileUrl($data->image);
-                        return '<img src="' . $imageUrl . '" alt="Gallery Image" style="width: 50px; height: 50px; object-fit: cover; border-radius: 4px;">';
+            $query = Galeri::query()
+                ->withoutTrashed()
+                ->select([
+                    'id', 'title', 'subtitle', 'description', 'image',
+                    'kategori_galeri_id', 'created_by', 'updated_by', 'created_at',
+                ])
+                ->with([
+                    'createdBy:id,name',
+                    'kategoriGaleri:id,name',
+                ]);
+
+            return datatables()->of($query)
+                ->addColumn('created_by', fn ($row) => $row->createdBy?->name ?? '-')
+                ->addColumn('kategori_galeri', fn ($row) => $row->kategoriGaleri?->name ?? '-')
+                ->editColumn('image', function ($row) {
+                    if (! $row->image) {
+                        return null;
                     }
-                    return '<span class="text-muted">No Image</span>';
+
+                    return $this->fileStorageService->getFileUrl($row->image);
                 })
-                ->addColumn('aksi', function ($data) {
-                    $button = '';
-                    return $button;
-                })
-                ->rawColumns(['created_by', 'updated_by', 'deleted_by', 'image', 'aksi', 'kategori_galeri'])
+                ->addColumn('aksi', fn () => '')
+                ->rawColumns(['aksi'])
                 ->addIndexColumn()
                 ->toJson();
         }
 
-        return view('internal/galeri.index', compact(['galeri', 'kategoriGaleri']));
+        $baseQuery = Galeri::query()->withoutTrashed();
+
+        return view('internal.galeri.index', [
+            'kategoriGaleri'   => $kategoriGaleri,
+            'totalGallery'     => (clone $baseQuery)->count(),
+            'withCategory'     => (clone $baseQuery)->whereNotNull('kategori_galeri_id')->count(),
+            'withImage'        => (clone $baseQuery)->whereNotNull('image')->where('image', '!=', '')->count(),
+            'recentGallery'    => (clone $baseQuery)->where('created_at', '>=', now()->subDays(30))->count(),
+        ]);
     }
 
-    public function store(GaleriRequest $request)
+    public function store(GaleriRequest $request): JsonResponse
     {
-        $validatedData = $request->validated();
-
-        try {
-            DB::beginTransaction();
-
-            // Upload image ke object storage jika ada
-            if ($request->hasFile('image')) {
-                $uploadResult = $this->fileStorageService->uploadImage(
-                    $request->file('image'),
-                    'galeri/images'
-                );
-
-                if (!$uploadResult['success']) {
-                    throw new \Exception('Gagal upload image: ' . $uploadResult['error']);
-                }
-
-                $validatedData['image'] = $uploadResult['path'];
-            }
-
-            // Set created_by berdasarkan user yang sedang login
-            $validatedData['created_by'] = auth()->id();
-
-            // Create Galeri
-            $galeri = Galeri::create($validatedData);
-
-            DB::commit();
-
-            return response()->json([
-                'status' => 200,
-                'message' => 'Data galeri berhasil disimpan!',
-                'data' => $galeri
-            ]);
-        } catch (\Exception $e) {
-            DB::rollBack();
-
-            // Hapus file yang sudah diupload jika ada error
-            if (isset($uploadResult) && $uploadResult['success']) {
-                $this->fileStorageService->deleteFile($uploadResult['path']);
-            }
-
-            return response()->json([
-                'status' => 500,
-                'message' => 'Terjadi kesalahan pada server.',
-                'error' => $e->getMessage()
-            ], 500);
-        }
+        return $this->persist($request);
     }
 
-    public function edit($id)
+    public function edit(string $id): JsonResponse
     {
         try {
-            $galeri = Galeri::with(['createdBy', 'updatedBy', 'deletedBy'])->where('id', $id)->first();
+            $galeri = Galeri::query()
+                ->withoutTrashed()
+                ->select([
+                    'id', 'title', 'subtitle', 'description', 'image',
+                    'kategori_galeri_id', 'created_by', 'updated_by',
+                ])
+                ->with(['kategoriGaleri:id,name'])
+                ->findOrFail($id);
 
-            if (!$galeri) {
-                return response()->json([
-                    'status' => 404,
-                    'message' => 'Data galeri tidak ditemukan'
-                ], 404);
-            }
-
-            // Format data untuk frontend
-            $galeriData = $galeri->toArray();
+            $data = $galeri->toArray();
+            $data['image_url'] = $galeri->image
+                ? $this->fileStorageService->getFileUrl($galeri->image)
+                : null;
 
             return response()->json([
                 'success' => true,
-                'galeri' => $galeriData
+                'galeri'  => $data,
             ]);
-        } catch (\Exception $e) {
-            return response()->json([
-                'status' => 500,
-                'message' => 'Terjadi kesalahan pada server.',
-                'error' => $e->getMessage()
-            ], 500);
+        } catch (\Throwable $e) {
+            return $this->errorResponse($e);
         }
     }
 
-    public function update($id, GaleriRequest $request)
+    public function update(string $id, GaleriRequest $request): JsonResponse
+    {
+        return $this->persist($request, $id);
+    }
+
+    public function destroy(string $id): JsonResponse
     {
         try {
             DB::beginTransaction();
 
-            $galeri = Galeri::findOrFail($id);
-            $validatedData = $request->validated();
-            $oldImage = $galeri->image;
+            $galeri = Galeri::query()->withoutTrashed()->findOrFail($id);
 
-            // Upload image baru ke object storage jika ada
-            if ($request->hasFile('image')) {
-                $uploadResult = $this->fileStorageService->uploadImage(
-                    $request->file('image'),
-                    'galeri/images'
-                );
-
-                if (!$uploadResult['success']) {
-                    throw new \Exception('Gagal upload image: ' . $uploadResult['error']);
-                }
-
-                $validatedData['image'] = $uploadResult['path'];
-
-                // Hapus image lama jika ada
-                if ($oldImage) {
-                    $this->fileStorageService->deleteFile($oldImage);
-                }
-            }
-
-            // Set updated_by berdasarkan user yang sedang login
-            $validatedData['updated_by'] = auth()->id();
-
-            // Update galeri
-            $galeri->update($validatedData);
-
-            DB::commit();
-
-            return response()->json([
-                'status'  => 200,
-                'message' => 'Data galeri berhasil diubah'
-            ]);
-        } catch (\Exception $e) {
-            DB::rollBack();
-
-            // Hapus file yang sudah diupload jika ada error
-            if (isset($uploadResult) && $uploadResult['success']) {
-                $this->fileStorageService->deleteFile($uploadResult['path']);
-            }
-
-            return response()->json([
-                'status' => 500,
-                'message' => 'Terjadi kesalahan pada server.',
-                'error' => $e->getMessage()
-            ], 500);
-        }
-    }
-
-    public function destroy($id)
-    {
-        try {
-            DB::beginTransaction();
-
-            $galeri = Galeri::where('id', $id)->first();
-
-            if (!$galeri) {
-                return response()->json([
-                    'status' => 404,
-                    'errors' => 'Data Galeri Tidak Ditemukan'
-                ]);
-            }
-
-            // Hapus image dari object storage jika ada
             if ($galeri->image) {
                 $this->fileStorageService->deleteFile($galeri->image);
             }
 
-            // Set deleted_by berdasarkan user yang sedang login
             $galeri->deleted_by = auth()->id();
             $galeri->save();
-
-            // Hapus data (Soft Delete)
             $galeri->delete();
 
             DB::commit();
 
             return response()->json([
-                'status' => 200,
-                'message' => 'Data Galeri Berhasil Dihapus'
+                'status'  => 200,
+                'message' => 'Gallery item deleted successfully.',
             ]);
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             DB::rollBack();
 
-            return response()->json([
-                'status' => 500,
-                'message' => 'Terjadi kesalahan pada server.',
-                'error' => $e->getMessage()
-            ], 500);
+            return $this->errorResponse($e);
         }
+    }
+
+    private function persist(GaleriRequest $request, ?string $id = null): JsonResponse
+    {
+        $uploadedPath = null;
+
+        try {
+            DB::beginTransaction();
+
+            $galeri = $id
+                ? Galeri::query()->withoutTrashed()->findOrFail($id)
+                : new Galeri();
+
+            $validated = $request->validated();
+
+            if ($request->hasFile('image')) {
+                $uploadResult = $this->fileStorageService->uploadImage(
+                    $request->file('image'),
+                    'galeri/images'
+                );
+
+                if (! $uploadResult['success']) {
+                    throw new \RuntimeException('Failed to upload image: ' . $uploadResult['error']);
+                }
+
+                if ($galeri->exists && $galeri->image) {
+                    $this->fileStorageService->deleteFile($galeri->image);
+                }
+
+                $validated['image'] = $uploadResult['path'];
+                $uploadedPath = $uploadResult['path'];
+            }
+
+            if ($galeri->exists) {
+                $validated['updated_by'] = auth()->id();
+                $galeri->update($validated);
+                $message = 'Gallery item updated successfully.';
+            } else {
+                $validated['created_by'] = auth()->id();
+                $galeri = Galeri::create($validated);
+                $message = 'Gallery item saved successfully.';
+            }
+
+            DB::commit();
+
+            return response()->json([
+                'status'  => 200,
+                'message' => $message,
+                'data'    => $galeri,
+            ]);
+        } catch (\Throwable $e) {
+            DB::rollBack();
+
+            if ($uploadedPath) {
+                $this->fileStorageService->deleteFile($uploadedPath);
+            }
+
+            return $this->errorResponse($e);
+        }
+    }
+
+    private function errorResponse(\Throwable $e): JsonResponse
+    {
+        return response()->json([
+            'status'  => 500,
+            'message' => 'A server error occurred.',
+            'error'   => $e->getMessage(),
+        ], 500);
     }
 }

@@ -21,12 +21,12 @@ class VerifyEmailController extends Controller
         
         // Verifikasi hash
         if (! hash_equals((string) $request->route('hash'), sha1($user->getEmailForVerification()))) {
-            return redirect()->route('login')->with('error', 'Link verifikasi tidak valid atau sudah kedaluwarsa.');
+            return redirect()->route('login')->with('error', 'Verification link is invalid or has expired.');
         }
 
         // Cek apakah sudah diverifikasi
         if ($user->hasVerifiedEmail()) {
-            return redirect()->route('login')->with('message', 'Email sudah diverifikasi sebelumnya. Silakan login.');
+            return redirect()->route('login')->with('message', 'Email was already verified. Please sign in.');
         }
 
         // Verifikasi email
@@ -39,9 +39,9 @@ class VerifyEmailController extends Controller
             // Login user setelah verifikasi berhasil
             Auth::login($user);
             
-            return redirect()->route('dashboard')->with('success', 'Email berhasil diverifikasi! Selamat datang, ' . $user->name . '!');
+            return redirect()->route('dashboard')->with('success', 'Email verified successfully! Welcome, ' . $user->name . '!');
         }
 
-        return redirect()->route('login')->with('error', 'Gagal memverifikasi email. Silakan coba lagi.');
+        return redirect()->route('login')->with('error', 'Failed to verify email. Please try again.');
     }
 }

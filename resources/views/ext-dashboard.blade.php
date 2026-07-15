@@ -60,7 +60,7 @@
                     <div class="d-flex justify-content-between align-items-center">
                         <div>
                             <div>
-                                <h5 class="mb-1">Time Spendings</h5>
+                                <h5 class="mb-1">Teame Spendings</h5>
                                 <p class="mb-9">Weekly report</p>
                             </div>
                             <div class="time-spending-chart">
@@ -495,7 +495,7 @@
                             <th></th>
                             <th></th>
                             <th>Course Name</th>
-                            <th>Time</th>
+                            <th>Teame</th>
                             <th class="w-25">Progress</th>
                             <th class="w-25">Status</th>
                         </tr>

@@ -19,6 +19,42 @@ class NewsController extends Controller
     }
 
     /**
+     * Display news listing page
+     */
+    public function index()
+    {
+        $posts = News::withoutTrashed()
+            ->where('status', 'published')
+            ->with(['user', 'categories'])
+            ->orderByDesc('published_at')
+            ->paginate(6);
+
+        $posts->getCollection()->each(function ($article) {
+            if ($article->thumbnail) {
+                try {
+                    $article->thumbnail_url = $this->fileStorageService->getFileUrl($article->thumbnail);
+                } catch (\Exception $e) {
+                    $article->thumbnail_url = asset('frontend/img/placeholder.jpg');
+                }
+            } else {
+                $article->thumbnail_url = asset('frontend/img/placeholder.jpg');
+            }
+        });
+
+        $recentPosts = News::withoutTrashed()
+            ->where('status', 'published')
+            ->orderByDesc('published_at')
+            ->take(3)
+            ->get();
+
+        $categories = Kategori::withCount(['news' => function ($query) {
+            $query->where('status', 'published');
+        }])->get();
+
+        return view('frontend.news.index', compact('posts', 'recentPosts', 'categories'));
+    }
+
+    /**
      * Display news detail page
      *
      * @param string $slug

@@ -1,0 +1,123 @@
+/**
+ * Axial
+ * EPIKEPC is a universal template for factories, industry, construction, architecture, factories, mechanics, energy
+ * Exclusively on https://1.envato.market/axial-html
+ *
+ * @encoding        UTF-8
+ * @version         1.0.0
+ * @copyright       (C) 2018 - 2021 Merkulove ( https://merkulov.design/ ). All rights reserved.
+ * @license         Envato License https://1.envato.market/KYbje
+ * @contributors    Lamber Lilit (winter.rituel@gmail.com)
+ * @support         help@merkulov.design
+ **/
+// SKILLS SECTION
+
+.skills {
+    &_img {
+        aspect-ratio: 13 / 14;
+        max-height: 700px;
+        overflow: hidden;
+        position: relative;
+        margin-top: 40px;
+        flex-grow: 1;
+        &-img {
+            display: block;
+            object-fit: cover;
+            width: 100%;
+        }
+    }
+    &_list {
+        &-item {
+            margin-bottom: 30px;
+            &:last-of-type {
+                margin-bottom: 0;
+            }
+            .label {
+                text-transform: uppercase;
+                @include archSemi;
+                display: block;
+                margin-bottom: 10px;
+                font-size: 18px;
+                line-height: 23px;
+            }
+            .progressLine {
+                svg {
+                    max-height: 15px;
+                }
+                .progress-text {
+                    top: -35px;
+                }
+            }
+        }
+    }
+}
+
+// ------ MEDIA QUERIES
+
+@media screen and (min-width: 575.98px) {
+    .skills {
+        &_list {
+            &-item {
+                .label {
+                    margin-bottom: 0;
+                }
+                .progressLine {
+                    padding-right: 70px;
+                    flex-grow: 1;
+                    max-width: 339px;
+                    .progress-text {
+                        top: 50%;
+                        transform: translateY(-50%);
+                    }
+                }
+            }
+        }
+    }
+}
+
+@media screen and (min-width: 767.98px) {
+    .skills {
+        &_list {
+            &-item {
+                .progressLine {
+                    max-width: 460px;
+                }
+            }
+        }
+    }
+}
+
+@media screen and (min-width: 991.98px) {
+    .skills {
+        &_list {
+            &-item {
+                .progressLine {
+                    max-width: 700px;
+                }
+            }
+        }
+    }
+}
+
+@media screen and (min-width: 1199.98px) {
+    .skills {
+        &_list {
+            &-item {
+                .progressLine {
+                    max-width: 339px;
+                }
+            }
+        }
+        &_img {
+            max-width: 645px;
+            order: -1;
+            flex-shrink: 1;
+            margin-top: 0;
+        }
+        .wrapper--skills {
+            flex-grow: 1;
+            max-width: 494px;
+            margin-left: 80px;
+        }
+    }
+}

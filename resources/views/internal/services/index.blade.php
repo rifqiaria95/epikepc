@@ -58,7 +58,7 @@
             overflow: hidden;
         }
 
-        /* TinyMCE z-index fix untuk modal */
+        /* TinyMCE z-index fix for modal */
         .tox-tinymce,
         .tox-tinymce-aux,
         .tox-menu,
@@ -86,7 +86,7 @@
             border-color: #b4bdc6 !important;
         }
 
-        /* Swal2 z-index fix untuk muncul di atas modal */
+        /* Swal2 z-index fix to appear above modal */
         .swal2-container {
             z-index: 10010 !important;
         }
@@ -108,7 +108,7 @@
             z-index: 10009 !important;
         }
 
-        /* Pastikan Swal muncul di atas modal */
+        /* Ensure Swal appears above modal */
         body.modal-open .swal2-container {
             z-index: 10010 !important;
         }
@@ -123,95 +123,15 @@
     </style>
 @endsection
 @section('content')
-    <!-- Content -->
     <div class="container-xxl flex-grow-1 container-p-y">
-        <div class="row g-6 mb-6">
-            <div class="col-sm-6 col-xl-3">
-                <div class="card">
-                    <div class="card-body">
-                        <div class="d-flex align-items-start justify-content-between">
-                            <div class="content-left">
-                                <span class="text-heading">Session</span>
-                                <div class="d-flex align-items-center my-1">
-                                    <h4 class="mb-0 me-2">21,459</h4>
-                                    <p class="text-success mb-0">(+29%)</p>
-                                </div>
-                                <small class="mb-0">Total Services</small>
-                            </div>
-                            <div class="avatar">
-                                <span class="avatar-initial rounded bg-label-primary">
-                                    <i class="ti ti-pegawais ti-26px"></i>
-                                </span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-sm-6 col-xl-3">
-                <div class="card">
-                    <div class="card-body">
-                        <div class="d-flex align-items-start justify-content-between">
-                            <div class="content-left">
-                                <span class="text-heading">Paid Services</span>
-                                <div class="d-flex align-items-center my-1">
-                                    <h4 class="mb-0 me-2">4,567</h4>
-                                    <p class="text-success mb-0">(+18%)</p>
-                                </div>
-                                <small class="mb-0">Last week analytics </small>
-                            </div>
-                            <div class="avatar">
-                                <span class="avatar-initial rounded bg-label-danger">
-                                    <i class="ti ti-pegawai-plus ti-26px"></i>
-                                </span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-sm-6 col-xl-3">
-                <div class="card">
-                    <div class="card-body">
-                        <div class="d-flex align-items-start justify-content-between">
-                            <div class="content-left">
-                                <span class="text-heading">Active Services</span>
-                                <div class="d-flex align-items-center my-1">
-                                    <h4 class="mb-0 me-2">{{ totalPegawai() }}</h4>
-                                    <p class="text-danger mb-0">(-14%)</p>
-                                </div>
-                                <small class="mb-0">Last week analytics</small>
-                            </div>
-                            <div class="avatar">
-                                <span class="avatar-initial rounded bg-label-success">
-                                    <i class="ti ti-pegawai-check ti-26px"></i>
-                                </span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-sm-6 col-xl-3">
-                <div class="card">
-                    <div class="card-body">
-                        <div class="d-flex align-items-start justify-content-between">
-                            <div class="content-left">
-                                <span class="text-heading">Pending Services</span>
-                                <div class="d-flex align-items-center my-1">
-                                    <h4 class="mb-0 me-2">237</h4>
-                                    <p class="text-success mb-0">(+42%)</p>
-                                </div>
-                                <small class="mb-0">Last week analytics</small>
-                            </div>
-                            <div class="avatar">
-                                <span class="avatar-initial rounded bg-label-warning">
-                                    <i class="ti ti-pegawai-search ti-26px"></i>
-                                </span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!-- Services List Table -->
+        @include('internal.partials.stat-cards', [
+            'stats' => [
+                ['label' => 'Total Services', 'value' => $totalServices, 'hint' => 'All services', 'icon' => 'ti-briefcase', 'color' => 'primary'],
+                ['label' => 'With Image', 'value' => $withImage, 'hint' => 'Has photo', 'icon' => 'ti-photo', 'color' => 'success'],
+                ['label' => 'With Type', 'value' => $withType, 'hint' => 'Has service type', 'icon' => 'ti-category', 'color' => 'info'],
+                ['label' => 'Recent', 'value' => $recentServices, 'hint' => 'Last 30 days', 'icon' => 'ti-clock', 'color' => 'warning'],
+            ],
+        ])
         <div class="card">
             <div class="card-header border-bottom">
                 <h5 class="card-title mb-0">Filters</h5>
@@ -231,7 +151,7 @@
                             <th>Subtitle</th>
                             <th>Description</th>
                             <th>Service Type</th>
-                            <th>Aksi</th>
+                            <th>Actions</th>
                         </tr>
                     </thead>
                 </table>
@@ -241,7 +161,7 @@
                 <div class="modal-dialog modal-dialog-centered modal-lg">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h4 class="modal-title" id="modal-judul">Tambah Service</h4>
+                            <h4 class="modal-title" id="modal-judul">Add Service</h4>
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <form id="formServices" class="form-horizontal" enctype="multipart/form-data">
@@ -276,18 +196,18 @@
                                                         <div class="col-xl-6 mb-6">
                                                             <label class="form-label" for="title">Title</label>
                                                             <input type="text" class="form-control" id="title"
-                                                                placeholder="Masukkan judul service" name="title"
+                                                                placeholder="Enter judul service" name="title"
                                                                 aria-label="Title" />
                                                         </div>
                                                         <div class="col-xl-6 mb-6">
                                                             <label class="form-label" for="subtitle">Subtitle</label>
                                                             <input type="text" class="form-control" id="subtitle"
-                                                                placeholder="Masukkan subtitle service" name="subtitle"
+                                                                placeholder="Enter subtitle service" name="subtitle"
                                                                 aria-label="Subtitle" />
                                                         </div>
                                                         <div class="col-xl-12 mb-6">
                                                             <label class="form-label" for="description">Description</label>
-                                                            <textarea class="form-control" id="description" placeholder="Masukkan deskripsi service..." name="description"
+                                                            <textarea class="form-control" id="description" placeholder="Enter deskripsi service..." name="description"
                                                                 aria-label="Content" rows="10"></textarea>
                                                         </div>
                                                         <div class="col-xl-6 mb-6">
@@ -295,7 +215,7 @@
                                                             <input type="file" id="image" class="form-control"
                                                                 aria-label="Image" name="image"
                                                                 accept="image/*" />
-                                                            <div class="form-text">Upload gambar untuk image service
+                                                            <div class="form-text">Upload image for service
                                                                 (JPG, PNG, GIF)
                                                             </div>
                                                         </div>
@@ -303,7 +223,7 @@
                                                             <label class="form-label" for="service_type_id">Service Type</label>
                                                             <select id="service_type_id" class="form-select"
                                                                 name="service_type_id">
-                                                                <option value="">Pilih Service Type</option>
+                                                                <option value="">Select Service Type</option>
                                                                 @foreach ($service_type as $st)
                                                                     <option value="{{ $st->id }}">
                                                                         {{ $st->name }}</option>
@@ -314,12 +234,12 @@
                                                 </div>
                                                 <div class="tab-pane fade" id="navs-top-profile" role="tabpanel">
                                                     <div id="service-details-container">
-                                                        <!-- Service Details items akan ditambahkan di sini secara dinamis -->
+                                                        <!-- Service detail items will be added here dynamically -->
                                                     </div>
                                                     <div class="row mt-3">
                                                         <div class="col-12">
                                                             <button type="button" class="btn btn-primary" id="btn-add-detail">
-                                                                <i class="ti ti-plus me-2"></i>Tambah Detail
+                                                                <i class="ti ti-plus me-2"></i>Add Detail
                                                             </button>
                                                         </div>
                                                     </div>
@@ -332,7 +252,7 @@
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                                 <button type="submit" class="btn btn-primary btn-block" id="btn-simpan"
-                                    value="create">Simpan
+                                    value="create">Save
                                 </button>
                             </div>
                         </form>

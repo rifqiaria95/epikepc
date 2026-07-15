@@ -3,275 +3,207 @@
 namespace App\Http\Controllers\Mono;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
-use App\Services\FileStorageService;
-use App\Models\ServiceType;
+use App\Http\Requests\ServiceRequest;
 use App\Models\Service;
 use App\Models\ServiceDetail;
-use Illuminate\Support\Facades\DB;
+use App\Models\ServiceType;
+use App\Services\FileStorageService;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use App\Http\Requests\ServiceRequest;
-use App\Http\Requests\ServiceDetailRequest;
+use Illuminate\Support\Facades\DB;
 
 class ServicesController extends Controller
 {
-    protected $fileStorageService;
-
-    public function __construct(FileStorageService $fileStorageService)
+    public function __construct(protected FileStorageService $fileStorageService)
     {
-        $this->fileStorageService = $fileStorageService;
     }
 
     public function index(Request $request)
     {
-        // Cache data dropdown yang jarang berubah
-        $service_type = ServiceType::select(['id', 'name'])->get();
+        $serviceTypes = ServiceType::query()
+            ->select(['id', 'name'])
+            ->orderBy('name')
+            ->get();
 
         if ($request->ajax()) {
-            // Temporary fix: Simplified query without specific select fields
-            $service = Service::select(['id', 'title', 'subtitle', 'description', 'image', 'service_type_id'])
+            $query = Service::query()
                 ->withoutTrashed()
-                ->with([
-                    'serviceType'
-                ]);
+                ->select(['id', 'title', 'subtitle', 'description', 'image', 'service_type_id', 'created_at'])
+                ->with(['serviceType:id,name']);
 
-            return datatables()->of($service)
-                ->editColumn('image', function ($data) {
-                    return $data->getImageUrl();
-                })
-                ->addColumn('aksi', function ($data) {
-                    $button = '';
-                    return $button;
-                })
-                ->rawColumns(['image', 'aksi'])
+            return datatables()->of($query)
+                ->addColumn('service_type_name', fn ($row) => $row->serviceType?->name ?? '-')
+                ->editColumn('image', fn ($row) => $row->getImageUrl())
+                ->addColumn('aksi', fn () => '')
+                ->rawColumns(['aksi'])
                 ->addIndexColumn()
                 ->toJson();
         }
 
-        return view('internal/services.index', compact(['service_type']));
+        $baseQuery = Service::query()->withoutTrashed();
+
+        return view('internal.services.index', [
+            'service_type'     => $serviceTypes,
+            'totalServices'    => (clone $baseQuery)->count(),
+            'withImage'        => (clone $baseQuery)->whereNotNull('image')->where('image', '!=', '')->count(),
+            'withType'         => (clone $baseQuery)->whereNotNull('service_type_id')->count(),
+            'recentServices'   => (clone $baseQuery)->where('created_at', '>=', now()->subDays(30))->count(),
+        ]);
     }
 
-    public function store(ServiceRequest $request)
+    public function store(ServiceRequest $request): JsonResponse
     {
-        $validatedData = $request->validated();
-
-        try {
-            DB::beginTransaction();
-
-            // Upload thumbnail ke object storage jika ada
-            if ($request->hasFile('image')) {
-                $uploadResult = $this->fileStorageService->uploadImage(
-                    $request->file('image'),
-                    'services/images'
-                );
-
-                if (!$uploadResult['success']) {
-                    throw new \Exception('Gagal upload image: ' . $uploadResult['error']);
-                }
-
-                $validatedData['image'] = $uploadResult['path'];
-            }
-
-            // Set author_id, created_by berdasarkan user yang sedang login
-            $validatedData['created_by'] = Auth::user()->id;
-
-            // Create Service
-            $service = Service::create($validatedData);
-
-            // Handle Service Details (multiple)
-            if ($request->has('service_details') && is_array($request->input('service_details'))) {
-                foreach ($request->input('service_details') as $detail) {
-                    if (!empty($detail['title'])) {
-                        ServiceDetail::create([
-                            'service_id' => $service->id,
-                            'title' => $detail['title'],
-                            'subtitle' => $detail['subtitle'] ?? '',
-                            'price' => $detail['price'] ?? 0,
-                            'description' => $detail['description'] ?? '',
-                            'created_by' => Auth::user()->id,
-                        ]);
-                    }
-                }
-            }
-
-            DB::commit();
-
-            return response()->json([
-                'status' => 200,
-                'message' => 'Data service berhasil disimpan!',
-                'data' => $service
-            ]);
-        } catch (\Exception $e) {
-            DB::rollBack();
-
-            // Hapus file yang sudah diupload jika ada error
-            if (isset($uploadResult) && $uploadResult['success']) {
-                $this->fileStorageService->deleteFile($uploadResult['path']);
-            }
-
-            return response()->json([
-                'status' => 500,
-                'message' => 'Terjadi kesalahan pada server.',
-                'error' => $e->getMessage()
-            ], 500);
-        }
+        return $this->persist($request);
     }
 
-    public function edit($id)
+    public function edit(string $id): JsonResponse
     {
         try {
-            $service = Service::with(['serviceType', 'serviceDetails'])->where('id', $id)->first();
+            $service = Service::query()
+                ->withoutTrashed()
+                ->with([
+                    'serviceType:id,name',
+                    'serviceDetails:id,service_id,title,subtitle,price,description',
+                ])
+                ->findOrFail($id);
 
-            if (!$service) {
-                return response()->json([
-                    'status' => 404,
-                    'message' => 'Data service tidak ditemukan'
-                ], 404);
-            }
-
-            // Format data untuk frontend
             $serviceData = $service->toArray();
-            
-            // Get service details (multiple)
-            $serviceDetails = ServiceDetail::where('service_id', $service->id)->get();
-            if ($serviceDetails->count() > 0) {
-                $serviceData['service_details'] = $serviceDetails->toArray();
-            } else {
-                // Backward compatibility: jika masih menggunakan single detail
-                $serviceDetail = ServiceDetail::where('service_id', $service->id)->first();
-                if ($serviceDetail) {
-                    $serviceData['service_detail'] = $serviceDetail->toArray();
-                }
-            }
+            $serviceData['image_url'] = $service->getImageUrl();
+            $serviceData['service_details'] = $service->serviceDetails->toArray();
 
             return response()->json([
                 'success' => true,
-                'service' => $serviceData
+                'service' => $serviceData,
             ]);
-        } catch (\Exception $e) {
-            return response()->json([
-                'status' => 500,
-                'message' => 'Terjadi kesalahan pada server.',
-                'error' => $e->getMessage()
-            ], 500);
+        } catch (\Throwable $e) {
+            return $this->errorResponse($e);
         }
     }
 
-    public function update($id, ServiceRequest $request)
+    public function update(string $id, ServiceRequest $request): JsonResponse
+    {
+        return $this->persist($request, $id);
+    }
+
+    public function destroy(string $id): JsonResponse
     {
         try {
             DB::beginTransaction();
 
-            $service = Service::findOrFail($id);
-            $validatedData = $request->validated();
-            $oldImage = $service->image;
+            $service = Service::query()->withoutTrashed()->findOrFail($id);
 
-            // Upload thumbnail baru ke object storage jika ada
-            if ($request->hasFile('image')) {
-                $uploadResult = $this->fileStorageService->uploadImage(
-                    $request->file('image'),
-                    'services/images'
-                );
-
-                if (!$uploadResult['success']) {
-                    throw new \Exception('Gagal upload image: ' . $uploadResult['error']);
-                }
-
-                $validatedData['image'] = $uploadResult['path'];
-
-                // Hapus image lama jika ada
-                if ($oldImage) {
-                    $this->fileStorageService->deleteFile($oldImage);
-                }
-            }
-
-            // Set updated_by berdasarkan user yang sedang login
-            $validatedData['updated_by'] = Auth::user()->id;
-
-            // Update service
-            $service->update($validatedData);
-
-            // Handle Service Details (multiple) - Hapus yang lama dan buat yang baru
-            ServiceDetail::where('service_id', $service->id)->delete();
-
-            if ($request->has('service_details') && is_array($request->input('service_details'))) {
-                foreach ($request->input('service_details') as $detail) {
-                    if (!empty($detail['title'])) {
-                        ServiceDetail::create([
-                            'service_id' => $service->id,
-                            'title' => $detail['title'],
-                            'subtitle' => $detail['subtitle'] ?? '',
-                            'price' => $detail['price'] ?? 0,
-                            'description' => $detail['description'] ?? '',
-                            'created_by' => Auth::user()->id,
-                            'updated_by' => Auth::user()->id,
-                        ]);
-                    }
-                }
-            }
-
-            DB::commit();
-
-            return response()->json([
-                'status'  => 200,
-                'message' => 'Data service berhasil diubah'
-            ]);
-        } catch (\Exception $e) {
-            DB::rollBack();
-
-            // Hapus file yang sudah diupload jika ada error
-            if (isset($uploadResult) && $uploadResult['success']) {
-                $this->fileStorageService->deleteFile($uploadResult['path']);
-            }
-
-            return response()->json([
-                'status' => 500,
-                'message' => 'Terjadi kesalahan pada server.',
-                'error' => $e->getMessage()
-            ], 500);
-        }
-    }
-
-    public function destroy($id)
-    {
-        try {
-            DB::beginTransaction();
-
-            $service = Service::where('id', $id)->first();
-
-            if (!$service) {
-                return response()->json([
-                    'status' => 404,
-                    'errors' => 'Data Service Tidak Ditemukan'
-                ]);
-            }
-
-            // Hapus image dari object storage jika ada
             if ($service->image) {
                 $this->fileStorageService->deleteFile($service->image);
             }
 
-            // Set deleted_by berdasarkan user yang sedang login
-            $service->deleted_by = Auth::user()->id;
-            $service->save();
+            ServiceDetail::query()->where('service_id', $service->id)->delete();
 
-            // Hapus data (Soft Delete)
+            $service->deleted_by = Auth::id();
+            $service->save();
             $service->delete();
 
             DB::commit();
 
             return response()->json([
-                'status' => 200,
-                'message' => 'Data Service Berhasil Dihapus'
+                'status'  => 200,
+                'message' => 'Service deleted successfully.',
             ]);
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             DB::rollBack();
 
-            return response()->json([
-                'status' => 500,
-                'message' => 'Terjadi kesalahan pada server.',
-                'error' => $e->getMessage()
-            ], 500);
+            return $this->errorResponse($e);
         }
+    }
+
+    private function persist(ServiceRequest $request, ?string $id = null): JsonResponse
+    {
+        $uploadedPath = null;
+
+        try {
+            DB::beginTransaction();
+
+            $service = $id
+                ? Service::query()->withoutTrashed()->findOrFail($id)
+                : new Service();
+
+            $validated = $request->validated();
+
+            if ($request->hasFile('image')) {
+                $uploadResult = $this->fileStorageService->uploadImage(
+                    $request->file('image'),
+                    'services/images'
+                );
+
+                if (! $uploadResult['success']) {
+                    throw new \RuntimeException('Failed to upload image: ' . $uploadResult['error']);
+                }
+
+                if ($service->exists && $service->image) {
+                    $this->fileStorageService->deleteFile($service->image);
+                }
+
+                $validated['image'] = $uploadResult['path'];
+                $uploadedPath = $uploadResult['path'];
+            }
+
+            if ($service->exists) {
+                $validated['updated_by'] = Auth::id();
+                $service->update($validated);
+                $message = 'Service updated successfully.';
+            } else {
+                $validated['created_by'] = Auth::id();
+                $service = Service::create($validated);
+                $message = 'Service saved successfully.';
+            }
+
+            $this->syncServiceDetails($service, $request->input('service_details', []));
+
+            DB::commit();
+
+            return response()->json([
+                'status'  => 200,
+                'message' => $message,
+                'data'    => $service->load(['serviceType:id,name', 'serviceDetails']),
+            ]);
+        } catch (\Throwable $e) {
+            DB::rollBack();
+
+            if ($uploadedPath) {
+                $this->fileStorageService->deleteFile($uploadedPath);
+            }
+
+            return $this->errorResponse($e);
+        }
+    }
+
+    private function syncServiceDetails(Service $service, array $details): void
+    {
+        ServiceDetail::query()->where('service_id', $service->id)->delete();
+
+        foreach ($details as $detail) {
+            if (empty($detail['title'])) {
+                continue;
+            }
+
+            ServiceDetail::create([
+                'service_id'  => $service->id,
+                'title'       => $detail['title'],
+                'subtitle'    => $detail['subtitle'] ?? '',
+                'price'       => $detail['price'] ?? 0,
+                'description' => $detail['description'] ?? '',
+                'created_by'  => Auth::id(),
+                'updated_by'  => Auth::id(),
+            ]);
+        }
+    }
+
+    private function errorResponse(\Throwable $e): JsonResponse
+    {
+        return response()->json([
+            'status'  => 500,
+            'message' => 'A server error occurred.',
+            'error'   => $e->getMessage(),
+        ], 500);
     }
 }

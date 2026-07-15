@@ -21,13 +21,13 @@ class EmailVerificationController extends Controller
 
         // Cek apakah sudah verifikasi
         if ($user->hasVerifiedEmail()) {
-            return redirect('/login')->with('status', 'Email kamu sudah diverifikasi.');
+            return redirect('/login')->with('status', 'Your email has already been verified.');
         }
 
         // Verifikasi email
         $user->markEmailAsVerified();
         event(new Verified($user));
 
-        return redirect('/login')->with('status', 'Email berhasil diverifikasi. Silakan login.');
+        return redirect('/login')->with('status', 'Email verified successfully. Please log in.');
     }
 }

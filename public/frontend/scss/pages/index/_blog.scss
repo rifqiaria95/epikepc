@@ -1,0 +1,38 @@
+/**
+ * Axial
+ * EPIKEPC is a universal template for factories, industry, construction, architecture, factories, mechanics, energy
+ * Exclusively on https://1.envato.market/axial-html
+ *
+ * @encoding        UTF-8
+ * @version         1.0.0
+ * @copyright       (C) 2018 - 2021 Merkulove ( https://merkulov.design/ ). All rights reserved.
+ * @license         Envato License https://1.envato.market/KYbje
+ * @contributors    Lamber Lilit (winter.rituel@gmail.com)
+ * @support         help@merkulov.design
+ **/
+// BLOG SECTION
+
+.blog {
+    &_btn {
+        margin: 15px 0;
+        width: 100%;
+    }
+}
+
+// ------ MEDIA QUERIES
+
+@media screen and (min-width: 575.98px) {
+    .blog {
+        &_btn {
+            width: unset;
+        }
+    }
+}
+
+@media screen and (min-width: 767.98px) {
+    .blog {
+        &_btn {
+            margin: 0;
+        }
+    }
+}

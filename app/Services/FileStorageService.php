@@ -35,7 +35,7 @@ class FileStorageService
             );
 
             if (! $uploaded) {
-                throw new \Exception('Gagal mengupload file');
+                throw new \Exception('Failed to upload file');
             }
 
             return [
@@ -138,7 +138,7 @@ class FileStorageService
             if (! Storage::disk('local')->exists($localPath)) {
                 return [
                     'success' => false,
-                    'error' => 'File local tidak ditemukan',
+                    'error' => 'Local file not found',
                 ];
             }
 
@@ -157,7 +157,7 @@ class FileStorageService
 
             return [
                 'success' => false,
-                'error' => 'Gagal menyalin ke public storage',
+                'error' => 'Failed to copy to public storage',
             ];
         } catch (\Exception $e) {
             return [

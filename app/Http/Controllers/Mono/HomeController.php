@@ -4,7 +4,14 @@ namespace App\Http\Controllers\Mono;
 
 use App\Http\Controllers\Controller;
 use App\Models\About;
+use App\Models\CompanyJourney;
+use App\Models\CompanyMilestone;
+use App\Models\Galeri;
 use App\Models\News;
+use App\Models\Organisasi;
+use App\Models\Pricing;
+use App\Models\Project;
+use App\Models\Service;
 use App\Models\Testimoni;
 use App\Services\FileStorageService;
 
@@ -40,35 +47,81 @@ class HomeController extends Controller
             }
         }
         
-        // Get published news with their relations, limited to 6 items
-        $news = News::withoutTrashed()
-            ->where('status', 'published')
-            ->with(['user', 'categories'])
-            ->orderBy('published_at', 'desc')
+        // Get testimonials for homepage
+        $testimonials = Testimoni::forHomepage()->get();
+
+        // Get services for homepage (image_url resolved via model accessor)
+        $services = Service::forHomepage()->get();
+
+        // Get pricing plans for homepage (eager-loaded to avoid N+1)
+        $pricingPlans = Pricing::forHomepage()->get();
+
+        // Get projects for homepage (image_url resolved via model accessor)
+        $projects = Project::forHomepage()->get();
+
+        // Get news for homepage
+        $news = News::forHomepage()->get();
+
+        // Get gallery items for homepage section
+        $galleryItems = Galeri::query()
+            ->withoutTrashed()
+            ->with('kategoriGaleri:id,name')
+            ->latest('created_at')
             ->take(6)
             ->get();
-        
-        // Process thumbnail URL for each news item
-        $news->each(function ($article) {
-            if ($article->thumbnail) {
+
+        $galleryItems->each(function ($item) {
+            if ($item->image) {
                 try {
-                    $article->thumbnail_url = $this->fileStorageService->getFileUrl($article->thumbnail);
+                    $item->image_url = $this->fileStorageService->getFileUrl($item->image);
                 } catch (\Exception $e) {
-                    $article->thumbnail_url = asset('frontend/img/bg-img/1.jpg');
+                    $item->image_url = asset('frontend/img/img-1.png');
                 }
             } else {
-                $article->thumbnail_url = asset('frontend/img/bg-img/1.jpg');
+                $item->image_url = asset('frontend/img/img-1.png');
             }
         });
-        
-        // Get testimonials data, limited to 10 items
-        $testimonials = Testimoni::withoutTrashed()
-            ->orderBy('created_at', 'desc')
-            ->take(10)
-            ->get();
-        
-        // Image URL sudah di-handle oleh accessor getGambarUrlAttribute() di model
-        
-        return view('index', compact('about', 'news', 'testimonials'));
+
+        // Get team members for board slider
+        $teamMembers = Organisasi::withoutTrashed()->orderBy('tahun')->take(6)->get();
+        $teamMembers->each(function ($member) {
+            if ($member->image) {
+                try {
+                    $member->image_url = $this->fileStorageService->getFileUrl($member->image);
+                } catch (\Exception $e) {
+                    $member->image_url = asset('frontend/img/placeholder.jpg');
+                }
+            } else {
+                $member->image_url = asset('frontend/img/placeholder.jpg');
+            }
+        });
+
+        $companyJourney = CompanyJourney::query()->firstOrCreate(
+            ['id' => 1],
+            CompanyJourney::defaults()
+        );
+
+        if ($companyJourney->video_poster) {
+            try {
+                $companyJourney->poster_url = $this->fileStorageService->getFileUrl($companyJourney->video_poster);
+            } catch (\Exception $e) {
+                $companyJourney->poster_url = null;
+            }
+        }
+
+        $companyMilestones = CompanyMilestone::forHomepage()->get();
+
+        return view('index', compact(
+            'about',
+            'testimonials',
+            'services',
+            'pricingPlans',
+            'projects',
+            'news',
+            'galleryItems',
+            'teamMembers',
+            'companyJourney',
+            'companyMilestones'
+        ));
     }
 }

@@ -7,7 +7,7 @@
         <span class="app-brand-logo demo">
             <img src="{{ url('assets/img/branding/logo.png') }}" alt="Logo" width="40">
         </span>
-        <span class="app-brand-text demo menu-text fw-bold">Kainnova</span>
+        <span class="app-brand-text demo menu-text fw-bold">EPIKEPC</span>
     </a>
     <!-- /Logo -->
     <div class="authentication-inner row m-0">
@@ -30,9 +30,9 @@
         <!-- Reset Password -->
         <div class="d-flex col-12 col-lg-4 align-items-center authentication-bg p-6 p-sm-12">
             <div class="w-px-400 mx-auto mt-12 pt-5">
-                <h4 class="mb-1">Reset Kata Sandi 🔒</h4>
+                <h4 class="mb-1">Reset Password 🔒</h4>
                 <p class="mb-6">
-                    <span class="fw-medium">Kata sandi baru Anda harus berbeda dari kata sandi yang pernah digunakan</span>
+                    <span class="fw-medium">Your new password must be different from previously used passwords</span>
                 </p>
                             
                 @if (session('status'))
@@ -53,7 +53,7 @@
                         <div class="text-danger mb-3">{{ $message }}</div>
                     @enderror
                     <div class="mb-6 form-password-toggle">
-                        <label class="form-label" for="password">Kata Sandi Baru</label>
+                        <label class="form-label" for="password">New Password</label>
                         <div class="input-group input-group-merge">
                             <input type="password" id="password" class="form-control" name="password"
                                 placeholder="&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;"
@@ -65,7 +65,7 @@
                         </div>
                     </div>
                     <div class="mb-6 form-password-toggle">
-                        <label class="form-label" for="confirm-password">Konfirmasi Kata Sandi</label>
+                        <label class="form-label" for="confirm-password">Confirm Password</label>
                         <div class="input-group input-group-merge">
                             <input type="password" id="confirm-password" class="form-control" name="password_confirmation"
                                 placeholder="&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;"
@@ -76,11 +76,11 @@
                             @enderror
                         </div>
                     </div>
-                    <button class="btn btn-primary d-grid w-100 mb-6">Atur Ulang Kata Sandi</button>
+                    <button class="btn btn-primary d-grid w-100 mb-6">Reset Password</button>
                     <div class="text-center">
                         <a href="{{ route('login') }}">
                             <i class="ti ti-chevron-left scaleX-n1-rtl me-1_5"></i>
-                            Kembali ke login
+                            Back to login
                         </a>
                     </div>
                 </form>
@@ -93,7 +93,7 @@
 @if (session('status'))
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        toastr.success('{{ session('status') }}', 'Berhasil!', {
+        toastr.success('{{ session('status') }}', 'Success!', {
             closeButton: true,
             progressBar: true,
             timeOut: 5000

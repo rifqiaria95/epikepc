@@ -1,0 +1,113 @@
+/**
+ * Axial
+ * EPIKEPC is a universal template for factories, industry, construction, architecture, factories, mechanics, energy
+ * Exclusively on https://1.envato.market/axial-html
+ *
+ * @encoding        UTF-8
+ * @version         1.0.0
+ * @copyright       (C) 2018 - 2021 Merkulove ( https://merkulov.design/ ). All rights reserved.
+ * @license         Envato License https://1.envato.market/KYbje
+ * @contributors    Lamber Lilit (winter.rituel@gmail.com)
+ * @support         help@merkulov.design
+ **/
+// FEATURES LIST COMPONENT
+
+.features {
+    &_header {
+        .title {
+            margin-bottom: 30px;
+        }
+        &-list {
+            margin-bottom: 40px;
+            &_item {
+                margin-bottom: 16px;
+                &:last-of-type {
+                    margin-bottom: 0;
+                }
+                .icon {
+                    color: $secondary;
+                    margin-right: 10px;
+                }
+            }
+        }
+    }
+    &_card {
+        cursor: pointer;
+        margin-top: 30px;
+        &[data-order="1"] {
+            margin-top: 0;
+        }
+        .wrapper {
+            height: 100%;
+            border: 1px solid #fff;
+            transition: border-color .3s ease-in-out;
+            padding: 30px;
+            &:hover {
+                border-color: $accent;
+            }
+        }
+        &-title {
+            margin: 30px 0 20px;
+        }
+        &-icon {
+            * {
+              fill: $accent;
+            }
+        }
+        &--alt {
+            .wrapper {
+                border-color: $gray;
+                &:hover {
+                    border-color: $primary;
+                }
+            }
+            .features_card-icon * {
+                fill: $primary;
+            }
+            .features_card-description {
+                color: $primary;
+            }
+        }
+    }
+}
+
+// ------ MEDIA QUERIES
+
+@media screen and (min-width: 767.98px){
+    .features {
+        &_header {
+            padding: 0 15px;
+            &-list {
+                margin-bottom: 0;
+            }
+        }
+        &_card {
+            padding: 0 15px;
+            &[data-order="1"] {
+                margin-top: 30px;
+            }
+        }
+    }
+}
+
+
+@media screen and (min-width: 1199.98px) {
+    .features {
+        &_card {
+            &[data-order="1"],
+            &[data-order="2"] {
+                margin-top: 0;
+            }
+        }
+    }
+}
+
+@media screen and (min-width: 1399.98px) {
+    .features {
+        &_card {
+            .wrapper {
+                padding: 50px;
+            }
+        }
+    }
+}

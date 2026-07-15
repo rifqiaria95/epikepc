@@ -69,7 +69,7 @@ class OrganisasiController extends Controller
                 );
 
                 if (!$uploadResult['success']) {
-                    throw new \Exception('Gagal upload image: ' . $uploadResult['error']);
+                    throw new \Exception('Failed to upload image: ' . $uploadResult['error']);
                 }
 
                 $validatedData['image'] = $uploadResult['path'];
@@ -85,20 +85,20 @@ class OrganisasiController extends Controller
 
             return response()->json([
                 'status' => 200,
-                'message' => 'Data organisasi berhasil disimpan!',
+                'message' => 'Team member saved successfully!',
                 'data' => $organisasi
             ]);
         } catch (\Exception $e) {
             DB::rollBack();
 
-            // Hapus file yang sudah diupload jika ada error
+            // Delete file yang sudah diupload jika ada error
             if (isset($uploadResult) && $uploadResult['success']) {
                 $this->fileStorageService->deleteFile($uploadResult['path']);
             }
 
             return response()->json([
                 'status' => 500,
-                'message' => 'Terjadi kesalahan pada server.',
+                'message' => 'A server error occurred.',
                 'error' => $e->getMessage()
             ], 500);
         }
@@ -112,7 +112,7 @@ class OrganisasiController extends Controller
             if (!$organisasi) {
                 return response()->json([
                     'status' => 404,
-                    'message' => 'Data organisasi tidak ditemukan'
+                    'message' => 'Organization data not found'
                 ], 404);
             }
 
@@ -126,7 +126,7 @@ class OrganisasiController extends Controller
         } catch (\Exception $e) {
             return response()->json([
                 'status' => 500,
-                'message' => 'Terjadi kesalahan pada server.',
+                'message' => 'A server error occurred.',
                 'error' => $e->getMessage()
             ], 500);
         }
@@ -149,12 +149,12 @@ class OrganisasiController extends Controller
                 );
 
                 if (!$uploadResult['success']) {
-                    throw new \Exception('Gagal upload image: ' . $uploadResult['error']);
+                    throw new \Exception('Failed to upload image: ' . $uploadResult['error']);
                 }
 
                 $validatedData['image'] = $uploadResult['path'];
 
-                // Hapus image lama jika ada
+                // Delete image lama jika ada
                 if ($oldImage) {
                     $this->fileStorageService->deleteFile($oldImage);
                 }
@@ -170,19 +170,19 @@ class OrganisasiController extends Controller
 
             return response()->json([
                 'status'  => 200,
-                'message' => 'Data organisasi berhasil diubah'
+                'message' => 'Team member updated successfully'
             ]);
         } catch (\Exception $e) {
             DB::rollBack();
 
-            // Hapus file yang sudah diupload jika ada error
+            // Delete file yang sudah diupload jika ada error
             if (isset($uploadResult) && $uploadResult['success']) {
                 $this->fileStorageService->deleteFile($uploadResult['path']);
             }
 
             return response()->json([
                 'status' => 500,
-                'message' => 'Terjadi kesalahan pada server.',
+                'message' => 'A server error occurred.',
                 'error' => $e->getMessage()
             ], 500);
         }
@@ -202,7 +202,7 @@ class OrganisasiController extends Controller
                 ]);
             }
 
-            // Hapus image dari object storage jika ada
+            // Delete image dari object storage jika ada
             if ($organisasi->image) {
                 $this->fileStorageService->deleteFile($organisasi->image);
             }
@@ -211,21 +211,21 @@ class OrganisasiController extends Controller
             $organisasi->deleted_by = auth()->id();
             $organisasi->save();
 
-            // Hapus data (Soft Delete)
+            // Delete data (Soft Delete)
             $organisasi->delete();
 
             DB::commit();
 
             return response()->json([
                 'status' => 200,
-                'message' => 'Data Organisasi Berhasil Dihapus'
+                'message' => 'Organization deleted successfully'
             ]);
         } catch (\Exception $e) {
             DB::rollBack();
 
             return response()->json([
                 'status' => 500,
-                'message' => 'Terjadi kesalahan pada server.',
+                'message' => 'A server error occurred.',
                 'error' => $e->getMessage()
             ], 500);
         }

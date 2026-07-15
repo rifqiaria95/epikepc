@@ -8,7 +8,7 @@ $(document).ready(function () {
 });
 
 $(document).ready(function () {
-    $('#TablekategoriGaleri').DataTable({
+    $('#TablekategoriGallery').DataTable({
         dom:
             '<"row me-2"' +
             '<"col-md-2"<"me-3"l>>' +
@@ -165,11 +165,11 @@ $(document).ready(function () {
                 ]
             },
             {
-                text: '<i class="ti ti-plus me-0 me-sm-1 ti-xs"></i><span class="d-none d-sm-inline-block">Tambah kategori</span>',
+                text: '<i class="ti ti-plus me-0 me-sm-1 ti-xs"></i><span class="d-none d-sm-inline-block">Add kategori</span>',
                 className: 'add-new btn btn-primary waves-effect waves-light',
                 attr: {
                     'data-bs-toggle': 'offcanvas',
-                    'data-bs-target': '#offcanvasAddkategoriGaleri',
+                    'data-bs-target': '#offcanvasAddkategoriGallery',
 
                 }
             }
@@ -218,7 +218,7 @@ $(document).ready(function () {
                       buttons += '<a href="javascript:;" class="dropdown-item" onclick="ViewData(' + full.id + ')"><i class="ti ti-edit ti-md"></i>Edit</a>';
                     }
                     if (canDelete) {
-                      buttons += '<a href="javascript:;" class="dropdown-item delete-record" data-id="' + full.id + '"><i class="ti ti-trash ti-md"></i>Hapus</a>';
+                      buttons += '<a href="javascript:;" class="dropdown-item delete-record" data-id="' + full.id + '"><i class="ti ti-trash ti-md"></i>Delete</a>';
                     }
                     buttons += '</div>';
 
@@ -237,8 +237,8 @@ $(document).ready(function () {
     // Reset form when add new kategori button is clicked
     $('.card').on('click', '.dt-action-buttons .add-new', function() {
         $('#id').val('');
-        $('#formkategoriGaleri')[0].reset();
-        $('#offcanvasAddkategoriGaleriLabel').text('Tambah Kategori Galeri');
+        $('#formkategoriGallery')[0].reset();
+        $('#offcanvasAddkategoriGalleryLabel').text('Add Gallery Category');
         $('.data-submit').text('Submit');
         $('.form-control, .form-select').removeClass('is-invalid');
         $('.text-danger').text('');
@@ -259,27 +259,27 @@ $(document).ready(function () {
                     $("#id").val(response.kategori.id);
                     $("#name").val(response.kategori.name);
                     $("#slug").val(response.kategori.slug);
-                    $('#offcanvasAddkategoriGaleriLabel').text('Edit Kategori Galeri');
+                    $('#offcanvasAddkategoriGalleryLabel').text('Edit Gallery Category');
                     // Ubah tombol submit agar tahu ini update
                     $(".data-submit").text("Update").attr("id", "updateMenu");
 
-                    $("#offcanvasAddkategoriGaleri").offcanvas("show");
+                    $("#offcanvasAddkategoriGallery").offcanvas("show");
                 }
             },
             error: function () {
-                toastr.error('Gagal mengambil data!');
+                toastr.error('Failed to fetch data!');
             }
         });
     }
 
-    // Submit Form: Tambah & Update
-    $("#formkategoriGaleri").submit(function (e) {
+    // Submit Form: Add & Update
+    $("#formkategoriGallery").submit(function (e) {
         e.preventDefault();
 
-        // Tambahkan loader pada tombol submit
+        // Addkan loader pada tombol submit
         var submitBtn = $(this).find('button[type="submit"]');
         var originalText = submitBtn.html();
-        submitBtn.html('<i class="ti ti-loader ti-spin me-2"></i>Menyimpan...').prop('disabled', true);
+        submitBtn.html('<i class="ti ti-loader ti-spin me-2"></i>Saving...').prop('disabled', true);
 
         $('.form-control, .form-select').removeClass('is-invalid');
         $('.text-danger').text('');
@@ -304,11 +304,11 @@ $(document).ready(function () {
                 if (response.success) {
                     toastr.success(response.message);
 
-                    $('#TablekategoriGaleri').DataTable().ajax.reload(null, false);
-                    $("#formkategoriGaleri")[0].reset();
+                    $('#TablekategoriGallery').DataTable().ajax.reload(null, false);
+                    $("#formkategoriGallery")[0].reset();
                     $("#id").val(""); // Reset ID agar tidak salah update nanti
 
-                    $("#offcanvasAddkategoriGaleri").offcanvas("hide");
+                    $("#offcanvasAddkategoriGallery").offcanvas("hide");
 
                     $(".data-submit").text("Submit").removeAttr("id");
                     selectedId = null;
@@ -324,7 +324,7 @@ $(document).ready(function () {
                         $('#' + key + '-error').text(value[0]);
                     });
                 } else {
-                    toastr.error('Gagal menyimpan data!');
+                    toastr.error('Failed to save data.');
                 }
                 // Kembalikan tombol ke kondisi semula
                 submitBtn.html(originalText).prop('disabled', false);
@@ -336,14 +336,14 @@ $(document).ready(function () {
         let id = $(this).data('id');
 
         Swal.fire({
-            title: 'Apakah Anda yakin?',
-            text: "Data kategori galeri akan dihapus!",
+            title: 'Are you sure?',
+            text: "Gallery category data will be deleted!",
             icon: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#d33',
             cancelButtonColor: '#3085d6',
             confirmButtonText: 'Ya, hapus!',
-            cancelButtonText: 'Batal'
+            cancelButtonText: 'Cancel'
         }).then((result) => {
             if (result.isConfirmed) {
                 $.ajax({
@@ -357,10 +357,10 @@ $(document).ready(function () {
                         if (response.status === 200) {
                             Swal.fire(
                                 'Deleted!',
-                                'Data Kategori Berhasil Dihapus.',
+                                'Category deleted successfully.',
                                 'success'
                             );
-                            $('#TablekategoriGaleri').DataTable().ajax.reload(null, false);
+                            $('#TablekategoriGallery').DataTable().ajax.reload(null, false);
                         } else {
                             Swal.fire(
                                 'Error!',
@@ -372,7 +372,7 @@ $(document).ready(function () {
                     error: function () {
                         Swal.fire(
                             'Oops!',
-                            'Terjadi kesalahan saat menghapus data.',
+                            'An error occurred while deleting data.',
                             'error'
                         );
                     }

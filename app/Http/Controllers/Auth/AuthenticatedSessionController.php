@@ -33,7 +33,7 @@ class AuthenticatedSessionController extends Controller
 
         if (! Auth::attempt($request->only('email', 'password'), $request->boolean('remember'))) {
             throw ValidationException::withMessages([
-                'email' => __('Email atau password salah.'),
+                'email' => __('Email or password salah.'),
             ]);
         }
 
@@ -45,7 +45,7 @@ class AuthenticatedSessionController extends Controller
             $request->session()->regenerateToken();
             
             return redirect()->route('verification.notice')->with([
-                'error' => 'Silakan verifikasi email Anda terlebih dahulu sebelum login.',
+                'error' => 'Please verify your email before signing in.',
                 'email' => $request->email
             ]);
         }
@@ -56,7 +56,7 @@ class AuthenticatedSessionController extends Controller
             $request->session()->invalidate();
             $request->session()->regenerateToken();
             
-            return redirect()->route('login')->with('error', 'Akun Anda tidak aktif. Silakan hubungi administrator.');
+            return redirect()->route('login')->with('error', 'Your account is inactive. Please contact the administrator.');
         }
 
         $request->session()->regenerate();

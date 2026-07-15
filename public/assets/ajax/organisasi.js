@@ -168,7 +168,7 @@ $(document).ready(function () {
               ]
             },
             {
-              text: '<i class="ti ti-plus me-0 me-sm-1 ti-xs"></i><span class="d-none d-sm-inline-block">Tambah Organisasi</span>',
+              text: '<i class="ti ti-plus me-0 me-sm-1 ti-xs"></i><span class="d-none d-sm-inline-block">Add Organisasi</span>',
               className: 'add-new btn btn-primary waves-effect waves-light',
               attr: {
                 'data-bs-toggle': 'modal',
@@ -254,7 +254,7 @@ $(document).ready(function () {
                       buttons += '<a href="javascript:;" class="dropdown-item" onclick="editOrganisasi(' + full.id + ')"><i class="ti ti-edit ti-md"></i>Edit</a>';
                     }
                     if (canDelete) {
-                      buttons += '<a href="javascript:;" class="dropdown-item delete-record" data-id="' + full.id + '"><i class="ti ti-trash ti-md"></i>Hapus</a>';
+                      buttons += '<a href="javascript:;" class="dropdown-item delete-record" data-id="' + full.id + '"><i class="ti ti-trash ti-md"></i>Delete</a>';
                     }
                     buttons += '</div>';
 
@@ -280,7 +280,7 @@ $(document).ready(function () {
         // Show loader on button
         let submitBtn = $('#btn-simpan');
         let originalText = submitBtn.html();
-        submitBtn.html('<i class="ti ti-loader ti-spin me-2"></i>Menyimpan...');
+        submitBtn.html('<i class="ti ti-loader ti-spin me-2"></i>Saving...');
         submitBtn.prop('disabled', true);
 
         // Clear previous errors
@@ -317,9 +317,9 @@ $(document).ready(function () {
                 if (response.status === 200) {
                     $('#tambahModal').modal('hide');
                     $('#TableOrganisasi').DataTable().ajax.reload();
-                    toastr.success('Data berhasil disimpan!');
+                    toastr.success('Data saved successfully!');
                 } else {
-                    toastr.error('Terjadi kesalahan, silakan coba lagi!');
+                    toastr.error('Something went wrong, please try again.');
                 }
             },
             error: function (xhr) {
@@ -340,7 +340,7 @@ $(document).ready(function () {
                       }
                   });
               } else {
-                  toastr.error('Gagal menyimpan data!');
+                  toastr.error('Failed to save data.');
               }
             },
             complete: function() {
@@ -354,7 +354,7 @@ $(document).ready(function () {
     $('#tambahModal').on('hidden.bs.modal', function () {
         $('#formOrganisasi')[0].reset();
         $('#id').val('');
-        $('#modal-judul').text('Tambah Organisasi');
+        $('#modal-judul').text('Add Organisasi');
 
         // Clear errors
         $('#formOrganisasi .form-control, #formOrganisasi .form-select').removeClass('is-invalid');
@@ -398,11 +398,11 @@ function editOrganisasi(id) {
                 $('#modal-judul').text('Edit Organisasi');
                 $('#tambahModal').modal('show');
             } else {
-                toastr.error('Data organisasi tidak ditemukan.');
+                toastr.error('Organization data not found.');
             }
         },
         error: function() {
-            toastr.error('Terjadi kesalahan saat mengambil data.');
+            toastr.error('An error occurred while fetching data.');
         }
     });
 }
@@ -411,15 +411,15 @@ $(document).on('click', '.delete-record', function () {
     let id = $(this).data('id');
 
     Swal.fire({
-        title: 'Apakah Anda yakin?',
-        text: "Data organisasi akan dihapus!",
+        title: 'Are you sure?',
+        text: "Organization data will be deleted!",
         icon: 'warning',
         customClass: {
             confirmButton: 'btn btn-primary waves-effect waves-light ml-3',
             cancelButton: 'btn btn-label-secondary waves-effect waves-light'
         },
         showCancelButton: true,
-        cancelButtonText: 'Batal',
+        cancelButtonText: 'Cancel',
         buttonsStyling: false,
         didRender: function () {
             $('.swal2-actions').css('gap', '10px');
@@ -455,7 +455,7 @@ $(document).on('click', '.delete-record', function () {
                 error: function () {
                     Swal.fire(
                         'Oops!',
-                        'Terjadi kesalahan saat menghapus data.',
+                        'An error occurred while deleting data.',
                         'error'
                     );
                 }

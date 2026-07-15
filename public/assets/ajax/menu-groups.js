@@ -26,7 +26,7 @@ $(document).ready(function () {
         buttons: [
             {
                 extend: 'collection',
-                text: '<i class="ti ti-plus me-0 me-sm-1 ti-xs"></i><span class="d-none d-sm-inline-block">Tambah Menu</span>',
+                text: '<i class="ti ti-plus me-0 me-sm-1 ti-xs"></i><span class="d-none d-sm-inline-block">Add Menu</span>',
                 className: 'add-new btn btn-primary waves-effect waves-light mx-4',
                 attr: {
                     'data-bs-toggle': 'offcanvas',
@@ -90,7 +90,7 @@ $(document).ready(function () {
                       buttons += '<a href="javascript:;" class="dropdown-item" onclick="ViewData(' + full.id + ')"><i class="ti ti-edit ti-md"></i>Edit</a>';
                     }
                     if (canDelete) {
-                      buttons += '<a href="javascript:;" class="dropdown-item delete-record" data-id="' + full.id + '"><i class="ti ti-trash ti-md"></i>Hapus</a>';
+                      buttons += '<a href="javascript:;" class="dropdown-item delete-record" data-id="' + full.id + '"><i class="ti ti-trash ti-md"></i>Delete</a>';
                     }
                     buttons += '</div>';
 
@@ -127,19 +127,19 @@ $(document).ready(function () {
                 }
             },
             error: function () {
-                toastr.error('Gagal mengambil data!');
+                toastr.error('Failed to fetch data!');
             }
         });
     };
 
-    // Submit Form: Tambah & Update
+    // Submit Form: Add & Update
     $("#formMenu").submit(function (e) {
         e.preventDefault();
 
-        // Tambahkan loader pada tombol submit
+        // Addkan loader pada tombol submit
         var submitBtn = $(this).find('button[type="submit"]');
         var originalText = submitBtn.html();
-        submitBtn.html('<i class="ti ti-loader ti-spin me-2"></i>Menyimpan...').prop('disabled', true);
+        submitBtn.html('<i class="ti ti-loader ti-spin me-2"></i>Saving...').prop('disabled', true);
 
         let formData = new FormData(this);
         let id = $("#id").val();
@@ -148,7 +148,7 @@ $(document).ready(function () {
 
         if (id) {
             url = "admin/menu-group/update/" + id;
-            formData.append("_method", "PUT"); // Tambahkan method PUT untuk Laravel
+            formData.append("_method", "PUT"); // Addkan method PUT untuk Laravel
         }
 
         $.ajax({
@@ -175,7 +175,7 @@ $(document).ready(function () {
                 submitBtn.html(originalText).prop('disabled', false);
             },
             error: function () {
-                toastr.error('Gagal menyimpan data!');
+                toastr.error('Failed to save data.');
                 // Kembalikan tombol ke kondisi semula
                 submitBtn.html(originalText).prop('disabled', false);
             }
@@ -186,15 +186,15 @@ $(document).ready(function () {
         let id = $(this).data('id');
 
         Swal.fire({
-            title: 'Apakah Anda yakin?',
-            text: "Data menu akan dihapus!",
+            title: 'Are you sure?',
+            text: "Menu data will be deleted!",
             icon: 'warning',
             customClass: {
                 confirmButton: 'btn btn-primary waves-effect waves-light ml-3',
                 cancelButton: 'btn btn-label-secondary waves-effect waves-light'
             },
             showCancelButton: true,
-            cancelButtonText: 'Batal',
+            cancelButtonText: 'Cancel',
             buttonsStyling: false,
             didRender: function () {
                 $('.swal2-actions').css('gap', '10px');
@@ -230,7 +230,7 @@ $(document).ready(function () {
                     error: function () {
                         Swal.fire(
                             'Oops!',
-                            'Terjadi kesalahan saat menghapus data.',
+                            'An error occurred while deleting data.',
                             'error'
                         );
                     }

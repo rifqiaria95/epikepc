@@ -49,7 +49,21 @@ class News extends Model
      */
     public function getThumbnailUrlAttribute()
     {
-        return $this->getThumbnailUrl();
+        return $this->getThumbnailUrl() ?: asset('frontend/img/blog/blog-thumb-1.png');
+    }
+
+    /**
+     * Query published news for homepage display with eager-loaded relations.
+     */
+    public function scopeForHomepage($query, int $limit = 3)
+    {
+        return $query
+            ->select(['id', 'title', 'slug', 'summary', 'thumbnail', 'status', 'published_at', 'author_id', 'created_at'])
+            ->withoutTrashed()
+            ->where('status', 'published')
+            ->with(['user:id,name'])
+            ->orderByDesc('published_at')
+            ->limit($limit);
     }
 
     protected static function boot()

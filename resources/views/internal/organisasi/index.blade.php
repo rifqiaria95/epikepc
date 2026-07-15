@@ -108,12 +108,12 @@
                     <tr>
                     <th>#</th>
                     <th>Image</th>
-                    <th>Nama</th>
+                    <th>Name</th>
                     <th>Jabatan</th>
-                    <th>Tahun</th>
-                    <th>Lokasi</th>
-                    <th>Deskripsi</th>
-                    <th>Aksi</th>
+                    <th>Year</th>
+                    <th>Location</th>
+                    <th>Description</th>
+                    <th>Actions</th>
                     </tr>
                 </thead>
                 </table>
@@ -122,7 +122,7 @@
                 <div class="modal-dialog modal-dialog-centered modal-xl">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h4 class="modal-title" id="modal-judul">Tambah Organisasi</h4>
+                            <h4 class="modal-title" id="modal-judul">Add Organisasi</h4>
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <form id="formOrganisasi" class="form-horizontal" enctype="multipart/form-data">
@@ -152,14 +152,14 @@
                                                 <div class="tab-pane fade show active" id="navs-top-home" role="tabpanel">
                                                     <div class="row">
                                                         <div class="col-xl-6 mb-6">
-                                                            <label class="form-label" for="title">Nama</label>
+                                                            <label class="form-label" for="title">Name</label>
                                                             <input
                                                                 type="text"
                                                                 class="form-control"
                                                                 id="nama"
-                                                                placeholder="Masukkan nama organisasi"
+                                                                placeholder="Enter nama organisasi"
                                                                 name="nama"
-                                                                aria-label="Nama" />
+                                                                aria-label="Name" />
                                                             <div class="text-danger small" id="nama-error"></div>
                                                         </div>
                                                         <div class="col-xl-6 mb-6">
@@ -168,31 +168,31 @@
                                                                 type="text"
                                                                 class="form-control"
                                                                 id="jabatan"
-                                                                placeholder="Masukkan jabatan organisasi"
+                                                                placeholder="Enter jabatan organisasi"
                                                                 name="jabatan"
                                                                 aria-label="Jabatan" />
                                                             <div class="text-danger small" id="jabatan-error"></div>
                                                         </div>
                                                         <div class="col-xl-12 mb-6">
-                                                            <label class="form-label" for="description">Deskripsi</label>
+                                                            <label class="form-label" for="description">Description</label>
                                                             <textarea
                                                                 class="form-control"
                                                                 id="deskripsi"
-                                                                placeholder="Masukkan deskripsi organisasi..."
+                                                                placeholder="Enter deskripsi organisasi..."
                                                                 name="deskripsi"
-                                                                aria-label="Deskripsi"
+                                                                aria-label="Description"
                                                                 rows="10"
                                                             ></textarea>
                                                             <div class="text-danger small" id="deskripsi-error"></div>
                                                         </div>
                                                         <div class="col-xl-12 mb-6">
-                                                            <label class="form-label" for="institution">Lokasi</label>
+                                                            <label class="form-label" for="institution">Location</label>
                                                             <input
                                                                 type="text"
                                                                 class="form-control"
                                                                 id="lokasi"
-                                                                placeholder="Masukkan lokasi organisasi"
-                                                                aria-label="Lokasi"
+                                                                placeholder="Enter organization location"
+                                                                aria-label="Location"
                                                                 name="lokasi"
                                                             />
                                                             <div class="text-danger small" id="lokasi-error"></div>
@@ -200,12 +200,12 @@
                                                     </div>
                                                     <div class="row">
                                                         <div class="col-xl-6 mb-6">
-                                                            <label class="form-label" for="year">Tahun</label>
+                                                            <label class="form-label" for="year">Year</label>
                                                             <input
                                                                 type="text"
                                                                 id="tahun"
                                                                 class="form-control"
-                                                                aria-label="Tahun"
+                                                                aria-label="Year"
                                                                 name="tahun"
                                                             />
                                                             <div class="text-danger small" id="tahun-error"></div>
@@ -220,7 +220,7 @@
                                                                 name="image"
                                                                 accept="image/*"
                                                             />
-                                                            <div class="form-text">Upload gambar untuk gambar (JPG, PNG, GIF)</div>
+                                                            <div class="form-text">Upload image (JPG, PNG, GIF)</div>
                                                             <div class="text-danger small" id="image-error"></div>
                                                         </div>
                                                     </div>
@@ -232,7 +232,7 @@
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                <button type="submit" class="btn btn-primary btn-block" id="btn-simpan" value="create">Simpan
+                                <button type="submit" class="btn btn-primary btn-block" id="btn-simpan" value="create">Save
                                 </button>
                             </div>
                         </form>

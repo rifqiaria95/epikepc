@@ -1,0 +1,161 @@
+/**
+ * Axial
+ * EPIKEPC is a universal template for factories, industry, construction, architecture, factories, mechanics, energy
+ * Exclusively on https://1.envato.market/axial-html
+ *
+ * @encoding        UTF-8
+ * @version         1.0.0
+ * @copyright       (C) 2018 - 2021 Merkulove ( https://merkulov.design/ ). All rights reserved.
+ * @license         Envato License https://1.envato.market/KYbje
+ * @contributors    Lamber Lilit (winter.rituel@gmail.com)
+ * @support         help@merkulov.design
+ **/
+// SPOTS SECTION
+
+.spots {
+    &_info {
+        color: $blackalt;
+        &-text {
+            margin: 30px 0;
+        }
+        &-number {
+            max-width: 218px;
+            margin-bottom: 20px;
+            &:last-of-type {
+                margin-bottom: 0;
+            }
+            .number, .label {
+                display: block;
+            }
+            .number {
+                color: $secondary;
+                @include archExtra;
+                margin-bottom: 6px;
+                font-size: 60px;
+                line-height: 60px;
+            }
+            .label {
+                font-weight: bold;
+            }
+        }
+        &-btn {
+            width: 100%;
+            margin-top: 40px;
+        }
+    }
+    &_map {
+        margin-top: 30px;
+        position: relative;
+        &-map {
+            display: block;
+            object-fit: cover;
+            width: 100%;
+        }
+    }
+}
+
+.hot-spot {
+    width: 15px;
+    height: 15px;
+    background-color: $accent;
+    border-radius: 50%;
+    position: absolute;
+    z-index: 100;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    cursor: pointer;
+    &:before {
+        content: '';
+        width: 30px;
+        height: 30px;
+        background-color: rgba($accent, .4);
+        position: absolute;
+        border-radius: 50%;
+        top: -50%;
+        left: -50%;
+        transform: translate(50%, 50%);
+        animation: pulse 3000ms infinite;
+        z-index: 99;
+    }
+}
+
+.speech-bubble {
+    background: $secondary;
+    color: #fff;
+    display: block;
+    padding: 15px;
+    @include archBold;
+    max-width: 250px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translateY(-50%) translateX(-50%);
+    z-index: -1;
+    visibility: hidden;
+    opacity: 0;
+    transition: all .3s ease-in-out;
+    &.active {
+        visibility: visible;
+        opacity: 1;
+        z-index: 1000;
+    }
+}
+
+// ------ MEDIA QUERIES
+
+@media screen and (min-width: 575.98px){
+    .spots {
+        &_info {
+            &-btn {
+                width: unset;
+            }
+        }
+        .speech-bubble {
+            padding: 30px;
+        }
+    }
+}
+
+@media screen and (min-width: 991.98px){
+    .spots {
+        &_map {
+            margin-top: 40px;
+        }
+        .speech-bubble {
+            min-width: 300px;
+        }
+        &_info {
+            margin-left: 30px;
+            &-number {
+                .number {
+                    font-size: 80px;
+                    line-height: 80px;
+                }
+            }
+            &-text {
+                margin-top: 15px;
+            }
+            &-btn {
+                margin-top: 30px;
+            }
+        }
+    }
+}
+
+@media screen and (min-width: 1199.98px){
+    .spots {
+        &_info {
+            max-width: 521px;
+            margin-left: 60px;
+            &-number {
+                &:first-of-type {
+                    margin-bottom: 40px;
+                }
+            }
+            &-btn {
+                margin-top: 60px;
+            }
+        }
+    }
+}

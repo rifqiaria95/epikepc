@@ -157,7 +157,7 @@
                         <tr>
                             <th>ID</th>
                             <th>Role</th>
-                            <th>Aksi</th>
+                            <th>Actions</th>
                         </tr>
                     </thead>
                 </table>
@@ -176,9 +176,9 @@
                             <form id="formRole" class="row g-6" onsubmit="return false">
                                 <input type="hidden" id="id" name="id">
                                 <div class="col-12">
-                                    <label class="form-label" for="name">Nama Role</label>
+                                    <label class="form-label" for="name">Role Name</label>
                                     <input type="text" id="name" name="name" class="form-control"
-                                        placeholder="Masukkan nama role" />
+                                        placeholder="Enter nama role" />
                                 </div>
                                 <div class="col-12">
                                     <h5 class="mb-6">Role Permissions</h5>
@@ -240,7 +240,7 @@
                                                             {{ $menuGroup ? $menuGroup->name : 'Tidak ada menu group' }}
                                                         </td>
 
-                                                        <!-- Menampilkan Permissions dengan Label Singkat -->
+                                                        <!-- Display permissions with short labels -->
                                                         <td>
                                                             <div class="permission-grid">
                                                                 @foreach ($permissionGroup as $permission)

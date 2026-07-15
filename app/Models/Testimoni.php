@@ -30,8 +30,20 @@ class Testimoni extends Model
     public function getGambarUrlAttribute()
     {
         $url = $this->getImageUrl();
-        // Fallback ke default image jika tidak ada gambar
-        return $url ?: asset('frontend/img/bg-img/4.jpg');
+
+        return $url ?: asset('frontend/img/testimonial/testi-avatar-1.png');
+    }
+
+    /**
+     * Query testimonials for homepage display.
+     */
+    public function scopeForHomepage($query, int $limit = 10)
+    {
+        return $query
+            ->select(['id', 'nama', 'testimoni', 'instansi', 'gambar', 'created_at'])
+            ->withoutTrashed()
+            ->orderByDesc('created_at')
+            ->limit($limit);
     }
 
     public function createdBy()

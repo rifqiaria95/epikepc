@@ -1,0 +1,274 @@
+/**
+ * Axial
+ * EPIKEPC is a universal template for factories, industry, construction, architecture, factories, mechanics, energy
+ * Exclusively on https://1.envato.market/axial-html
+ *
+ * @encoding        UTF-8
+ * @version         1.0.0
+ * @copyright       (C) 2018 - 2021 Merkulove ( https://merkulov.design/ ). All rights reserved.
+ * @license         Envato License https://1.envato.market/KYbje
+ * @contributors    Lamber Lilit (winter.rituel@gmail.com)
+ * @support         help@merkulov.design
+ **/
+// TABS SECTION
+
+.tabs {
+    &_services {
+        &-triggers {
+            &_trigger {
+                cursor: pointer;
+                text-align: left;
+                @include archBold;
+                border: 1px solid #C8C8C8;
+                border-left: none;
+                position: relative;
+                width: 100%;
+                padding: 15px 25px;
+                //transition: all .3s ease-in-out;
+                &:before {
+                    content: '';
+                    position: absolute;
+                    left: 0;
+                    top: 0;
+                    height: 100%;
+                    width: 1px;
+                    background: #C8C8C8;
+                    transition: all .3s ease-in-out;
+                }
+                &.active {
+                    &:before {
+                        width: 4px;
+                        background: $secondary;
+                    }
+                }
+            }
+        }
+        &-content {
+            overflow: hidden;
+            border: 1px solid #C8C8C8;
+            border-top: none;
+            .content {
+                visibility: hidden;
+                max-width: 0;
+                max-height: 0;
+                opacity: 0;
+                position: relative;
+                &.active {
+                    opacity: 1;
+                    visibility: visible;
+                    max-height: 10000px;
+                    max-width: 100%;
+                    .img-wrapper, .text-wrapper {
+                        opacity: 1;
+                    }
+                }
+                .img-wrapper {
+                    opacity: 0;
+                    transition: opacity .5s ease-in-out;
+                    max-height: 370px;
+                    overflow: hidden;
+                    img {
+                        display: block;
+                        width: 100%;
+                        object-fit: cover;
+                    }
+                }
+                .text-wrapper {
+                    opacity: 0;
+                    transition: opacity .5s ease-in-out;
+                    padding: 15px;
+                    .main {
+                        order: 2;
+                        margin-top: 30px;
+                        &_table {
+                            width: 100%;
+                            .property {
+                                color: #162739;
+                            }
+                            .value {
+                                text-transform: uppercase;
+                                @include archSemi;
+                                font-size: 18px;
+                                line-height: 23px;
+                                text-align: right;
+                            }
+                        }
+                        &_btn {
+                            width: 100%;
+                            padding: 10px 30px;
+                            margin: 20px 0 0;
+                        }
+                    }
+                    .description {
+                        .text {
+                            color: $blackalt;
+                            margin-bottom: 20px;
+                            &:last-of-type {
+                                margin-bottom: 0;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+// ------ MEDIA QUERIES
+
+@media screen and (min-width: 575.98px) {
+    .tabs {
+        &_services {
+            &-content {
+                .content {
+                    .text-wrapper {
+                        padding: 30px;
+                        .main {
+                            margin: 0 0 20px;
+                            order: unset;
+                            &_table {
+                                width: unset;
+                                border-spacing: 0 5px;
+                                .value {
+                                    text-align: left;
+                                }
+                                .property {
+                                    padding-right: 25px;
+                                }
+                            }
+                            &_btn {
+                                width: unset;
+                                padding: 18px 30px;
+                                margin: 0;
+                            }
+                        }
+                        .description {
+                            .text {
+                                color: $blackalt;
+                                margin-bottom: 20px;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+@media screen and (min-width: 767.98px) {
+    .tabs {
+        &_services {
+           &-triggers {
+               max-width: 250px;
+               justify-content: space-between;
+               height: inherit;
+               &_trigger {
+                   flex-grow: 1;
+                   font-size: 24px;
+               }
+           }
+            &-content {
+                flex-grow: 1;
+                border: 1px solid #C8C8C8;
+                border-left: none;
+                .content {
+                    .text-wrapper {
+                        .main {
+                            margin-top: 0;
+                            margin-bottom: 0;
+                            &_btn, &_table {
+                                width: 100%;
+                            }
+                            &_btn {
+                                margin: 20px 0 20px;
+                            }
+                            &_table {
+                                .value {
+                                    text-align: right;
+                                }
+                            }
+                        }
+                    }
+                    &.active {
+                        display: flex;
+                        height: 100%;
+                        justify-content: space-between;
+                        flex-direction: column;
+                        .text-wrapper {
+                            //flex-grow: 1;
+                            border-left: none;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+@media screen and (min-width: 991.98px) {
+    .tabs {
+        &_header {
+            margin-bottom: 42px;
+            &-wrapper {
+                width: 50%;
+                flex-grow: 1;
+            }
+            .text {
+                margin: 0;
+                width: 35%;
+            }
+        }
+        &_services {
+            &-triggers {
+                max-width: 400px;
+            }
+            &-content {
+                width: 600px;
+                .content {
+                    .text-wrapper {
+                        padding: 30px;
+                        .main {
+                            margin-top: 0;
+                            margin-bottom: 30px;
+                            &_btn, &_table {
+                                width: unset;
+                            }
+                            &_btn {
+                                margin: 0 0 0 15px;
+                                max-width: 184px;
+                            }
+                            &_table {
+                                .value {
+                                    text-align: left;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+@media screen and (min-width: 1199.98px) {
+    .tabs {
+        &_header {
+            &-wrapper {
+                max-width: 493px;
+                flex-grow: unset;
+            }
+            .text {
+                max-width: 525px;
+                width: 100%;
+            }
+        }
+        &_services {
+            &-triggers {
+                max-width: 521px;
+                &_trigger {
+                    padding: 30px 60px 30px 50px;
+                }
+            }
+        }
+    }
+}

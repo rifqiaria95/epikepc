@@ -1,0 +1,182 @@
+/**
+ * Axial
+ * EPIKEPC is a universal template for factories, industry, construction, architecture, factories, mechanics, energy
+ * Exclusively on https://1.envato.market/axial-html
+ *
+ * @encoding        UTF-8
+ * @version         1.0.0
+ * @copyright       (C) 2018 - 2021 Merkulove ( https://merkulov.design/ ). All rights reserved.
+ * @license         Envato License https://1.envato.market/KYbje
+ * @contributors    Lamber Lilit (winter.rituel@gmail.com)
+ * @support         help@merkulov.design
+ **/
+// GALLERY (MASONRY) CONTENT
+
+.gallery {
+    &_filters {
+        .list-item {
+            margin-right: 15px;
+            margin-bottom: 10px;
+
+            &:last-of-type {
+                margin: 0;
+            }
+        }
+
+        &-filter {
+            text-transform: uppercase;
+            @include archSemi;
+            font-size: 16px;
+            line-height: 21px;
+            transition: all .3s ease-in-out;
+            padding-bottom: 10px;
+            position: relative;
+
+            &:after {
+                content: '';
+                position: absolute;
+                height: 2px;
+                width: 0;
+                background: $accent;
+                bottom: 0;
+                left: 0;
+                transition: width .3s ease-in-out;
+            }
+
+            &.current,
+            &:hover,
+            &:focus {
+                color: $secondary;
+
+                &:after {
+                    width: 100%;
+                }
+            }
+        }
+    }
+
+    &_masonry {
+        &-item {
+            position: relative;
+            float: left;
+            min-height: 1px;
+            margin-top: 30px;
+
+            .aspect {
+                position: relative;
+                display: block;
+                width: 100%;
+                height: 0;
+                z-index: 1000;
+                overflow: hidden;
+
+                &:hover, &:focus {
+                    .overlay {
+                        opacity: 1;
+                    }
+                }
+
+                &__inner {
+                    position: absolute;
+                    top: 0;
+                    right: 0;
+                    bottom: 0;
+                    left: 0;
+
+                    img {
+                        height: 100%;
+                        width: 100%;
+                        display: block;
+                        object-fit: cover;
+                    }
+
+                }
+
+                &--1x1 {
+                    padding-bottom: 100%;
+                }
+
+                &--13x9 {
+                    padding-bottom: calc(50% - 2px);
+                }
+            }
+
+            .overlay {
+                position: absolute;
+                bottom: 0;
+                top: 0;
+                left: 0;
+                right: 0;
+                padding: 40px;
+                background: rgba($primary, 0.7);
+                color: #fff;
+                font-family: $accentFont;
+                transition: opacity .3s ease-in-out;
+                opacity: 0;
+
+                &_label {
+                    text-transform: uppercase;
+                    color: $accent;
+                    margin-top: 10px;
+                    font-size: 18px;
+                    line-height: 23px;
+                    font-weight: 600;
+                }
+            }
+        }
+    }
+}
+
+// ------ MEDIA QUERIES
+
+@media screen and (min-width: 575.98px) {
+    .gallery {
+        &_masonry {
+            margin: 0 -15px;
+            &-item {
+                padding-left: 15px;
+                padding-right: 15px;
+                margin-top: 30px;
+
+                .aspect {
+                    &--13x9 {
+                        padding-bottom: calc(50% - 15px);
+                    }
+                }
+            }
+        }
+    }
+}
+
+@media screen and (min-width: 767.98px) {
+    .gallery {
+
+        &_filters {
+            margin-bottom: 15px;
+            .list-item {
+                margin-right: 10px;
+                margin-bottom: 10px;
+            }
+        }
+    }
+}
+
+@media screen and (min-width: 991.98px) {
+    .gallery {
+        &_filters {
+            margin-bottom: 35px;
+            &-filter {
+                font-size: 18px;
+                line-height: 23px;
+            }
+        }
+        &_masonry {
+            .overlay {
+
+                &_label {
+                    margin-top: 20px;
+                }
+            }
+        }
+    }
+}

@@ -62,8 +62,8 @@ class TestimoniController extends Controller
             if (!$request->hasFile('gambar')) {
                 return response()->json([
                     'status' => 422,
-                    'message' => 'Gambar wajib diisi saat membuat testimoni baru.',
-                    'errors' => ['gambar' => ['Gambar wajib diisi saat membuat testimoni baru.']]
+                    'message' => 'Image is required when creating a new testimonial.',
+                    'errors' => ['gambar' => ['Image is required when creating a new testimonial.']]
                 ], 422);
             }
 
@@ -75,8 +75,8 @@ class TestimoniController extends Controller
             if (!$uploadResult['success']) {
                 return response()->json([
                     'status' => 422,
-                    'message' => 'Gagal upload gambar: ' . $uploadResult['error'],
-                    'errors' => ['gambar' => ['Gagal upload gambar: ' . $uploadResult['error']]]
+                    'message' => 'Failed to upload image: ' . $uploadResult['error'],
+                    'errors' => ['gambar' => ['Failed to upload image: ' . $uploadResult['error']]]
                 ], 422);
             }
 
@@ -93,20 +93,20 @@ class TestimoniController extends Controller
 
             return response()->json([
                 'status' => 200,
-                'message' => 'Data testimoni berhasil disimpan!',
+                'message' => 'Testimonial saved successfully!',
                 'data' => $testimoni
             ]);
         } catch (\Exception $e) {
             DB::rollBack();
 
-            // Hapus file yang sudah diupload jika ada error
+            // Delete file yang sudah diupload jika ada error
             if (isset($uploadResult) && $uploadResult['success']) {
                 $this->fileStorageService->deleteFile($uploadResult['path']);
             }
 
             return response()->json([
                 'status' => 500,
-                'message' => 'Terjadi kesalahan pada server.',
+                'message' => 'A server error occurred.',
                 'error' => $e->getMessage()
             ], 500);
         }
@@ -120,7 +120,7 @@ class TestimoniController extends Controller
             if (!$testimoni) {
                 return response()->json([
                     'status' => 404,
-                    'message' => 'Data testimoni tidak ditemukan'
+                    'message' => 'Testimonial data not found'
                 ], 404);
             }
 
@@ -134,7 +134,7 @@ class TestimoniController extends Controller
         } catch (\Exception $e) {
             return response()->json([
                 'status' => 500,
-                'message' => 'Terjadi kesalahan pada server.',
+                'message' => 'A server error occurred.',
                 'error' => $e->getMessage()
             ], 500);
         }
@@ -157,12 +157,12 @@ class TestimoniController extends Controller
                 );
 
                 if (!$uploadResult['success']) {
-                    throw new \Exception('Gagal upload gambar: ' . $uploadResult['error']);
+                    throw new \Exception('Failed to upload image: ' . $uploadResult['error']);
                 }
 
                 $validatedData['gambar'] = $uploadResult['path'];
 
-                // Hapus image lama jika ada
+                // Delete image lama jika ada
                 if ($oldImage) {
                     $this->fileStorageService->deleteFile($oldImage);
                 }
@@ -178,19 +178,19 @@ class TestimoniController extends Controller
 
             return response()->json([
                 'status'  => 200,
-                'message' => 'Data testimoni berhasil diubah'
+                'message' => 'Testimonial updated successfully'
             ]);
         } catch (\Exception $e) {
             DB::rollBack();
 
-            // Hapus file yang sudah diupload jika ada error
+            // Delete file yang sudah diupload jika ada error
             if (isset($uploadResult) && $uploadResult['success']) {
                 $this->fileStorageService->deleteFile($uploadResult['path']);
             }
 
             return response()->json([
                 'status' => 500,
-                'message' => 'Terjadi kesalahan pada server.',
+                'message' => 'A server error occurred.',
                 'error' => $e->getMessage()
             ], 500);
         }
@@ -210,7 +210,7 @@ class TestimoniController extends Controller
                 ]);
             }
 
-            // Hapus image dari object storage jika ada
+            // Delete image dari object storage jika ada
             if ($testimoni->gambar) {
                 $this->fileStorageService->deleteFile($testimoni->gambar);
             }
@@ -219,21 +219,21 @@ class TestimoniController extends Controller
             $testimoni->deleted_by = Auth::id();
             $testimoni->save();
 
-            // Hapus data (Soft Delete)
+            // Delete data (Soft Delete)
             $testimoni->delete();
 
             DB::commit();
 
             return response()->json([
                 'status' => 200,
-                'message' => 'Data Testimoni Berhasil Dihapus'
+                'message' => 'Testimonial deleted successfully'
             ]);
         } catch (\Exception $e) {
             DB::rollBack();
 
             return response()->json([
                 'status' => 500,
-                'message' => 'Terjadi kesalahan pada server.',
+                'message' => 'A server error occurred.',
                 'error' => $e->getMessage()
             ], 500);
         }

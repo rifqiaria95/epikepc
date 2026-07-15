@@ -68,7 +68,7 @@ class AdminController extends Controller
 
         return response()->json([
             'status'  => 200,
-            'message' => 'Data berhasil dikembalikan!'
+            'message' => 'Data restored successfully!'
         ]);
     }
 
@@ -104,18 +104,18 @@ class AdminController extends Controller
             if ($deleted) {
                 return response()->json([
                     'status' => 200,
-                    'message' => 'Data berhasil dihapus permanen!'
+                    'message' => 'Data permanently deleted!'
                 ]);
             } else {
                 return response()->json([
                     'status' => 404,
-                    'message' => 'Data tidak ditemukan atau sudah dihapus permanen.'
+                    'message' => 'Data not found or already permanently deleted.'
                 ], 404);
             }
         } catch (\Exception $e) {
             return response()->json([
                 'status' => 500,
-                'message' => 'Terjadi kesalahan pada server.',
+                'message' => 'A server error occurred.',
                 'error' => $e->getMessage()
             ], 500);
         }

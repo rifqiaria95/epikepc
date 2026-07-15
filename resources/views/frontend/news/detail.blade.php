@@ -1,272 +1,432 @@
 @extends('layouts.frontend.main')
 
-@section('content')
-    <!-- Breadcrumb Section -->
-    <div class="breadcrumb-section bg-img" style="background-image: url('{{ asset('frontend/img/bg-img/90.jpg') }}');">
-        <div class="container">
-            <!-- Breadcrumb Content -->
-            <div class="breadcrumb-content">
-                <div class="divider"></div>
-                <h2>{{ $news->title }}</h2>
-                <ul class="list-unstyled">
-                    <li><a href="{{ url('/') }}">Home</a></li>
-                    <li>Blog Details</li>
-                </ul>
-            </div>
-        </div>
+@section('title', ($news->title ?? 'News Details') . ' | EPIKEPC')
+@section('page', 'blog')
 
-        <!-- Divider -->
-        <div class="divider"></div>
-    </div>
+@push('styles')
+    <link rel="stylesheet" href="{{ asset('frontend/css/single-post.min.css') }}" />
+@endpush
 
-    <!-- User Profile [SVG] -->
-    <svg xmlns="http://www.w3.org/2000/svg" class="d-none">
-        <symbol id="icon-user-profile" viewBox="0 0 20 20" fill="none">
-            <path
-                d="M10.001 0.650391C12.499 0.650391 14.5437 2.69437 14.5439 5.19238C14.5439 7.69056 12.4992 9.73535 10.001 9.73535C7.50299 9.73517 5.45898 7.69045 5.45898 5.19238C5.45919 2.69448 7.50308 0.650569 10.001 0.650391Z"
-                stroke="#601FEB" stroke-width="1.3" />
-            <path
-                d="M6.2041 11.4083C6.22327 11.4045 6.26409 11.4086 6.30469 11.4269L6.34375 11.4493L6.34863 11.4523C7.41552 12.2397 8.68474 12.6455 9.99902 12.6456C11.2313 12.6456 12.4247 12.2892 13.4482 11.5958L13.6504 11.4523L13.6553 11.4493C13.6717 11.4374 13.7412 11.4077 13.8506 11.4171C15.3678 11.6303 16.7302 12.4459 17.6689 13.6915L17.8516 13.9474L17.8555 13.9523C18.0155 14.1834 18.152 14.4238 18.2607 14.671C18.1428 14.8748 18.0147 15.0722 17.8711 15.2697L17.7158 15.4767L17.708 15.4874C17.4915 15.7812 17.2481 16.0563 16.9902 16.3253L16.7285 16.5929C16.4317 16.8896 16.0922 17.1862 15.7559 17.4386C14.0785 18.6913 12.0607 19.3497 9.97656 19.3497C7.89732 19.3497 5.88498 18.6935 4.20996 17.4464C3.84577 17.1505 3.51261 16.8799 3.22559 16.5929L3.21875 16.5851L3.21094 16.5792L2.95215 16.3234C2.78377 16.1498 2.62475 15.9693 2.47168 15.7794L2.24609 15.4874L2.24316 15.4825L1.94434 15.0695C1.86428 14.9526 1.78843 14.8339 1.71875 14.7169C1.83566 14.4561 1.98209 14.1841 2.14258 13.9523L2.14355 13.9532L2.15137 13.9415C3.06835 12.5558 4.53571 11.6392 6.16504 11.4152L6.18457 11.4122L6.2041 11.4083Z"
-                stroke="#601FEB" stroke-width="1.3" />
-        </symbol>
-    </svg>
-
-    <!-- Message Box [SVG] -->
-    <svg xmlns="http://www.w3.org/2000/svg" class="d-none">
-        <symbol id="icon-message-box" viewBox="0 0 18 18" fill="none">
-            <path d="M1.125 2.25H16.875V12.375H9L4.5 16.3125V12.375H1.125V2.25Z" stroke="#601FEB" stroke-linecap="round"
-                stroke-linejoin="round" />
-        </symbol>
-    </svg>
-
-    <!-- Calendar [SVG] -->
-    <svg xmlns="http://www.w3.org/2000/svg" class="d-none">
-        <symbol id="icon-calendar" viewBox="0 0 18 18" fill="none">
-            <g clip-path="url(#clip0)">
-                <path
-                    d="M16.1251 3H14.5001V4H16.0001V15H2.00013V4H3.50013V3H1.87513C1.75825 3.00195 1.6429 3.02691 1.53566 3.07345C1.42843 3.11999 1.33141 3.1872 1.25016 3.27125C1.1689 3.35529 1.105 3.45451 1.0621 3.56325C1.0192 3.67199 0.998142 3.78812 1.00013 3.905V15.095C0.998142 15.2119 1.0192 15.328 1.0621 15.4367C1.105 15.5455 1.1689 15.6447 1.25016 15.7288C1.33141 15.8128 1.42843 15.88 1.53566 15.9265C1.6429 15.9731 1.75825 15.998 1.87513 16H16.1251C16.242 15.998 16.3574 15.9731 16.4646 15.9265C16.5718 15.88 16.6688 15.8128 16.7501 15.7288C16.8314 15.6447 16.8953 15.5455 16.9382 15.4367C16.9811 15.328 17.0021 15.2119 17.0001 15.095V3.905C17.0021 3.78812 16.9811 3.67199 16.9382 3.56325C16.8953 3.45451 16.8314 3.35529 16.7501 3.27125C16.6688 3.1872 16.5718 3.11999 16.4646 3.07345C16.3574 3.02691 16.242 3.00195 16.1251 3Z"
-                    fill="#601FEB" />
-                <path d="M4 7H5V8H4V7Z" fill="#601FEB" />
-                <path d="M7 7H8V8H7V7Z" fill="#601FEB" />
-                <path d="M10 7H11V8H10V7Z" fill="#601FEB" />
-                <path d="M13 7H14V8H13V7Z" fill="#601FEB" />
-                <path d="M4 9.5H5V10.5H4V9.5Z" fill="#601FEB" />
-                <path d="M7 9.5H8V10.5H7V9.5Z" fill="#601FEB" />
-                <path d="M10 9.5H11V10.5H10V9.5Z" fill="#601FEB" />
-                <path d="M13 9.5H14V10.5H13V9.5Z" fill="#601FEB" />
-                <path d="M4 12H5V13H4V12Z" fill="#601FEB" />
-                <path d="M7 12H8V13H7V12Z" fill="#601FEB" />
-                <path d="M10 12H11V13H10V12Z" fill="#601FEB" />
-                <path d="M13 12H14V13H13V12Z" fill="#601FEB" />
-                <path
-                    d="M5 5C5.13261 5 5.25979 4.94732 5.35355 4.85355C5.44732 4.75979 5.5 4.63261 5.5 4.5V1.5C5.5 1.36739 5.44732 1.24021 5.35355 1.14645C5.25979 1.05268 5.13261 1 5 1C4.86739 1 4.74021 1.05268 4.64645 1.14645C4.55268 1.24021 4.5 1.36739 4.5 1.5V4.5C4.5 4.63261 4.55268 4.75979 4.64645 4.85355C4.74021 4.94732 4.86739 5 5 5Z"
-                    fill="#601FEB" />
-                <path
-                    d="M13 5C13.1326 5 13.2598 4.94732 13.3536 4.85355C13.4473 4.75979 13.5 4.63261 13.5 4.5V1.5C13.5 1.36739 13.4473 1.24021 13.3536 1.14645C13.2598 1.05268 13.1326 1 13 1C12.8674 1 12.7402 1.05268 12.6464 1.14645C12.5527 1.24021 12.5 1.36739 12.5 1.5V4.5C12.5 4.63261 12.5527 4.75979 12.6464 4.85355C12.7402 4.94732 12.8674 5 13 5Z"
-                    fill="#601FEB" />
-                <path d="M6.5 3H11.5V4H6.5V3Z" fill="#601FEB" />
-            </g>
-            <defs>
-                <clipPath id="clip0">
-                    <rect width="18" height="18" fill="white" />
-                </clipPath>
-            </defs>
-        </symbol>
-    </svg>
-
-    <!-- Blog Section -->
-    <div class="blog-section">
-        <!-- Divider -->
-        <div class="divider"></div>
-
-        <div class="container">
-            <div class="row g-5 g-md-4 g-xxl-5">
-                <!-- Single Blog Content -->
-                <div class="col-12 col-md-7 col-lg-8">
-                    <div class="pe-lg-3">
-                        <!-- Single Blog Content -->
-                        <div class="single-blog-content">
-                            <div class="blog-card-two wow fadeInUp" data-wow-duration="1000ms" data-wow-delay="200ms">
-                                <!-- Post Image -->
-                                <div class="post-img">
-                                    <img src="{{ $news->thumbnail_url }}" alt="{{ $news->title }}">
-                                </div>
-
-                                <!-- Post Body -->
-                                <div class="post-body">
-                                    <!-- Blog Meta -->
-                                    <div class="blog-meta mb-2 flex-wrap d-flex align-items-center gap-4">
-                                        <a href="#">
-                                            <svg width="20" height="20">
-                                                <use xlink:href="#icon-user-profile"></use>
-                                            </svg>
-                                            By {{ $news->user->name ?? 'Admin' }}
-                                        </a>
-                                        <a href="#">
-                                            <svg width="18" height="18">
-                                                <use xlink:href="#icon-calendar"></use>
-                                            </svg>
-                                            {{ $news->published_at?->format('d M, Y') ?? 'No Date' }}
-                                        </a>
-                                    </div>
-
-                                    <!-- Post Title -->
-                                    <h3 class="post-title mb-4">{{ $news->title }}</h3>
-
-                                    @if($news->summary)
-                                        <p class="lead">{{ $news->summary }}</p>
-                                    @endif
-
-                                    <div class="d-flex flex-column gap-4">
-                                        {!! $news->content !!}
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="divider-sm"></div>
-
-                        <!-- Tag & Share -->
-                        <div class="tag-share-wrapper">
-                            @if($news->tags->count() > 0)
-                                <ul class="list-unstyled tag-list">
-                                    <li>Tags:</li>
-                                    @foreach($news->tags as $tag)
-                                        <li><a href="#">{{ $tag->name }}</a></li>
-                                    @endforeach
-                                </ul>
-                            @endif
-
-                            <ul class="list-unstyled share-list">
-                                <li>Share:</li>
-                                <li><a href="https://www.facebook.com/sharer/sharer.php?u={{ urlencode(route('news.show', $news->slug)) }}" target="_blank"><i class="ti ti-brand-facebook"></i></a></li>
-                                <li><a href="https://twitter.com/intent/tweet?url={{ urlencode(route('news.show', $news->slug)) }}&text={{ urlencode($news->title) }}" target="_blank"><i class="ti ti-brand-x"></i></a></li>
-                                <li><a href="https://www.linkedin.com/sharing/share-offsite/?url={{ urlencode(route('news.show', $news->slug)) }}" target="_blank"><i class="ti ti-brand-linkedin"></i></a></li>
-                                <li><a href="https://wa.me/?text={{ urlencode($news->title . ' ' . route('news.show', $news->slug)) }}" target="_blank"><i class="ti ti-brand-whatsapp"></i></a></li>
-                            </ul>
-                        </div>
-
-                        <div class="divider-sm"></div>
-                    </div>
-                </div>
-
-                <div class="col-12 col-md-5 col-lg-4">
-                    <div class="d-flex flex-column gap-5">
-                        <!-- Widget -->
-                        <div class="blog-widget">
-                            <h4 class="fw-bold mb-4">Search Here</h4>
-
-                            <!-- Form -->
-                            <form action="#" method="get">
-                                <input type="search" placeholder="Search here..." class="form-control">
-                                <button type="submit">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"
-                                        viewBox="0 0 20 20" fill="none">
-                                        <g clip-path="url(#clip0_1_17841)">
-                                            <path
-                                                d="M2.5 8.33333C2.5 9.09938 2.65088 9.85792 2.94404 10.5657C3.23719 11.2734 3.66687 11.9164 4.20854 12.4581C4.75022 12.9998 5.39328 13.4295 6.10101 13.7226C6.80875 14.0158 7.56729 14.1667 8.33333 14.1667C9.09938 14.1667 9.85792 14.0158 10.5657 13.7226C11.2734 13.4295 11.9164 12.9998 12.4581 12.4581C12.9998 11.9164 13.4295 11.2734 13.7226 10.5657C14.0158 9.85792 14.1667 9.09938 14.1667 8.33333C14.1667 7.56729 14.0158 6.80875 13.7226 6.10101C13.4295 5.39328 12.9998 4.75022 12.4581 4.20854C11.9164 3.66687 11.2734 3.23719 10.5657 2.94404C9.85792 2.65088 9.09938 2.5 8.33333 2.5C7.56729 2.5 6.80875 2.65088 6.10101 2.94404C5.39328 3.23719 4.75022 3.66687 4.20854 4.20854C3.66687 4.75022 3.23719 5.39328 2.94404 6.10101C2.65088 6.80875 2.5 7.56729 2.5 8.33333Z"
-                                                stroke="white" stroke-linecap="round" stroke-linejoin="round" />
-                                            <path d="M17.5 17.5L12.5 12.5" stroke="white" stroke-linecap="round"
-                                                stroke-linejoin="round" />
-                                        </g>
-                                        <defs>
-                                            <clipPath id="clip0_1_17841">
-                                                <rect width="20" height="20" fill="white" />
-                                            </clipPath>
-                                        </defs>
-                                    </svg>
-                                </button>
-                            </form>
-                        </div>
-
-                        <!-- Widget -->
-                        <div class="blog-widget">
-                            <h4 class="fw-bold mb-4">Categories</h4>
-
-                            <ul class="blog-list style-two">
-                                @forelse($categories as $category)
-                                    <li>
-                                        <a href="#">
-                                            {{ $category->name }}
-                                            <span>{{ $category->news_count }}</span>
-                                        </a>
-                                    </li>
-                                @empty
-                                    <li>No categories available</li>
-                                @endforelse
-                            </ul>
-                        </div>
-
-                        <!-- Widget -->
-                        <div class="blog-widget">
-                            <h4 class="fw-bold mb-4">Recent Posts</h4>
-
-                            <div class="d-flex flex-column gap-4">
-                                @forelse($recentPosts as $post)
-                                    <!-- Widget Blog Post -->
-                                    <div class="widget-blog-post">
-                                        <div class="blog-thumbnail">
-                                            <img src="{{ $post->thumbnail_url }}" alt="{{ $post->title }}">
-                                        </div>
-                                        <div class="blog-content">
-                                            <p class="mb-1 text-primary">{{ $post->published_at?->format('d M, Y') ?? 'No Date' }}</p>
-                                            <a href="{{ route('news.show', $post->slug) }}">{{ Str::limit($post->title, 60) }}</a>
-                                        </div>
-                                    </div>
-                                @empty
-                                    <p>No recent posts available</p>
-                                @endforelse
-                            </div>
-                        </div>
-
-                        <!-- Widget -->
-                        <div class="blog-widget">
-                            <h4 class="fw-bold mb-4">Tags</h4>
-
-                            <ul class="tag-list list-unstyled">
-                                @forelse($allTags as $tag)
-                                    <li><a href="#">{{ $tag->name }}</a></li>
-                                @empty
-                                    <li>No tags available</li>
-                                @endforelse
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Divider -->
-        <div class="divider"></div>
-    </div>
-
-    <!-- CTA Wrapper -->
-    <div class="cta-wrapper bg-img" style="background-image: url(assets/img/core-img/grid.jpg)">
-        <!-- Divider -->
-        <div class="divider"></div>
-
-        <div class="container">
-            <div class="row g-4 g-xl-5 align-items-center">
-                <div class="col-12 col-lg-6 col-xl-7">
-                    <h2 class="mb-0 wow fadeInUp" data-wow-duration="1000ms" data-wow-delay="400ms">Start Building Your
-                        Business Now</h2>
-                </div>
-
-                <div class="col-12 col-lg-6 col-xl-5">
-                    <p class="wow fadeInUp" data-wow-duration="1000ms" data-wow-delay="600ms">Communicate your pricing
-                        clearly and transparently to build trust with your customers. Hidden fees or
-                        unclear pricing structures can lead to dissatisfaction.</p>
-                    <a href="pricing.html" class="btn btn-primary btn-hover-border wow fadeInUp"
-                        data-wow-duration="1000ms" data-wow-delay="800ms">Get Started <i
-                            class="ti ti-arrow-up-right"></i></a>
-                </div>
-            </div>
-        </div>
-
-        <!-- Divider -->
-        <div class="divider"></div>
-    </div>
+@section('header_extension')
+    @include('partials.frontend.header-extension', [
+        'subtitle' => 'Artikel',
+        'title'    => $news->title,
+        'items'    => [
+            ['label' => 'Home', 'url' => url('/')],
+            ['label' => 'News', 'url' => route('frontend.news.index')],
+            ['label' => Str::limit($news->title, 40)],
+        ],
+    ])
 @endsection
 
-@section('scripts')
+@section('content')
+        <!-- SINGLE POST CONTENT START  -->
+        <main class="post section-nopb">
+            <div class="container d-flex flex-wrap justify-content-center justify-content-md-between">
+                <div class="wrapper--content">
+                    <article class="post_article">
+                        <div class="post_article-img">
+                            <picture>
+                                <source
+                                    data-srcset="{{ $news->thumbnail_url ?: asset('frontend/img/placeholder.jpg') }}"
+                                    srcset="{{ $news->thumbnail_url ?: asset('frontend/img/placeholder.jpg') }}"
+                                    type="image/webp"
+                                />
+                                <img
+                                    class="post_article-img_img post_article-media lazy"
+                                    data-src="{{ $news->thumbnail_url ?: asset('frontend/img/placeholder.jpg') }}"
+                                    src="{{ $news->thumbnail_url ?: asset('frontend/img/placeholder.jpg') }}"
+                                    alt="{{ $news->title }}"
+                                />
+                            </picture>
+                        </div>
+                        <div class="post_article-info d-flex align-items-center flex-wrap">
+                            <span class="date">{{ $news->published_at?->format('F d, Y') }}</span>
+                            @if ($news->categories && $news->categories->isNotEmpty())
+                            <span class="divider"></span>
+                            <span class="author">
+                                in
+                                <a class="link" href="#">{{ $news->categories->first()->name }}</a>
+                            </span>
+                            @endif
+                        </div>
+                        <div class="post_article-body">
+                            {!! $news->content !!}
+                        </div>
+                        <div
+                            class="post_article-footer d-flex flex-wrap flex-md-nowrap flex-lg-wrap flex-xl-nowrap justify-content-between"
+                        >
+                            <ul class="post_article-footer_tags d-flex flex-wrap align-items-baseline">
+                                @if ($news->tags && $news->tags->isNotEmpty())
+                                    @foreach ($news->tags as $tag)
+                                    <li class="list-item">
+                                        <a class="tag" href="#">{{ $tag->name }}</a>
+                                    </li>
+                                    @endforeach
+                                @endif
+                            </ul>
+                            <ul class="socials d-flex align-items-center justify-content-start justify-content-xl-end">
+                                <li class="socials_item">
+                                    <a class="socials_item-link" href="https://www.facebook.com/sharer/sharer.php?u={{ urlencode(request()->url()) }}" target="_blank" rel="noopener noreferrer">
+                                        <i class="icon-facebook"></i>
+                                    </a>
+                                </li>
+                                <li class="socials_item">
+                                    <a class="socials_item-link" href="https://www.instagram.com/" target="_blank" rel="noopener noreferrer">
+                                        <i class="icon-instagram"></i>
+                                    </a>
+                                </li>
+                                <li class="socials_item">
+                                    <a class="socials_item-link" href="https://twitter.com/intent/tweet?url={{ urlencode(request()->url()) }}&text={{ urlencode($news->title) }}" target="_blank" rel="noopener noreferrer">
+                                        <i class="icon-twitter"></i>
+                                    </a>
+                                </li>
+                                <li class="socials_item">
+                                    <a class="socials_item-link" href="https://wa.me/?text={{ urlencode($news->title . ' ' . request()->url()) }}" target="_blank" rel="noopener noreferrer">
+                                        <i class="icon-whatsapp"></i>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </article>
+                    <div class="post_nav d-flex flex-wrap flex-sm-nowrap align-items-center justify-content-between">
+                        <div class="post_nav-item post_nav-item--prev d-flex align-items-center">
+                            <a
+                                class="post_nav-item_control post_nav-item_control--prev d-flex align-items-center justify-content-center"
+                                href="{{ route('frontend.news.index') }}"
+                            >
+                                <i class="icon-arrow_left icon"></i>
+                            </a>
+                            <div class="post_nav-item_hint">
+                                <span class="label">Back to</span>
+                                <h4 class="title">All Articles</h4>
+                            </div>
+                        </div>
+                    </div>
+                    <section class="post_reply">
+                        <h3 class="post_reply-title">Leave a Comment</h3>
+                        <form class="post_reply-form d-flex flex-column" action="#" method="POST" name="replyForm" data-type="reply">
+                            <div class="wrapper d-flex flex-wrap flex-sm-nowrap justify-content-between">
+                                <input
+                                    class="post_reply-form_field field required"
+                                    data-type="name"
+                                    type="text"
+                                    name="replyUserName"
+                                    id="replyUserName"
+                                    placeholder="Full name"
+                                />
+                                <input
+                                    class="post_reply-form_field field required"
+                                    name="replyEmail"
+                                    id="replyEmail"
+                                    data-type="email"
+                                    type="text"
+                                    placeholder="Email"
+                                />
+                            </div>
+                            <textarea
+                                class="post_reply-form_field field required"
+                                data-type="message"
+                                name="replyText"
+                                id="replyText"
+                                placeholder="Comment"
+                            ></textarea>
+                            <div class="wrapper">
+                                <input class="post_reply-form_field field required" type="checkbox" name="saveUserData" id="saveUserData" />
+                                <label for="saveUserData"
+                                    >Save my name, email, and website in this browser for the next time I comment.
+                                </label>
+                            </div>
+                            <button class="post_reply-form_btn btn" type="submit">Post comment</button>
+                        </form>
+                    </section>
+                </div>
+                <aside class="widgets">
+                    <form class="widgets_widget--search d-flex flex-nowrap" action="#" method="POST">
+                        <input class="field required" type="text" placeholder="Search" />
+                        <button class="btn btn--static" type="submit">
+                            <i class="icon-search"></i>
+                        </button>
+                    </form>
+                    <div class="widgets_widget widgets_widget--categories">
+                        <h3 class="widgets_widget-title">Categories</h3>
+                        <ul class="list">
+                            @foreach ($categories as $category)
+                            <li class="list-item">
+                                <a class="link d-flex align-items-center" href="{{ route('frontend.news.index', ['category' => $category->id]) }}">
+                                    <i class="icon-arrow_right icon--arrow"></i>
+                                    {{ $category->name }}
+                                </a>
+                            </li>
+                            @endforeach
+                        </ul>
+                    </div>
+                    <div class="widgets_widget widgets_widget--latest">
+                        <h3 class="widgets_widget-title">Latest Articles</h3>
+                        <ul class="list">
+                            @foreach ($recentPosts as $recentPost)
+                            <li class="list-item">
+                                <picture>
+                                    <source
+                                        data-srcset="{{ $recentPost->thumbnail_url ?: asset('frontend/img/placeholder.jpg') }}"
+                                        srcset="{{ $recentPost->thumbnail_url ?: asset('frontend/img/placeholder.jpg') }}"
+                                        type="image/webp"
+                                    />
+                                    <img
+                                        class="lazy preview"
+                                        data-src="{{ $recentPost->thumbnail_url ?: asset('frontend/img/placeholder.jpg') }}"
+                                        src="{{ $recentPost->thumbnail_url ?: asset('frontend/img/placeholder.jpg') }}"
+                                        alt="{{ $recentPost->title }}"
+                                    />
+                                </picture>
+                                <h4 class="title">{{ $recentPost->title }}</h4>
+                                <a class="link link-arrow" href="{{ route('news.show', $recentPost->slug) }}">
+                                    Read now
+                                    <i class="icon-arrow_right icon"></i>
+                                </a>
+                            </li>
+                            @endforeach
+                        </ul>
+                    </div>
+                    <div class="widgets_widget widgets_widget--newsletter">
+                        <h3 class="widgets_widget-title">Subscribe to our news</h3>
+                        <p class="text">Find out about the last days and the latest promotions of our Corporation</p>
+                        <form
+                            class="d-flex flex-wrap flex-sm-nowrap form"
+                            data-type="newsletter"
+                            action="#"
+                            method="POST"
+                            name="newsletterForm"
+                            id="newsletterForm--widget"
+                        >
+                            <input
+                                class="field required"
+                                name="newsletterEmail"
+                                id="newsletterEmail--widget"
+                                type="text"
+                                placeholder="Email"
+                                data-type="email"
+                            />
+                            <button class="btn btn--submit btn--static" type="submit">Subscribe</button>
+                        </form>
+                        <ul class="socials d-flex align-items-center justify-content-start">
+                            <li class="socials_item">
+                                <a class="socials_item-link" href="#" target="_blank" rel="noopener noreferrer">
+                                    <i class="icon-facebook"></i>
+                                </a>
+                            </li>
+                            <li class="socials_item">
+                                <a class="socials_item-link" href="#" target="_blank" rel="noopener noreferrer">
+                                    <i class="icon-instagram"></i>
+                                </a>
+                            </li>
+                            <li class="socials_item">
+                                <a class="socials_item-link" href="#" target="_blank" rel="noopener noreferrer">
+                                    <i class="icon-twitter"></i>
+                                </a>
+                            </li>
+                            <li class="socials_item">
+                                <a class="socials_item-link" href="#" target="_blank" rel="noopener noreferrer">
+                                    <i class="icon-whatsapp"></i>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="widgets_widget widgets_widget--tags">
+                        <h3 class="widgets_widget-title">Tags</h3>
+                        <ul class="list d-flex flex-wrap align-items-baseline">
+                            @if (!empty($allTags) && count($allTags) > 0)
+                                @foreach ($allTags as $tag)
+                                <li class="list-item">
+                                    <a class="tag" href="#">{{ $tag->name }}</a>
+                                </li>
+                                @endforeach
+                            @else
+                            <li class="list-item"><a class="tag" href="#">Engineering</a></li>
+                            <li class="list-item"><a class="tag" href="#">Technology</a></li>
+                            <li class="list-item"><a class="tag" href="#">Materials</a></li>
+                            <li class="list-item"><a class="tag" href="#">Future</a></li>
+                            <li class="list-item"><a class="tag" href="#">Plan</a></li>
+                            <li class="list-item"><a class="tag" href="#">Building</a></li>
+                            <li class="list-item"><a class="tag" href="#">House</a></li>
+                            <li class="list-item"><a class="tag" href="#">Design</a></li>
+                            <li class="list-item"><a class="tag" href="#">Innovation</a></li>
+                            <li class="list-item"><a class="tag" href="#">Draw</a></li>
+                            @endif
+                        </ul>
+                    </div>
+                    <div class="widgets_widget widgets_widget--comments">
+                        <h3 class="widgets_widget-title">Recent Comments</h3>
+                        <ul class="list">
+                            <li class="list-item">
+                                <i class="icon-comment icon--bubble"></i>
+                                <a class="link" href="#">
+                                    <span class="username">Admin</span>
+                                    in tempor eros tortor, a ornare
+                                </a>
+                            </li>
+                            <li class="list-item">
+                                <i class="icon-comment icon--bubble"></i>
+                                <a class="link" href="#">
+                                    <span class="username">Admin</span>
+                                    in tempor eros tortor, a ornare
+                                </a>
+                            </li>
+                            <li class="list-item">
+                                <i class="icon-comment icon--bubble"></i>
+                                <a class="link" href="#">
+                                    <span class="username">Admin</span>
+                                    in tempor eros tortor, a ornare
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="widgets_widget widgets_widget--archives">
+                        <h3 class="widgets_widget-title">Archives</h3>
+                        <ul class="list">
+                            <li class="list-item">
+                                <a class="link d-flex align-items-center" href="#">
+                                    <i class="icon-arrow_right icon--arrow"></i>
+                                    December
+                                </a>
+                            </li>
+                            <li class="list-item">
+                                <a class="link d-flex align-items-center" href="#">
+                                    <i class="icon-arrow_right icon--arrow"></i>
+                                    January
+                                </a>
+                            </li>
+                            <li class="list-item">
+                                <a class="link d-flex align-items-center" href="#">
+                                    <i class="icon-arrow_right icon--arrow"></i>
+                                    February
+                                </a>
+                            </li>
+                            <li class="list-item">
+                                <a class="link d-flex align-items-center" href="#">
+                                    <i class="icon-arrow_right icon--arrow"></i>
+                                    March
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="widgets_widget widgets_widget--calendar">
+                        <h3 class="widgets_widget-title">Calendar</h3>
+                        <table class="table">
+                            <caption class="table_header">
+                                July, 2020
+                            </caption>
+                            <tbody class="table_body">
+                                <tr class="table_body-week">
+                                    <th class="table_body-week_day">S</th>
+                                    <th class="table_body-week_day">M</th>
+                                    <th class="table_body-week_day">T</th>
+                                    <th class="table_body-week_day">W</th>
+                                    <th class="table_body-week_day">T</th>
+                                    <th class="table_body-week_day">F</th>
+                                    <th class="table_body-week_day">S</th>
+                                </tr>
+                                <tr class="table_body-dates">
+                                    <td class="table_body-dates_date"></td>
+                                    <td class="table_body-dates_date"></td>
+                                    <td class="table_body-dates_date"></td>
+                                    <td class="table_body-dates_date">1</td>
+                                    <td class="table_body-dates_date">2</td>
+                                    <td class="table_body-dates_date">3</td>
+                                    <td class="table_body-dates_date">4</td>
+                                </tr>
+                                <tr class="table_body-dates">
+                                    <td class="table_body-dates_date">5</td>
+                                    <td class="table_body-dates_date">6</td>
+                                    <td class="table_body-dates_date">7</td>
+                                    <td class="table_body-dates_date">8</td>
+                                    <td class="table_body-dates_date">9</td>
+                                    <td class="table_body-dates_date">10</td>
+                                    <td class="table_body-dates_date">11</td>
+                                </tr>
+                                <tr class="table_body-dates">
+                                    <td class="table_body-dates_date">12</td>
+                                    <td class="table_body-dates_date">13</td>
+                                    <td class="table_body-dates_date">14</td>
+                                    <td class="table_body-dates_date">15</td>
+                                    <td class="table_body-dates_date table_body-dates_date--current">16</td>
+                                    <td class="table_body-dates_date">17</td>
+                                    <td class="table_body-dates_date">18</td>
+                                </tr>
+                                <tr class="table_body-dates">
+                                    <td class="table_body-dates_date">19</td>
+                                    <td class="table_body-dates_date">20</td>
+                                    <td class="table_body-dates_date">21</td>
+                                    <td class="table_body-dates_date">22</td>
+                                    <td class="table_body-dates_date">23</td>
+                                    <td class="table_body-dates_date">24</td>
+                                    <td class="table_body-dates_date">25</td>
+                                </tr>
+                                <tr class="table_body-dates">
+                                    <td class="table_body-dates_date">26</td>
+                                    <td class="table_body-dates_date">27</td>
+                                    <td class="table_body-dates_date">28</td>
+                                    <td class="table_body-dates_date">29</td>
+                                    <td class="table_body-dates_date">30</td>
+                                    <td class="table_body-dates_date">31</td>
+                                    <td class="table_body-dates_date"></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <div class="navigation d-flex align-items-center justify-content-between">
+                            <a class="navigation_control navigation_control--prev d-inline-flex align-items-center" href="#">
+                                <i class="icon-arrow_left navigation_control-icon"></i>
+                                Previous
+                            </a>
+                            <a class="navigation_control navigation_control--next d-inline-flex align-items-center" href="#">
+                                Next
+                                <i class="icon-arrow_right navigation_control-icon"></i>
+                            </a>
+                        </div>
+                    </div>
+                </aside>
+                <aside class="latest section col-md-12">
+                    <div class="blog_header section_header">
+                        <span class="subtitle">Our blog</span>
+                        <h2 class="title" data-aos="fade-right" data-aos-duration="500">Latest Posts</h2>
+                    </div>
+                    <ul class="blog_list row g-0">
+                        @foreach ($recentPosts as $recentPost)
+                        <li class="blog_list-item col-12 col-md-6 col-lg-4" data-aos="fade-up" data-order="{{ $loop->iteration }}">
+                            <div class="wrapper d-flex flex-column justify-content-between">
+                                <div class="img-wrapper">
+                                    <picture>
+                                        <source
+                                            data-srcset="{{ $recentPost->thumbnail_url ?: asset('frontend/img/placeholder.jpg') }}"
+                                            srcset="{{ $recentPost->thumbnail_url ?: asset('frontend/img/placeholder.jpg') }}"
+                                            type="image/webp"
+                                        />
+                                        <img
+                                            class="lazy"
+                                            data-src="{{ $recentPost->thumbnail_url ?: asset('frontend/img/placeholder.jpg') }}"
+                                            src="{{ $recentPost->thumbnail_url ?: asset('frontend/img/placeholder.jpg') }}"
+                                            alt="{{ $recentPost->title }}"
+                                        />
+                                    </picture>
+                                </div>
+                                <div class="text-wrapper d-flex flex-column justify-content-between">
+                                    <div class="info d-flex align-items-center">
+                                        <span class="date">{{ $recentPost->published_at?->format('F d, Y') }}</span>
+                                    </div>
+                                    <h4 class="title">{{ $recentPost->title }}</h4>
+                                    <div class="divider--link">
+                                        <a class="link link-arrow" href="{{ route('news.show', $recentPost->slug) }}">
+                                            Read post
+                                            <i class="icon-arrow_right"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                        @endforeach
+                    </ul>
+                </aside>
+            </div>
+        </main>
+        <!-- SINGLE POST CONTENT END  -->
 @endsection

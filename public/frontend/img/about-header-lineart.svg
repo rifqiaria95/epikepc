@@ -1,0 +1,56 @@
+<svg width="1600" height="700" viewBox="0 0 1600 700" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1600" height="700" fill="#F5F7FA"/>
+
+  <!-- Main truss silhouette -->
+  <g stroke="#151515" stroke-width="2" stroke-linejoin="round" stroke-linecap="round">
+    <!-- top contour -->
+    <path d="M-40 260 L90 278 L190 300 L300 332 L420 288 L560 336 L690 300 L840 352 L980 272 L1120 344 L1260 300 L1400 360 L1640 400"/>
+    <!-- bottom contour -->
+    <path d="M-60 338 L84 366 L176 404 L314 520 L448 414 L580 536 L736 454 L886 560 L1038 414 L1176 548 L1322 470 L1478 560 L1660 602"/>
+    <!-- front lower beam -->
+    <path d="M-40 352 L1600 612"/>
+
+    <!-- major vertical/diagonal members -->
+    <path d="M84 366 L90 278"/>
+    <path d="M176 404 L190 300"/>
+    <path d="M314 520 L300 332"/>
+    <path d="M448 414 L420 288"/>
+    <path d="M580 536 L560 336"/>
+    <path d="M736 454 L690 300"/>
+    <path d="M886 560 L840 352"/>
+    <path d="M1038 414 L980 272"/>
+    <path d="M1176 548 L1120 344"/>
+    <path d="M1322 470 L1260 300"/>
+    <path d="M1478 560 L1400 360"/>
+
+    <!-- triangle bracing -->
+    <path d="M90 278 L176 404 L300 332"/>
+    <path d="M190 300 L314 520 L420 288"/>
+    <path d="M300 332 L448 414 L560 336"/>
+    <path d="M420 288 L580 536 L690 300"/>
+    <path d="M560 336 L736 454 L840 352"/>
+    <path d="M690 300 L886 560 L980 272"/>
+    <path d="M840 352 L1038 414 L1120 344"/>
+    <path d="M980 272 L1176 548 L1260 300"/>
+    <path d="M1120 344 L1322 470 L1400 360"/>
+    <path d="M1260 300 L1478 560 L1640 400"/>
+
+    <!-- internal fine lines to mimic technical lineart -->
+    <path d="M18 332 L248 388 L356 500"/>
+    <path d="M146 350 L388 430 L522 512"/>
+    <path d="M286 370 L536 460 L670 494"/>
+    <path d="M446 372 L714 468 L842 520"/>
+    <path d="M616 374 L884 490 L1004 450"/>
+    <path d="M796 390 L1048 500 L1168 510"/>
+    <path d="M980 402 L1224 520 L1346 500"/>
+    <path d="M1170 418 L1412 546 L1554 560"/>
+  </g>
+
+  <!-- subtle foreground offset lines for depth -->
+  <g stroke="#2A2A2A" stroke-opacity="0.45" stroke-width="1.2" stroke-linecap="round">
+    <path d="M-10 370 L1600 620"/>
+    <path d="M120 296 L320 340 L470 300"/>
+    <path d="M540 344 L710 314 L864 366"/>
+    <path d="M940 286 L1128 354 L1270 312"/>
+  </g>
+</svg>

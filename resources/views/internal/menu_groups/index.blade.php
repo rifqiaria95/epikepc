@@ -103,11 +103,11 @@
                     <thead class="border-top">
                         <tr>
                             <th>#</th>
-                            <th>Nama Menu</th>
+                            <th>Menu Name</th>
                             <th>Jenis Menu</th>
                             <th>Icon</th>
                             <th>Posisi</th>
-                            <th>Aksi</th>
+                            <th>Actions</th>
                         </tr>
                     </thead>
                 </table>
@@ -125,15 +125,15 @@
                         @csrf
                         <input type="hidden" name="id" id="id">
                         <div class="mb-6">
-                            <label class="form-label" for="nama_menu">Nama Menu</label>
+                            <label class="form-label" for="nama_menu">Menu Name</label>
                             <input type="text" class="form-control" id="nama_menu" name="name"
-                                placeholder="Masukkan nama menu" required>
+                                placeholder="Enter nama menu" required>
                         </div>
                         <div class="mb-6">
                             <fieldset class="form-group">
                                 <label class="form-label">Jenis Menu</label>
                                 <select class="select form-select" name="jenis_menu" id="jenis_menu" required>
-                                    <option>Pilih Jenis Menu</option>
+                                    <option>Select Menu Type</option>
                                     <option value="1">Purchasing</option>
                                     <option value="2">HRD</option>
                                     <option value="3">Accounting</option>

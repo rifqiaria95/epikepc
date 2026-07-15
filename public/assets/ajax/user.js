@@ -167,7 +167,7 @@ $(document).ready(function () {
               ]
             },
             {
-              text: '<i class="ti ti-plus me-0 me-sm-1 ti-xs"></i><span class="d-none d-sm-inline-block">Tambah User</span>',
+              text: '<i class="ti ti-plus me-0 me-sm-1 ti-xs"></i><span class="d-none d-sm-inline-block">Add User</span>',
               className: 'add-new btn btn-primary waves-effect waves-light',
               attr: {
                 'data-bs-toggle': 'modal',
@@ -237,9 +237,9 @@ $(document).ready(function () {
         // Reset form
         if ($('#formCreate').length) {
             $('#formCreate')[0].reset();
-            $('#role_create').empty().append('<option value="">Pilih Role</option>');
+            $('#role_create').empty().append('<option value="">Select Role</option>');
             $('#active_create').val('');
-            // Hapus error
+            // Delete error
             $('#formCreate .text-danger').remove();
             $('#formCreate .is-invalid').removeClass('is-invalid');
         }
@@ -250,7 +250,7 @@ $(document).ready(function () {
             type: 'GET',
             success: function (res) {
                 if (res && res.roles) {
-                    $('#role_create').empty().append('<option value="">Pilih Role</option>');
+                    $('#role_create').empty().append('<option value="">Select Role</option>');
                     $.each(res.roles, function (key, role) {
                         $('#role_create').append('<option value="' + role.id + '">' + role.name + '</option>');
                     });
@@ -262,13 +262,13 @@ $(document).ready(function () {
     // Init select2 saat modal tambah dibuka
     $('#tambahModal').on('shown.bs.modal', function () {
         $('#active_create').select2({
-            placeholder: 'Pilih Status',
+            placeholder: 'Select Status',
             allowClear: true,
             dropdownParent: $('#tambahModal')
         });
 
         $('#role_create').select2({
-            placeholder: 'Pilih Role',
+            placeholder: 'Select Role',
             allowClear: true,
             dropdownParent: $('#tambahModal')
         });
@@ -309,14 +309,14 @@ $(document).ready(function () {
             },
             success: function (res) {
                 if (res.status === 200) {
-                    toastr.success('Data berhasil disimpan!');
+                    toastr.success('Data saved successfully!');
                     $('#tambahModal').modal('hide');
                     $('#formCreate')[0].reset();
                     $('#role_create').val('').trigger('change');
                     $('#active_create').val('').trigger('change');
                     $('#TableUser').DataTable().ajax.reload(null, false);
                 } else {
-                    toastr.error(res.errors || 'Terjadi kesalahan, silakan coba lagi!');
+                    toastr.error(res.errors || 'Something went wrong, please try again.');
                 }
             },
             error: function (xhr) {
@@ -329,7 +329,7 @@ $(document).ready(function () {
                         toastr.error(value[0]);
                     });
                 } else {
-                    toastr.error('Terjadi kesalahan, silakan coba lagi!');
+                    toastr.error('Something went wrong, please try again.');
                 }
             },
             complete: function () {
@@ -364,7 +364,7 @@ $(document).ready(function () {
 
                     // Kosongkan dropdown dan isi dengan data role dari server
                     $('#role').empty();
-                    $('#role').append('<option value="">Pilih Role</option>');
+                    $('#role').append('<option value="">Select Role</option>');
                     $.each(res.roles, function (key, role) {
                         var selected = res.userRole == role.id ? "selected" : "";
                         $('#role').append('<option value="' + role.id + '" ' + selected + '>' + role.name + '</option>');
@@ -372,7 +372,7 @@ $(document).ready(function () {
 
                     // Tampilkan modal edit
                     $('#editModal').modal('show');
-                    $('#modalJudulEdit').text('Edit User');
+                    $('#modalTitleEdit').text('Edit User');
                 }
             }
         });
@@ -382,13 +382,13 @@ $(document).ready(function () {
     $('#editModal').on('shown.bs.modal', function () {
         // Initialize select2 saat modal dibuka
         $('#active').select2({
-            placeholder: 'Pilih Status',
+            placeholder: 'Select Status',
             allowClear: true,
             dropdownParent: $('#editModal')
         });
         
         $('#role').select2({
-            placeholder: 'Pilih Role',
+            placeholder: 'Select Role',
             allowClear: true,
             dropdownParent: $('#editModal')
         });
@@ -422,7 +422,7 @@ $(document).ready(function () {
             },
             success: function (res) {
                 if (res.status === 200) {
-                    toastr.success('Data berhasil disimpan!');
+                    toastr.success('Data saved successfully!');
                     $('#editModal').modal('hide');
                     $('#formEdit')[0].reset();
 
@@ -455,11 +455,11 @@ $(document).ready(function () {
                     });
 
                 } else {
-                    toastr.error('Terjadi kesalahan, silakan coba lagi!');
+                    toastr.error('Something went wrong, please try again.');
                 }
             },
             complete: function () {
-                $('#btn-update').prop('disabled', false).text('Simpan');
+                $('#btn-update').prop('disabled', false).text('Save');
             }
         });
     });
@@ -468,14 +468,14 @@ $(document).ready(function () {
         let id = $(this).data('id');
 
         Swal.fire({
-            title: 'Apakah Anda yakin?',
-            text: "Data user akan dihapus!",
+            title: 'Are you sure?',
+            text: "User data will be deleted!",
             icon: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#d33',
             cancelButtonColor: '#3085d6',
             confirmButtonText: 'Ya, hapus!',
-            cancelButtonText: 'Batal'
+            cancelButtonText: 'Cancel'
         }).then((result) => {
             if (result.isConfirmed) {
                 $.ajax({
@@ -494,7 +494,7 @@ $(document).ready(function () {
                         }
                     },
                     error: function () {
-                        toastr.error('Terjadi kesalahan saat menghapus data.');
+                        toastr.error('An error occurred while deleting data.');
                     }
                 });
             }

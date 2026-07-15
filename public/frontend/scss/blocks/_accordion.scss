@@ -1,0 +1,105 @@
+/**
+ * Axial
+ * EPIKEPC is a universal template for factories, industry, construction, architecture, factories, mechanics, energy
+ * Exclusively on https://1.envato.market/axial-html
+ *
+ * @encoding        UTF-8
+ * @version         1.0.0
+ * @copyright       (C) 2018 - 2021 Merkulove ( https://merkulov.design/ ). All rights reserved.
+ * @license         Envato License https://1.envato.market/KYbje
+ * @contributors    Lamber Lilit (winter.rituel@gmail.com)
+ * @support         help@merkulov.design
+ **/
+// ACCORDION COMPONENT
+
+.accordion {
+    &-wrapper {
+        border: 0.5px solid #C8C8C8;
+        transition: all .3s ease-in;
+        padding: 10px 15px;
+        margin-bottom: 30px;
+        &:last-of-type {
+            margin-bottom: 0;
+        }
+        &.expanded {
+            border-color: $secondary;
+            padding: 15px;
+            .accordion-trigger {
+                color: $secondary;
+                &_icon {
+                    .line {
+                        background: $secondary;
+                        &--y {
+                            left: 0;
+                            top: 50%;
+                            transform: rotate(0) translateX(0) translateY(0);
+                        }
+                    }
+                }
+            }
+        }
+    }
+    &-trigger {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        @include archBold;
+        transition: all .3s ease-in;
+        .question {
+            display: block;
+            text-align: left;
+            font-size: 24px;
+            line-height: 28px;
+        }
+        &_icon {
+            font-size: 18px;
+            line-height: 24px;
+            display: block;
+            margin-left: 10px;
+        }
+    }
+    &-content {
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height .2s ease;
+        .text {
+            margin-top: 22px;
+            max-height: 0;
+            transition: max-height .2s ease;
+        }
+        &.show, &.show .text {
+           max-height: 1000px;
+        }
+    }
+}
+
+@media screen and (min-width: 575.98px) {
+    .accordion {
+        &-wrapper {
+            padding: 20px 30px;
+            &.expanded {
+                padding: 30px;
+            }
+        }
+    }
+}
+
+@media screen and (min-width: 767.98px) {
+    .accordion {
+        &-trigger {
+            .question {
+                font-size: 26px;
+                line-height: 32px;
+            }
+        }
+    }
+}
+
+@media screen and (min-width: 991.98px) {
+    .accordion {
+        &-trigger {
+            text-align: left;
+        }
+    }
+}

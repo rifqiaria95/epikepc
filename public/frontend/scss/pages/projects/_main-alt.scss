@@ -1,0 +1,106 @@
+/**
+ * Axial
+ * EPIKEPC is a universal template for factories, industry, construction, architecture, factories, mechanics, energy
+ * Exclusively on https://1.envato.market/axial-html
+ *
+ * @encoding        UTF-8
+ * @version         1.0.0
+ * @copyright       (C) 2018 - 2021 Merkulove ( https://merkulov.design/ ). All rights reserved.
+ * @license         Envato License https://1.envato.market/KYbje
+ * @contributors    Lamber Lilit (winter.rituel@gmail.com)
+ * @support         help@merkulov.design
+ **/
+// PROJECTS PAGE CONTENT (ALT)
+
+.projects {
+    &_list {
+        &-item {
+            color: $blackalt;
+            margin-top: 30px;
+            &[data-order="1"] {
+                margin-top: 0;
+            }
+            &_location {
+                margin: 15px 0;
+                .icon {
+                    color: $accent;
+                    font-size: 24px;
+                    margin-right: 10px;
+                }
+            }
+            &_title {
+                color: $black;
+            }
+            &_text {
+                margin: 20px 0;
+            }
+            &_link {
+                margin-right: auto;
+            }
+
+            .text-wrapper {
+                display: flex;
+                flex-direction: column;
+                justify-content: space-between;
+                flex-grow: 1;
+
+            }
+            .img-wrapper {
+                overflow: hidden;
+                max-height: 500px;
+                aspect-ratio: 5 / 4;
+                position: relative;
+                img {
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    height: 100%;
+                    width: 100%;
+                    display: block;
+                    object-fit: cover;
+                    transition: transform .5s ease-in-out;
+                }
+                &:hover img {
+                    transform: scale(1.1);
+                }
+            }
+        }
+    }
+}
+
+@media screen and (min-width: 767.98px){
+    .projects {
+        &_list {
+            &-item {
+                margin-top: 60px;
+                &:first-of-type,
+                &_location {
+                    margin-top: 0;
+                    font-size: 19px;
+                    line-height: 28px;
+                }
+                .img-wrapper {
+                    margin-bottom: 20px;
+                }
+                &_text {
+                    margin: 20px 0 30px;
+                }
+                &_link {
+                    margin-right: 0;
+                }
+            }
+        }
+    }
+}
+
+@media screen and (min-width: 991.98px){
+    .projects {
+        &_list {
+            &-item {
+                .text-wrapper {
+                    padding-left: 40px;
+                }
+            }
+        }
+    }
+}

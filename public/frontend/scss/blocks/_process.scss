@@ -1,0 +1,86 @@
+/**
+ * Axial
+ * EPIKEPC is a universal template for factories, industry, construction, architecture, factories, mechanics, energy
+ * Exclusively on https://1.envato.market/axial-html
+ *
+ * @encoding        UTF-8
+ * @version         1.0.0
+ * @copyright       (C) 2018 - 2021 Merkulove ( https://merkulov.design/ ). All rights reserved.
+ * @license         Envato License https://1.envato.market/KYbje
+ * @contributors    Lamber Lilit (winter.rituel@gmail.com)
+ * @support         help@merkulov.design
+ **/
+// PROCESS SECTION COMPONENT
+
+.process {
+    &_header {
+        max-width: 376px;
+    }
+    &_text {
+        max-width: 520px;
+        margin: 30px 0 40px;
+        color: #E9E6E6;
+    }
+    &_steps {
+        padding-right: 15px;
+        &-step {
+            position: relative;
+            &_wrapper {
+                margin-left: 20px;
+                padding-left: 20px;
+            }
+            &:last-of-type {
+                margin-bottom: 0;
+            }
+            .title {
+                margin-bottom: 10px;
+            }
+            .description {
+                padding-bottom: 30px;
+            }
+        }
+    }
+}
+
+// ------ MEDIA QUERIES
+
+@media screen and (min-width: 991.98px) {
+    .process {
+        &_text {
+            margin: 0;
+        }
+        &_fluid {
+            position: relative;
+            &:before {
+                content: '';
+                width: 100%;
+                height: 1px;
+                position: absolute;
+                left: 0;
+                top: 10px;
+                background: $gray;
+            }
+        }
+        &_steps {
+            padding-right: 0;
+            margin-top: 60px;
+            &-step {
+                flex: unset;
+
+                &_wrapper {
+                    margin-left: 0;
+                    padding-left: 10px;
+                    margin-top: 60px;
+                    max-width: 298px;
+                    margin-right: 32px;
+                }
+                &:last-of-type {
+                    margin-bottom: 0;
+                }
+                .description {
+                    padding-bottom: 0;
+                }
+            }
+        }
+    }
+}

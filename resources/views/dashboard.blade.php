@@ -376,7 +376,7 @@
                   <li class="d-flex gap-4 align-items-center pb-1">
                     <div class="badge rounded bg-label-warning p-1_5"><i class="ti ti-clock ti-md"></i></div>
                     <div>
-                      <h6 class="mb-0 text-nowrap">Response Time</h6>
+                      <h6 class="mb-0 text-nowrap">Response Teame</h6>
                       <small class="text-muted">1 Day</small>
                     </div>
                   </li>

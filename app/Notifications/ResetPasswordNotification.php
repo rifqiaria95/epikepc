@@ -44,13 +44,13 @@ class ResetPasswordNotification extends Notification
         ]);
 
         return (new MailMessage)
-                    ->subject('Reset Password - KainnovaApp')
-                    ->greeting('Halo!')
-                    ->line('Anda menerima email ini karena kami menerima permintaan reset password untuk akun Anda.')
+                    ->subject('Reset Password - EPIKEPC')
+                    ->greeting('Hello!')
+                    ->line('You are receiving this email because we received a password reset request for your account.')
                     ->action('Reset Password', $url)
-                    ->line('Link reset password ini akan kedaluwarsa dalam 60 menit.')
-                    ->line('Jika Anda tidak meminta reset password, tidak ada tindakan lebih lanjut yang diperlukan.')
-                    ->salutation("Salam,\nKainnovaApp");
+                    ->line('This password reset link will expire in 60 minutes.')
+                    ->line('If you did not request a password reset, no further action is required.')
+                    ->salutation("Regards,\nEPIKEPC");
     }
 
     /**

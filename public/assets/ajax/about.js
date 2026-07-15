@@ -1,346 +1,204 @@
 $(document).ready(function () {
-    $('.select2').select2({
-        dropdownParent: $('#tambahModal')
-    });
     $.ajaxSetup({
         headers: {
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
         }
     });
 
-});
+    const userPermissions = window.userPermissions || [];
+    const canEditJourney = userPermissions.includes('edit_profile');
+    const canCreateMilestone = userPermissions.includes('create_profile');
+    const canEditMilestone = userPermissions.includes('edit_profile');
+    const canDeleteMilestone = userPermissions.includes('delete_profile');
 
-$(document).ready(function () {
-    $('#TableAbout').DataTable({
-      dom:
-          '<"row me-2"' +
-          '<"col-md-2"<"me-3"l>>' +
-          '<"col-md-10"<"dt-action-buttons text-xl-end text-lg-start text-md-end text-start d-flex align-items-center justify-content-end flex-md-row flex-column mb-3 mb-md-0"fB>>' +
-          '>t' +
-          '<"row mx-2"' +
-          '<"col-sm-12 col-md-6"i>' +
-          '<"col-sm-12 col-md-6"p>' +
-          '>',
-      language: {
-          sLengthMenu: '_MENU_',
-          search: '',
-          searchPlaceholder: 'Search..'
-      },
-      buttons: [
-          {
-            extend: 'collection',
-            className: 'btn btn-label-secondary dropdown-toggle mx-4 waves-effect waves-light',
-            text: '<i class="ti ti-upload me-2 ti-xs"></i>Export',
-            buttons: [
-              {
-                extend: 'print',
-                text: '<i class="ti ti-printer me-2" ></i>Print',
-                className: 'dropdown-item',
-                exportOptions: {
-                  columns: [1, 2, 3, 4, 5],
-                  // prevent avatar to be print
-                  format: {
-                    body: function (inner, coldex, rowdex) {
-                      if (inner.length <= 0) return inner;
-                      var el = $.parseHTML(inner);
-                      var result = '';
-                      $.each(el, function (index, perusahaan) {
-                        if (perusahaan.classList !== undefined && perusahaan.classList.contains('perusahaan-nm_item')) {
-                          result = result + perusahaan.lastChild.firstChild.textContent;
-                        } else if (perusahaan.innerText === undefined) {
-                          result = result + perusahaan.textContent;
-                        } else result = result + perusahaan.innerText;
-                      });
-                      return result;
-                    }
-                  }
-                },
-                customize: function (win) {
-                  //customize print view for dark
-                  $(win.document.body)
-                    .css('color', headingColor)
-                    .css('border-color', borderColor)
-                    .css('background-color', bodyBg);
-                  $(win.document.body)
-                    .find('table')
-                    .addClass('compact')
-                    .css('color', 'inherit')
-                    .css('border-color', 'inherit')
-                    .css('background-color', 'inherit');
-                }
-              },
-              {
-                extend: 'csv',
-                text: '<i class="ti ti-file-text me-2" ></i>Csv',
-                className: 'dropdown-item',
-                exportOptions: {
-                  columns: [1, 2, 3, 4, 5],
-                  // prevent avatar to be display
-                  format: {
-                    body: function (inner, coldex, rowdex) {
-                      if (inner.length <= 0) return inner;
-                      var el = $.parseHTML(inner);
-                      var result = '';
-                      $.each(el, function (index, perusahaan) {
-                        if (perusahaan.classList !== undefined && perusahaan.classList.contains('perusahaan-nm_item')) {
-                          result = result + perusahaan.lastChild.firstChild.textContent;
-                        } else if (perusahaan.innerText === undefined) {
-                          result = result + perusahaan.textContent;
-                        } else result = result + perusahaan.innerText;
-                      });
-                      return result;
-                    }
-                  }
-                }
-              },
-              {
-                extend: 'excel',
-                text: '<i class="ti ti-file-spreadsheet me-2"></i>Excel',
-                className: 'dropdown-item',
-                exportOptions: {
-                  columns: [1, 2, 3, 4, 5],
-                  // prevent avatar to be display
-                  format: {
-                    body: function (inner, coldex, rowdex) {
-                      if (inner.length <= 0) return inner;
-                      var el = $.parseHTML(inner);
-                      var result = '';
-                      $.each(el, function (index, perusahaan) {
-                        if (perusahaan.classList !== undefined && perusahaan.classList.contains('perusahaan-nm_item')) {
-                          result = result + perusahaan.lastChild.firstChild.textContent;
-                        } else if (perusahaan.innerText === undefined) {
-                          result = result + perusahaan.textContent;
-                        } else result = result + perusahaan.innerText;
-                      });
-                      return result;
-                    }
-                  }
-                }
-              },
-              {
-                extend: 'pdf',
-                text: '<i class="ti ti-file-code-2 me-2"></i>Pdf',
-                className: 'dropdown-item',
-                exportOptions: {
-                  columns: [1, 2, 3, 4, 5],
-                  // prevent avatar to be display
-                  format: {
-                    body: function (inner, coldex, rowdex) {
-                      if (inner.length <= 0) return inner;
-                      var el = $.parseHTML(inner);
-                      var result = '';
-                      $.each(el, function (index, perusahaan) {
-                        if (perusahaan.classList !== undefined && perusahaan.classList.contains('perusahaan-nm_item')) {
-                          result = result + perusahaan.lastChild.firstChild.textContent;
-                        } else if (perusahaan.innerText === undefined) {
-                          result = result + perusahaan.textContent;
-                        } else result = result + perusahaan.innerText;
-                      });
-                      return result;
-                    }
-                  }
-                }
-              },
-              {
-                extend: 'copy',
-                text: '<i class="ti ti-copy me-2" ></i>Copy',
-                className: 'dropdown-item',
-                exportOptions: {
-                  columns: [1, 2, 3, 4, 5],
-                  // prevent avatar to be display
-                  format: {
-                    body: function (inner, coldex, rowdex) {
-                      if (inner.length <= 0) return inner;
-                      var el = $.parseHTML(inner);
-                      var result = '';
-                      $.each(el, function (index, perusahaan) {
-                        if (perusahaan.classList !== undefined && perusahaan.classList.contains('perusahaan-nm_item')) {
-                          result = result + perusahaan.lastChild.firstChild.textContent;
-                        } else if (perusahaan.innerText === undefined) {
-                          result = result + perusahaan.textContent;
-                        } else result = result + perusahaan.innerText;
-                      });
-                      return result;
-                    }
-                  }
-                }
-              }
-            ]
-          },
-          {
-            text: '<i class="ti ti-plus me-0 me-sm-1 ti-xs"></i><span class="d-none d-sm-inline-block">Tambah Tentang Saya</span>',
-            className: 'add-new btn btn-primary waves-effect waves-light',
-            attr: {
-              'data-bs-toggle': 'modal',
-              'data-bs-target': '#tambahModal',
+    if (!canEditJourney) {
+        $('#formJourney :input').prop('disabled', true);
+        $('#btn-save-journey').hide();
+    }
 
-            }
-          }
-      ],
-      processing: true,
-      serverSide: true,
-      ajax: {
-          url: "frontend/profile/about/",
-          type: 'GET'
-      },
-      columns: [{
-        data: null,
-        name: 'no_urut',
-        title: 'No',
-        orderable: false,
-        searchable: false,
-        render: function (data, type, full, meta) {
-          // Mengembalikan nomor urut otomatis berdasarkan index baris
-          return meta.row + meta.settings._iDisplayStart + 1;
-        }
-        },
-        {
-          data: 'aksi',
-          name: 'aksi',
-          render: function (data, type, full, meta) {
-            let userPermissions = window.userPermissions || [];
-            let canEdit         = userPermissions.includes("edit_profile");
-            let canDelete       = userPermissions.includes("delete_profile");
+    function clearFormErrors(formSelector) {
+        $(formSelector + ' .form-control, ' + formSelector + ' .form-select').removeClass('is-invalid');
+        $(formSelector + ' .text-danger.small').text('');
+    }
 
-            let buttons = '<div class="d-flex align-items-center">';
-
-            buttons += '<a href="javascript:;" class="btn btn-icon btn-text-secondary waves-effect waves-light rounded-pill dropdown-toggle hide-arrow" data-bs-toggle="dropdown"><i class="ti ti-dots-vertical ti-md"></i></a>';
-              buttons += '<div class="dropdown-menu dropdown-menu-end m-0">';
-              if (canEdit) {
-                buttons += '<a href="javascript:;" class="dropdown-item" onclick="editAbout(' + full.id + ')"><i class="ti ti-edit ti-md"></i>Edit</a>';
-              }
-              if (canDelete) {
-                buttons += '<a href="javascript:;" class="dropdown-item delete-record" data-id="' + full.id + '"><i class="ti ti-trash ti-md"></i>Hapus</a>';
-              }
-              buttons += '</div>';
-
-            buttons += '</div>';
-
-            return buttons;
-          }
-        },
-        {
-          data: 'image',
-          name: 'image',
-          render: function (data, type, full, meta) {
-              if (data) {
-                // Data sudah berupa URL lengkap dari backend
-                return '<img src="' + data + '" alt="Image" class="img-fluid" style="width: 30px; height: 30px;" onerror="this.onerror=null; this.src=\'https://via.placeholder.com/50\';" />';
-              } else {
-                return '<img src="https://via.placeholder.com/50" alt="Image" class="img-fluid" style="width: 30px; height: 30px;">';
-              }
-          }
-        },
-        {
-          data: 'title',
-          name: 'title'
-        },
-        {
-          data: 'subtitle',
-          name: 'subtitle'
-        },
-        {
-          data: 'description',
-          name: 'description',
-          render: function (data, type, full, meta) {
-              // Tampilkan maksimal 3 kata saja, lalu tambahkan "..."
-              if (!data) return '';
-              // Hilangkan tag HTML jika ada
-              let text = $('<div>').html(data).text();
-              let words = text.trim().split(/\s+/);
-              if (words.length > 3) {
-                  return words.slice(0, 3).join(' ') + ' ...';
-              } else {
-                  return text;
-              }
-          }
-        },
-        {
-          data: 'address',
-          name: 'address',
-          render: function (data, type, full, meta) {
-              // Tampilkan maksimal 3 kata saja, lalu tambahkan "..."
-              if (!data) return '';
-              // Hilangkan tag HTML jika ada
-              let text = $('<div>').html(data).text();
-              let words = text.trim().split(/\s+/);
-              if (words.length > 3) {
-                  return words.slice(0, 3).join(' ') + ' ...';
-              } else {
-                  return text;
-              }
-          }
-        },
-        {
-          data: 'phone',
-          name: 'phone'
-        },
-        {
-          data: 'email',
-          name: 'email'
-        },
-        {
-          data: 'facebook',
-          name: 'facebook'
-        },
-        {
-          data: 'instagram',
-          name: 'instagram'
-        },
-        {
-          data: 'twitter',
-          name: 'twitter'
-        },
-        {
-          data: 'tiktok',
-          name: 'tiktok'
-        },
-        {
-          data: 'youtube',
-          name: 'youtube'
-        },          
-      ],
-      order: [
-          [0, 'asc']
-      ],
-
-    });
-
-    $('.select2').select2({
-        dropdownParent: $('#tambahModal')
-    });
-
-    $('#formAbout').on('submit', function(e){
+    /* ── Company Journey Form ── */
+    $('#formJourney').on('submit', function (e) {
         e.preventDefault();
 
-        // Show loader on button
-        let submitBtn = $('#btn-simpan');
-        let originalText = submitBtn.html();
-        submitBtn.html('<i class="ti ti-loader ti-spin me-2"></i>Menyimpan...');
-        submitBtn.prop('disabled', true);
-
-        // Clear previous errors
-        $('#formAbout .form-control, #formAbout .form-select').removeClass('is-invalid');
-        $('#formAbout .text-danger.small').text('');
-        setTinyMCEError(false);
-
-        // Trigger TinyMCE to save content to textarea
-        if (tinymce.get('description')) {
-            tinymce.get('description').save();
+        if (!canEditJourney) {
+            return;
         }
 
-        let formData = new FormData(this);
-        let id = $('#id').val();
-        let url = '';
-        let method = '';
+        const submitBtn = $('#btn-save-journey');
+        const originalText = submitBtn.html();
+        submitBtn.html('<i class="ti ti-loader ti-spin me-1"></i>Saving...').prop('disabled', true);
+        clearFormErrors('#formJourney');
 
-        if(id){
-            url = '/frontend/profile/about/update/' + id;
-            method = 'POST';
+        const formData = new FormData(this);
+        formData.set('is_active', $('#is_active').is(':checked') ? '1' : '0');
+        formData.append('_method', 'PUT');
+
+        $.ajax({
+            url: '/frontend/profile/about/journey',
+            type: 'POST',
+            data: formData,
+            contentType: false,
+            processData: false,
+            success: function (response) {
+                if (response.status === 200) {
+                    toastr.success(response.message || 'Settings saved successfully.');
+                } else {
+                    toastr.error('An error occurred, please try again.');
+                }
+            },
+            error: function (xhr) {
+                if (xhr.status === 422) {
+                    const errors = xhr.responseJSON.errors || {};
+                    $.each(errors, function (key, value) {
+                        $('#' + key).addClass('is-invalid');
+                        $('#' + key + '-error').text(value[0]);
+                    });
+                } else {
+                    toastr.error('Failed to save journey settings.');
+                }
+            },
+            complete: function () {
+                submitBtn.html(originalText).prop('disabled', false);
+            }
+        });
+    });
+
+    /* ── Milestones DataTable ── */
+    const milestoneButtons = [];
+
+    if (canCreateMilestone) {
+        milestoneButtons.push({
+            text: '<i class="ti ti-plus me-0 me-sm-1 ti-xs"></i><span class="d-none d-sm-inline-block">Add Milestone</span>',
+            className: 'add-milestone btn btn-primary waves-effect waves-light',
+            action: function () {
+                openMilestoneModal();
+            }
+        });
+    }
+
+    const milestonesTable = $('#TableMilestones').DataTable({
+        dom:
+            '<"row me-2"' +
+            '<"col-md-2"<"me-3"l>>' +
+            '<"col-md-10"<"dt-action-buttons text-xl-end text-lg-start text-md-end text-start d-flex align-items-center justify-content-end flex-md-row flex-column mb-3 mb-md-0"fB>>' +
+            '>t' +
+            '<"row mx-2"' +
+            '<"col-sm-12 col-md-6"i>' +
+            '<"col-sm-12 col-md-6"p>' +
+            '>',
+        language: {
+            sLengthMenu: '_MENU_',
+            search: '',
+            searchPlaceholder: 'Search milestones...'
+        },
+        buttons: milestoneButtons,
+        processing: true,
+        serverSide: true,
+        ajax: {
+            url: '/frontend/profile/about',
+            type: 'GET',
+            data: function (d) {
+                d.type = 'milestones';
+            }
+        },
+        columns: [
+            {
+                data: null,
+                orderable: false,
+                searchable: false,
+                render: function (data, type, full, meta) {
+                    return meta.row + meta.settings._iDisplayStart + 1;
+                }
+            },
+            {
+                data: 'aksi',
+                orderable: false,
+                searchable: false,
+                render: function (data, type, full) {
+                    let buttons = '<div class="d-flex align-items-center">';
+                    buttons += '<a href="javascript:;" class="btn btn-icon btn-text-secondary waves-effect waves-light rounded-pill dropdown-toggle hide-arrow" data-bs-toggle="dropdown"><i class="ti ti-dots-vertical ti-md"></i></a>';
+                    buttons += '<div class="dropdown-menu dropdown-menu-end m-0">';
+
+                    if (canEditMilestone) {
+                        buttons += '<a href="javascript:;" class="dropdown-item" onclick="editMilestone(' + full.id + ')"><i class="ti ti-edit ti-md"></i>Edit</a>';
+                    }
+                    if (canDeleteMilestone) {
+                        buttons += '<a href="javascript:;" class="dropdown-item delete-milestone" data-id="' + full.id + '"><i class="ti ti-trash ti-md"></i>Delete</a>';
+                    }
+
+                    buttons += '</div></div>';
+                    return buttons;
+                }
+            },
+            { data: 'year', name: 'year' },
+            { data: 'title', name: 'title' },
+            { data: 'description', name: 'description' },
+            { data: 'sort_order', name: 'sort_order' },
+            { data: 'is_active', name: 'is_active' }
+        ],
+        order: [[5, 'asc']]
+    });
+
+    function openMilestoneModal() {
+        clearFormErrors('#formMilestone');
+        $('#formMilestone')[0].reset();
+        $('#milestone_id').val('');
+        $('#milestone_is_active').prop('checked', true);
+        $('#milestone-modal-title').text('Add Milestone');
+        $('#milestoneModal').modal('show');
+    }
+
+    window.editMilestone = function (id) {
+        clearFormErrors('#formMilestone');
+
+        $.ajax({
+            url: '/frontend/profile/about/milestones/edit/' + id,
+            type: 'GET',
+            success: function (response) {
+                if (!response.success) {
+                    toastr.error('Milestone data not found.');
+                    return;
+                }
+
+                const milestone = response.milestone;
+                $('#milestone_id').val(milestone.id);
+                $('#year').val(milestone.year);
+                $('#milestone_title').val(milestone.title);
+                $('#milestone_description').val(milestone.description);
+                $('#sort_order').val(milestone.sort_order);
+                $('#milestone_is_active').prop('checked', !!milestone.is_active);
+                $('#milestone-modal-title').text('Edit Milestone');
+                $('#milestoneModal').modal('show');
+            },
+            error: function () {
+                toastr.error('An error occurred while fetching data.');
+            }
+        });
+    };
+
+    $('#formMilestone').on('submit', function (e) {
+        e.preventDefault();
+
+        const submitBtn = $('#btn-save-milestone');
+        const originalText = submitBtn.html();
+        submitBtn.html('<i class="ti ti-loader ti-spin me-1"></i>Saving...').prop('disabled', true);
+        clearFormErrors('#formMilestone');
+
+        const id = $('#milestone_id').val();
+        const formData = new FormData(this);
+        formData.set('is_active', $('#milestone_is_active').is(':checked') ? '1' : '0');
+
+        let url = '/frontend/profile/about/milestones/store';
+        let method = 'POST';
+
+        if (id) {
+            url = '/frontend/profile/about/milestones/update/' + id;
             formData.append('_method', 'PUT');
-        } else {
-            url = '/frontend/profile/about/store';
-            method = 'POST';
         }
 
         $.ajax({
@@ -349,159 +207,77 @@ $(document).ready(function () {
             data: formData,
             contentType: false,
             processData: false,
-            success: function(response){
+            success: function (response) {
                 if (response.status === 200) {
-                    $('#tambahModal').modal('hide');
-                    $('#TableAbout').DataTable().ajax.reload();
-                    toastr.success('Data berhasil disimpan!');
+                    $('#milestoneModal').modal('hide');
+                    milestonesTable.ajax.reload(null, false);
+                    toastr.success(response.message || 'Milestone saved successfully.');
                 } else {
-                    toastr.error('Terjadi kesalahan, silakan coba lagi!');
+                    toastr.error('An error occurred, please try again.');
                 }
             },
             error: function (xhr) {
-              if (xhr.status === 422) {
-                  let errors = xhr.responseJSON.errors;
-                  // Clear previous errors
-                  $('#formAbout .form-control, #formAbout .form-select').removeClass('is-invalid');
-                  $('#formAbout .text-danger.small').text('');
-                  setTinyMCEError(false);
-
-                  $.each(errors, function (key, value) {
-                      $('#' + key).addClass('is-invalid');
-                      $('#' + key + '-error').text(value[0]);
-
-                      // Handle TinyMCE error styling
-                      if (key === 'description') {
-                          setTinyMCEError(true);
-                      }
-                  });
-              } else {
-                  toastr.error('Gagal menyimpan data!');
-              }
+                if (xhr.status === 422) {
+                    const errors = xhr.responseJSON.errors || {};
+                    $.each(errors, function (key, value) {
+                        const fieldMap = {
+                            title: '#milestone_title',
+                            description: '#milestone_description'
+                        };
+                        const selector = fieldMap[key] || ('#' + key);
+                        $(selector).addClass('is-invalid');
+                        $('#' + key + '-error').text(value[0]);
+                    });
+                } else {
+                    toastr.error('Failed to save milestone.');
+                }
             },
-            complete: function() {
-                // Hide loader and restore button
-                submitBtn.html(originalText);
-                submitBtn.prop('disabled', false);
+            complete: function () {
+                submitBtn.html(originalText).prop('disabled', false);
             }
         });
     });
 
-    $('#tambahModal').on('hidden.bs.modal', function () {
-        $('#formAbout')[0].reset();
-        $('#id').val('');
-        $('#modal-judul').text('Tambah Tentang Saya');
-
-        // Clear errors
-        $('#formAbout .form-control, #formAbout .form-select').removeClass('is-invalid');
-        $('#formAbout .text-danger.small').text('');
-        setTinyMCEError(false);
-
-        // Clear TinyMCE content
-        if (tinymce.get('description')) {
-            tinymce.get('description').setContent('');
-        }
+    $('#milestoneModal').on('hidden.bs.modal', function () {
+        $('#formMilestone')[0].reset();
+        $('#milestone_id').val('');
+        clearFormErrors('#formMilestone');
     });
-});
 
-function editAbout(id) {
-    // Clear previous errors
-    $('#formAbout .form-control, #formAbout .form-select').removeClass('is-invalid');
-    $('#formAbout .text-danger.small').text('');
-    setTinyMCEError(false);
+    $(document).on('click', '.delete-milestone', function () {
+        const id = $(this).data('id');
 
-    $.ajax({
-        url: '/frontend/profile/about/edit/' + id,
-        type: 'GET',
-        success: function(response) {
-            if (response.success) {
-                let about = response.about;
-                $('#id').val(about.id);
-                $('#title').val(about.title);
-                $('#subtitle').val(about.subtitle);
-
-                // Set content to TinyMCE editor
-                if (tinymce.get('description')) {
-                    tinymce.get('description').setContent(about.description || '');
-                } else {
-                    $('#description').val(about.description);
-                }
-
-                $('#address').val(about.address);
-                $('#phone').val(about.phone);
-                $('#email').val(about.email);
-                $('#facebook').val(about.facebook);
-                $('#instagram').val(about.instagram);
-                $('#twitter').val(about.twitter);
-                $('#tiktok').val(about.tiktok);
-                $('#youtube').val(about.youtube);
-                $('#video').val(about.video);
-
-                $('#modal-judul').text('Edit Tentang Saya');
-                $('#tambahModal').modal('show');
-            } else {
-                toastr.error('Data about tidak ditemukan.');
+        Swal.fire({
+            title: 'Are you sure?',
+            text: 'This milestone will be deleted.',
+            icon: 'warning',
+            customClass: {
+                confirmButton: 'btn btn-primary waves-effect waves-light ml-3',
+                cancelButton: 'btn btn-label-secondary waves-effect waves-light'
+            },
+            showCancelButton: true,
+            cancelButtonText: 'Cancel',
+            buttonsStyling: false
+        }).then((result) => {
+            if (!result.isConfirmed) {
+                return;
             }
-        },
-        error: function() {
-            toastr.error('Terjadi kesalahan saat mengambil data.');
-        }
-    });
-}
 
-$(document).on('click', '.delete-record', function () {
-    let id = $(this).data('id');
-
-    Swal.fire({
-        title: 'Apakah Anda yakin?',
-        text: "Data about akan dihapus!",
-        icon: 'warning',
-        customClass: {
-            confirmButton: 'btn btn-primary waves-effect waves-light ml-3',
-            cancelButton: 'btn btn-label-secondary waves-effect waves-light'
-        },
-        showCancelButton: true,
-        cancelButtonText: 'Batal',
-        buttonsStyling: false,
-        didRender: function () {
-            $('.swal2-actions').css('gap', '10px');
-        }
-    }).then((result) => {
-        if (result.isConfirmed) {
             $.ajax({
-                url: '/frontend/profile/about/delete/' + id,
+                url: '/frontend/profile/about/milestones/delete/' + id,
                 type: 'DELETE',
-                data: {
-                    _method: 'DELETE',
-                    _token: $('meta[name="csrf-token"]').attr('content')
-                },
                 success: function (response) {
                     if (response.status === 200) {
-                        Swal.fire({
-                            icon: 'success',
-                            title: 'Deleted!',
-                            text: response.message,
-                            customClass: {
-                              confirmButton: 'btn btn-success waves-effect waves-light'
-                            }
-                        });
-                        $('#TableAbout').DataTable().ajax.reload();
+                        toastr.success(response.message);
+                        milestonesTable.ajax.reload(null, false);
                     } else {
-                        Swal.fire(
-                            'Error!',
-                            response.errors,
-                            'error'
-                        );
+                        toastr.error('Failed to delete milestone.');
                     }
                 },
                 error: function () {
-                    Swal.fire(
-                        'Oops!',
-                        'Terjadi kesalahan saat menghapus data.',
-                        'error'
-                    );
+                    toastr.error('An error occurred while deleting data.');
                 }
             });
-        }
+        });
     });
 });

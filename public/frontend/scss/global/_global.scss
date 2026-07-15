@@ -1,0 +1,411 @@
+/**
+ * Axial
+ * EPIKEPC is a universal template for factories, industry, construction, architecture, factories, mechanics, energy
+ * Exclusively on https://1.envato.market/axial-html
+ *
+ * @encoding        UTF-8
+ * @version         1.0.0
+ * @copyright       (C) 2018 - 2021 Merkulove ( https://merkulov.design/ ). All rights reserved.
+ * @license         Envato License https://1.envato.market/KYbje
+ * @contributors    Lamber Lilit (winter.rituel@gmail.com)
+ * @support         help@merkulov.design
+ **/
+body {
+    font-family: $bodyFont;
+    font-size: 17px;
+    line-height: 1.5;
+    color: $black;
+    position: relative;
+    &.fixed {
+        position: fixed;
+        width: 100%;
+    }
+    &.swal2-shown {
+        padding: 0 !important;
+    }
+}
+
+.section {
+    padding: 80px 0;
+    &-nopb {
+        padding: 80px 0 0;
+    }
+    &_header {
+        .subtitle {
+            text-transform: uppercase;
+            padding-left: 60px;
+            position: relative;
+            display: inline-block;
+            font-size: 16px;
+            line-height: 21px;
+            margin-bottom: 15px;
+            @include archSemi;
+
+            &:before {
+                content: '';
+                position: absolute;
+                left: 0;
+                top: 50%;
+                transform: translateY(-50%);
+                height: 2px;
+                width: 40px;
+                background: $accent;
+            }
+
+            &--extended {
+                padding-left: 20px;
+                margin-left: 40px;
+
+                &:before {
+                    width: 1000%;
+                    left: -1000%;
+                }
+            }
+        }
+        .text {
+            margin: 20px 0 30px;
+        }
+    }
+}
+
+.highlight {
+    color: $secondary;
+}
+
+.primary-bg {
+    background: $primary;
+    color: #fff;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    font-family: $accentFont;
+    font-weight: 700;
+}
+
+h1 {
+    font-size: 40px;
+    line-height: 1.2;
+}
+h2 {
+    font-size: 36px;
+    line-height: 1.1;
+}
+h3 {
+    font-size: 26px;
+    line-height: 1.2;
+}
+h4 {
+    font-size: 26px;
+    line-height: 1.2;
+}
+h5 {
+    font-size:18px;
+    line-height: 1.2;
+}
+h6 {
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+.link-arrow {
+    text-transform: uppercase;
+    font-size: 18px;
+    line-height: 23px;
+    color: $secondary;
+    font-weight: 600;
+    letter-spacing: 1px;
+    @include archSemi;
+
+    &--alt {
+        color: $accent;
+    }
+
+    i {
+        margin-left: 5px;
+        transition: margin-left .3s ease-in-out;
+        font-size: 16px;
+    }
+
+    &:hover {
+        i {
+            margin-left: 10px;
+        }
+    }
+}
+
+.btn {
+    @include archBold;
+    padding: 18px 30px;
+    color: $black;
+    font-size: 18px;
+    line-height: 23px;
+    transition: all .3s ease-in-out;
+    background: $accent;
+    text-transform: uppercase;
+    position: relative;
+    bottom: 0;
+    display: inline-block;
+    text-align: center;
+
+    &:not(&--static):hover, &:not(&--static):focus {
+        bottom: 5px;
+    }
+
+    &-play {
+        width: 55px;
+        height: 55px;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translateY(-50%) translateX(-50%);
+        border: 2px solid $primary;
+        border-radius: 50%;
+        transition: all .3s ease-in-out;
+        color: $primary;
+        font-size: 24px;
+
+        i {
+            transition: all .3s ease-in-out;
+        }
+
+        &:hover, &:focus {
+            border-color: $accent;
+
+            i {
+                color: $accent;
+            }
+        }
+    }
+}
+
+.socials {
+    &_item {
+        margin-right: 20px;
+
+        &:last-of-type {
+            margin-right: 0;
+        }
+
+        &-link {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: $primary;
+            color: #fff;
+            transition: all .3s ease-in-out;
+            line-height: 30px;
+
+            &:hover, &:focus {
+                transform: scale(1.1);
+                background-color: $accent;
+            }
+        }
+    }
+
+    &--alt {
+        .socials_item-link {
+            color: $primary;
+            background: $accent;
+        }
+    }
+
+}
+
+.hamburger {
+    width: 30px;
+    height: 28px;
+    display: inline-flex;
+    flex-flow: column wrap;
+    position: relative;
+    justify-content: space-between;
+    align-items: flex-end;
+
+    .line {
+        width: 100%;
+        height: 2px;
+        background: #fff;
+        transition: width .3s ease-in-out;
+        border-radius: 3px;
+
+        &--short {
+            width: 50%;
+        }
+    }
+
+    &.active {
+        .line--short {
+            width: 100%;
+        }
+    }
+}
+
+.field {
+    &.error {
+        border-color: red;
+    }
+}
+
+.brand {
+    display: inline-block;
+    font-size: 28px;
+    line-height: 22px;
+    color: #fff;
+    @include archBold;
+
+    svg {
+        margin-right: 10px;
+    }
+
+    .highlight {
+        margin-left: 5px;
+    }
+}
+
+#scrollToTop {
+    position: fixed;
+    right: 12px;
+    bottom: -100px;
+    z-index: 99999;
+    width: 40px;
+    height: 40px;
+    opacity: 0.5;
+    background: $accent;
+    transition: all .3s ease-in-out;
+    &.active {
+        bottom: 12px;
+    }
+    &:hover {
+        opacity: 1;
+    }
+    .icon {
+        display: inline-block;
+        transform: rotate(270deg);
+        color: $primary;
+        font-size: 24px;
+        line-height: 24px;
+    }
+}
+
+// ------ MEDIA QUERIES
+
+@media screen and (min-width: 767.98px) {
+    body {
+        font-size: 19px;
+    }
+    h1 {
+        font-size: 46px;
+        line-height: 1.1;
+    }
+
+    h2 {
+        font-size: 40px;
+        line-height: 1.3;
+    }
+
+    h3, h4 {
+        font-size: 26px;
+        line-height: 1.2;
+    }
+
+
+    #scrollToTop {
+        right: 20px;
+        &.active {
+            bottom: 20px;
+        }
+    }
+
+    .btn {
+        &-play {
+            width: 110px;
+            height: 110px;
+            font-size: 34px;
+        }
+    }
+
+}
+
+@media screen and (min-width: 991.98px) {
+
+    h1 {
+        font-size: 58px;
+        line-height: 1;
+    }
+
+    h2 {
+        font-size: 48px;
+        line-height: 1.1;
+    }
+
+    h3 {
+        font-size: 30px;
+        line-height: 1.2;
+    }
+
+    h4 {
+        Line-height: 1.1;
+    }
+
+
+    .section {
+        padding: 180px 0;
+        &-nopb {
+            padding: 180px 0 0;
+        }
+    }
+
+}
+
+
+@media screen and (min-width: 1199.98px) {
+    #scrollToTop {
+        right: 40px;
+        &.active {
+            bottom: 40px;
+        }
+    }
+}
+
+@media screen and (min-width: 1399.98px) {
+    #scrollToTop {
+        width: 58px;
+        height: 58px;
+        right: 30px;
+        &.active {
+            bottom: 30px;
+        }
+    }
+}
+
+// SWEETALERT2 STYLES
+
+.alert {
+    &_popup {
+        border-radius: 0;
+        padding-bottom: 30px !important;
+        &-close {
+            box-shadow: none !important;
+        }
+        &-title {
+            font-family: $accentFont;
+            color: $primary !important;
+            padding: 30px 30px 0;
+        }
+        &-content {
+            .main {
+                font-size: 20px;
+                line-height: 24px;
+                font-weight: 500;
+            }
+        }
+    }
+}

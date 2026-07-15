@@ -1,0 +1,153 @@
+/**
+ * Axial
+ * EPIKEPC is a universal template for factories, industry, construction, architecture, factories, mechanics, energy
+ * Exclusively on https://1.envato.market/axial-html
+ *
+ * @encoding        UTF-8
+ * @version         1.0.0
+ * @copyright       (C) 2018 - 2021 Merkulove ( https://merkulov.design/ ). All rights reserved.
+ * @license         Envato License https://1.envato.market/KYbje
+ * @contributors    Lamber Lilit (winter.rituel@gmail.com)
+ * @support         help@merkulov.design
+ **/
+// PROJECTS PAGE CONTENT
+
+.projects {
+    &_list {
+        &-item {
+            margin-top: 40px;
+            &[data-order="1"] {
+                margin-top: 0;
+            }
+            &_title {
+                margin-bottom: 15px;
+                flex-grow: 1;
+                padding-bottom: 15px;
+                position: relative;
+                .divider--line {
+                    position: absolute;
+                    width: 100%;
+                    height: 1px;
+                    background: $gray;
+                    bottom: 0;
+                    left: 0;
+                }
+            }
+            .text-wrapper {
+                flex-grow: 1;
+            }
+            .img-wrapper {
+                overflow: hidden;
+                max-height: 500px;
+                aspect-ratio: 5 / 4;
+                width: 100%;
+                margin-bottom: 20px;
+                position: relative;
+                img {
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    height: 100%;
+                    width: 100%;
+                    display: block;
+                    object-fit: cover;
+                    transition: transform .5s ease-in-out;
+                }
+                &:hover img {
+                    transform: scale(1.1);
+                }
+            }
+            &_info {
+
+                .location {
+                    margin-bottom: 10px;
+                    width: 100%;
+                    .icon {
+                        color: $accent;
+                        font-size: 24px;
+                        margin-right: 10px;
+                    }
+                }
+            }
+        }
+    }
+}
+
+// ------ MEDIA QUERIES
+
+@media screen and (min-width: 575.98px) {
+    .projects {
+        &_list {
+            &-item {
+                &_info {
+                    .location {
+                        margin-bottom: 0;
+                        width: unset;
+                    }
+                }
+            }
+        }
+    }
+}
+
+@media screen and (min-width: 767.98px) {
+    .projects {
+        .wrapper {
+            height: 100%;
+        }
+        &_list {
+            margin: 0 -15px;
+            &-item {
+                padding: 0 15px;
+                &[data-order="2"] {
+                    margin-top: 0;
+                }
+                &_title {
+                    flex-grow: 1;
+                }
+                &_info {
+                    .location {
+                        width: 70%;
+                        margin-bottom: 15px;
+                    }
+                }
+            }
+        }
+    }
+}
+
+@media screen and (min-width: 991.98px){
+    .projects {
+        &_list {
+            margin: 0 -20px;
+            &-item {
+                padding: 0 20px;
+                margin-top: 40px;
+                &[data-order="1"],
+                &[data-order="2"] {
+                    margin-top: 0;
+                }
+                &_info {
+                    .location {
+                        width: 100%;
+                    }
+                }
+            }
+        }
+    }
+}
+
+@media screen and (min-width: 1199.98px){
+    .projects {
+        &_list {
+            &-item {
+                &_info {
+                    .location {
+                        width: unset;
+                        margin-bottom: 0;
+                    }
+                }
+            }
+        }
+    }
+}
