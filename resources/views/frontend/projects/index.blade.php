@@ -5,6 +5,17 @@
 
 @push('styles')
     <link rel="stylesheet" href="{{ asset('frontend/css/projects.min.css') }}" />
+    <style>
+        .header_extension .plan[data-role="deco"] {
+            width: min(82vw, 1200px);
+            max-width: 1200px;
+            right: -6%;
+            bottom: -20%;
+            opacity: .32;
+            transform: none;
+            pointer-events: none;
+        }
+    </style>
 @endpush
 
 @section('header_extension')
