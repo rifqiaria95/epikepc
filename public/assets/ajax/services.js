@@ -622,7 +622,7 @@ $(document).ready(function () {
         processing: true,
         serverSide: true,
         ajax: {
-            url: "/services/service_list/",
+            url: "/internal/services/service_list/",
             type: 'GET'
         },
         columns: [
@@ -731,7 +731,7 @@ $(document).ready(function () {
         $('#formServices .form-control, #formServices .form-select').removeClass('is-invalid');
         $('#formServices .text-danger.small').text('');
 
-        var ajaxUrl = '/services/service_list/edit/' + id;
+        var ajaxUrl = '/internal/services/service_list/edit/' + id;
 
         $.ajax({
             url: ajaxUrl,
@@ -856,11 +856,11 @@ $(document).ready(function () {
         var method = '';
 
         if(id){
-            url = '/services/service_list/update/' + id;
+            url = '/internal/services/service_list/update/' + id;
             method = 'POST';
             formData.append('_method', 'PUT');
         } else {
-            url = '/services/service_list/store';
+            url = '/internal/services/service_list/store';
             method = 'POST';
         }
 
@@ -1113,7 +1113,7 @@ $(document).ready(function () {
         }).then(function(result) {
             if (result.isConfirmed) {
                 $.ajax({
-                    url: '/services/service_list/delete/' + id,
+                    url: '/internal/services/service_list/delete/' + id,
                     type: 'DELETE',
                     data: {
                         _method: 'DELETE',

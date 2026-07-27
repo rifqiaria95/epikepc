@@ -177,7 +177,7 @@ $(document).ready(function () {
         processing: true,
         serverSide: true,
         ajax: {
-            url: "/services/service_type/",
+            url: "/internal/services/service_type/",
             type: 'GET'
         },
         columns: [
@@ -252,7 +252,7 @@ $(document).ready(function () {
         $('.text-danger').text('');
 
         $.ajax({
-            url: `/services/service_type/edit/${id}/`,
+            url: `/internal/services/service_type/edit/${id}/`,
             type: "GET",
             success: function (response) {
                 if (response.success) {
@@ -286,11 +286,11 @@ $(document).ready(function () {
 
         let formData = new FormData(this);
         let id       = $("#id").val();
-        let url      = "/services/service_type/store";
+        let url      = "/internal/services/service_type/store";
         let method   = "POST";
 
         if (id) {
-            url = "/services/service_type/update/" + id;
+            url = "/internal/services/service_type/update/" + id;
             formData.append("_method", "PUT");
         }
 
@@ -347,7 +347,7 @@ $(document).ready(function () {
         }).then((result) => {
             if (result.isConfirmed) {
                 $.ajax({
-                    url: '/services/service_type/delete/' + id,
+                    url: '/internal/services/service_type/delete/' + id,
                     type: 'DELETE',
                     data: {
                         _method: 'DELETE',

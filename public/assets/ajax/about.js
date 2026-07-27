@@ -39,7 +39,7 @@ $(document).ready(function () {
         formData.append('_method', 'PUT');
 
         $.ajax({
-            url: '/frontend/profile/about/journey',
+            url: '/internal/profile/about/journey',
             type: 'POST',
             data: formData,
             contentType: false,
@@ -100,7 +100,7 @@ $(document).ready(function () {
         processing: true,
         serverSide: true,
         ajax: {
-            url: '/frontend/profile/about',
+            url: '/internal/profile/about',
             type: 'GET',
             data: function (d) {
                 d.type = 'milestones';
@@ -157,7 +157,7 @@ $(document).ready(function () {
         clearFormErrors('#formMilestone');
 
         $.ajax({
-            url: '/frontend/profile/about/milestones/edit/' + id,
+            url: '/internal/profile/about/milestones/edit/' + id,
             type: 'GET',
             success: function (response) {
                 if (!response.success) {
@@ -193,11 +193,11 @@ $(document).ready(function () {
         const formData = new FormData(this);
         formData.set('is_active', $('#milestone_is_active').is(':checked') ? '1' : '0');
 
-        let url = '/frontend/profile/about/milestones/store';
+        let url = '/internal/profile/about/milestones/store';
         let method = 'POST';
 
         if (id) {
-            url = '/frontend/profile/about/milestones/update/' + id;
+            url = '/internal/profile/about/milestones/update/' + id;
             formData.append('_method', 'PUT');
         }
 
@@ -264,7 +264,7 @@ $(document).ready(function () {
             }
 
             $.ajax({
-                url: '/frontend/profile/about/milestones/delete/' + id,
+                url: '/internal/profile/about/milestones/delete/' + id,
                 type: 'DELETE',
                 success: function (response) {
                     if (response.status === 200) {

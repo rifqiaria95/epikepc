@@ -180,7 +180,7 @@ $(document).ready(function () {
         processing: true,
         serverSide: true,
         ajax: {
-            url: "frontend/testimoni/",
+            url: "internal/testimoni/",
             type: 'GET'
         },
         columns: [{
@@ -294,11 +294,11 @@ $(document).ready(function () {
         var method = '';
 
         if(id){
-            url = '/frontend/testimoni/update/' + id;
+            url = '/internal/testimoni/update/' + id;
             method = 'POST';
             formData.append('_method', 'PUT');
         } else {
-            url = '/frontend/testimoni/store';
+            url = '/internal/testimoni/store';
             method = 'POST';
         }
 
@@ -372,7 +372,7 @@ function editTestimoni(id) {
     setTinyMCEError(false);
 
     $.ajax({
-        url: '/frontend/testimoni/edit/' + id,
+        url: '/internal/testimoni/edit/' + id,
         type: 'GET',
         success: function(response) {
             if (response.success) {
@@ -420,7 +420,7 @@ $(document).on('click', '.delete-record', function () {
     }).then((result) => {
         if (result.isConfirmed) {
             $.ajax({
-                url: '/frontend/testimoni/delete/' + id,
+                url: '/internal/testimoni/delete/' + id,
                 type: 'DELETE',
                 data: {
                     _method: 'DELETE',

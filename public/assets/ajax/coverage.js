@@ -44,7 +44,7 @@ $(document).ready(function () {
         processing: true,
         serverSide: true,
         ajax: {
-            url: '/frontend/coverage/',
+            url: '/internal/coverage/',
             type: 'GET'
         },
         columns: [
@@ -95,7 +95,7 @@ $(document).ready(function () {
         $('#formCoverage .text-danger.small').text('');
 
         $.ajax({
-            url: '/frontend/coverage/edit/' + id,
+            url: '/internal/coverage/edit/' + id,
             type: 'GET',
             success: function (response) {
                 if (!response.success) {
@@ -136,7 +136,7 @@ $(document).ready(function () {
         formData.set('is_active', $('#is_active').is(':checked') ? '1' : '0');
 
         var id = $('#id').val();
-        var url = id ? '/frontend/coverage/update/' + id : '/frontend/coverage/store';
+        var url = id ? '/internal/coverage/update/' + id : '/internal/coverage/store';
         var method = 'POST';
 
         if (id) {
@@ -215,7 +215,7 @@ $(document).ready(function () {
             }
 
             $.ajax({
-                url: '/frontend/coverage/delete/' + id,
+                url: '/internal/coverage/delete/' + id,
                 type: 'DELETE',
                 data: {
                     _token: $('meta[name="csrf-token"]').attr('content')

@@ -71,7 +71,7 @@ $(document).ready(function () {
         processing: true,
         serverSide: true,
         ajax: {
-            url: '/frontend/project',
+            url: '/internal/project',
             type: 'GET'
         },
         columns: [
@@ -202,11 +202,11 @@ $(document).ready(function () {
 
         var url, method;
         if (id) {
-            url    = '/frontend/project/update/' + id;
+            url    = '/internal/project/update/' + id;
             method = 'POST';
             formData.append('_method', 'PUT');
         } else {
-            url    = '/frontend/project/store';
+            url    = '/internal/project/store';
             method = 'POST';
         }
 
@@ -292,7 +292,7 @@ $(document).ready(function () {
         }).then(function (result) {
             if (result.isConfirmed) {
                 $.ajax({
-                    url: '/frontend/project/delete/' + id,
+                    url: '/internal/project/delete/' + id,
                     type: 'DELETE',
                     data: {
                         _token: $('meta[name="csrf-token"]').attr('content')
@@ -335,7 +335,7 @@ function editProject(id) {
     $('#formProject .text-danger.small').text('');
 
     $.ajax({
-        url: '/frontend/project/edit/' + id,
+        url: '/internal/project/edit/' + id,
         type: 'GET',
         success: function (response) {
             if (response.success) {

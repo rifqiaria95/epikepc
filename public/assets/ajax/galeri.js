@@ -180,7 +180,7 @@ $(document).ready(function () {
         processing: true,
         serverSide: true,
         ajax: {
-            url: "frontend/galeri/list-galeri/",
+            url: "internal/galeri/list-galeri/",
             type: 'GET'
         },
         columns: [{
@@ -327,11 +327,11 @@ $(document).ready(function () {
         let method = '';
 
         if(id){
-            url = '/frontend/galeri/list-galeri/update/' + id;
+            url = '/internal/galeri/list-galeri/update/' + id;
             method = 'POST';
             formData.append('_method', 'PUT');
         } else {
-            url = '/frontend/galeri/list-galeri/store';
+            url = '/internal/galeri/list-galeri/store';
             method = 'POST';
         }
 
@@ -403,7 +403,7 @@ function editGallery(id) {
     setTinyMCEError(false);
 
     $.ajax({
-        url: '/frontend/galeri/list-galeri/edit/' + id,
+        url: '/internal/galeri/list-galeri/edit/' + id,
         type: 'GET',
         success: function(response) {
             if (response.success) {
@@ -451,7 +451,7 @@ $(document).on('click', '.delete-record', function () {
     }).then((result) => {
         if (result.isConfirmed) {
             $.ajax({
-                url: '/frontend/galeri/list-galeri/delete/' + id,
+                url: '/internal/galeri/list-galeri/delete/' + id,
                 type: 'DELETE',
                 data: {
                     _method: 'DELETE',

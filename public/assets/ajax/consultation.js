@@ -33,7 +33,7 @@ $(document).ready(function () {
         processing: true,
         serverSide: true,
         ajax: {
-            url: '/frontend/consultation/',
+            url: '/internal/consultation/',
             type: 'GET'
         },
         columns: [
@@ -85,7 +85,7 @@ $(document).ready(function () {
         $('#formConsultation .text-danger.small').text('');
 
         $.ajax({
-            url: '/frontend/consultation/edit/' + id,
+            url: '/internal/consultation/edit/' + id,
             type: 'GET',
             success: function (response) {
                 if (!response.success) {
@@ -124,7 +124,7 @@ $(document).ready(function () {
 
         var formData = new FormData(this);
         var id = $('#id').val();
-        var url = id ? '/frontend/consultation/update/' + id : '/frontend/consultation/store';
+        var url = id ? '/internal/consultation/update/' + id : '/internal/consultation/store';
         var method = 'POST';
 
         if (id) {
@@ -195,7 +195,7 @@ $(document).ready(function () {
             }
 
             $.ajax({
-                url: '/frontend/consultation/delete/' + id,
+                url: '/internal/consultation/delete/' + id,
                 type: 'DELETE',
                 data: {
                     _token: $('meta[name="csrf-token"]').attr('content')

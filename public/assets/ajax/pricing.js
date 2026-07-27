@@ -127,7 +127,7 @@ $(document).ready(function () {
         processing: true,
         serverSide: true,
         ajax: {
-            url: '/frontend/pricing/',
+            url: '/internal/pricing/',
             type: 'GET'
         },
         columns: [
@@ -179,7 +179,7 @@ $(document).ready(function () {
         $('#formPricing .text-danger.small').text('');
 
         $.ajax({
-            url: '/frontend/pricing/edit/' + id,
+            url: '/internal/pricing/edit/' + id,
             type: 'GET',
             success: function (response) {
                 if (!response.success) {
@@ -231,7 +231,7 @@ $(document).ready(function () {
         formData.set('is_active', $('#is_active').is(':checked') ? '1' : '0');
 
         var id = $('#id').val();
-        var url = id ? '/frontend/pricing/update/' + id : '/frontend/pricing/store';
+        var url = id ? '/internal/pricing/update/' + id : '/internal/pricing/store';
         var method = 'POST';
 
         if (id) {
@@ -310,7 +310,7 @@ $(document).ready(function () {
             }
 
             $.ajax({
-                url: '/frontend/pricing/delete/' + id,
+                url: '/internal/pricing/delete/' + id,
                 type: 'DELETE',
                 data: {
                     _token: $('meta[name="csrf-token"]').attr('content')

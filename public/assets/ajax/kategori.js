@@ -177,7 +177,7 @@ $(document).ready(function () {
         processing: true,
         serverSide: true,
         ajax: {
-            url: "/frontend/news/kategori/",
+            url: "/internal/news/kategori/",
             type: 'GET'
         },
         columns: [
@@ -251,7 +251,7 @@ $(document).ready(function () {
         $('.text-danger').text('');
 
         $.ajax({
-            url: `/frontend/news/kategori/edit/${id}/`,
+            url: `/internal/news/kategori/edit/${id}/`,
             type: "GET",
             success: function (response) {
                 if (response.success) {
@@ -286,11 +286,11 @@ $(document).ready(function () {
 
         let formData = new FormData(this);
         let id       = $("#id").val();
-        let url      = "/frontend/news/kategori/store";
+        let url      = "/internal/news/kategori/store";
         let method   = "POST";
 
         if (id) {
-            url = "/frontend/news/kategori/update/" + id;
+            url = "/internal/news/kategori/update/" + id;
             formData.append("_method", "PUT");
         }
 
@@ -347,7 +347,7 @@ $(document).ready(function () {
         }).then((result) => {
             if (result.isConfirmed) {
                 $.ajax({
-                    url: '/frontend/news/kategori/delete/' + id,
+                    url: '/internal/news/kategori/delete/' + id,
                     type: 'DELETE',
                     data: {
                         _method: 'DELETE',
