@@ -5,6 +5,254 @@
 
 @push('styles')
     <link rel="stylesheet" href="{{ asset('frontend/css/single-service.min.css') }}" />
+    <style>
+        /* Keep Consult Now full-width on desktop (same as tablet) */
+        .tabs_services-content .content .text-wrapper .main {
+            width: 100%;
+        }
+
+        .tabs_services-content .content .text-wrapper .main_btn {
+            width: 100%;
+            max-width: none;
+            margin: 20px 0;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+
+        @media screen and (min-width: 991.98px) {
+            .tabs_services-content .content .text-wrapper .main_btn {
+                width: 100%;
+                max-width: none;
+                margin: 20px 0 0;
+            }
+        }
+
+        .epc-services {
+            --epc-pad-y: clamp(4rem, 8vw, 7.5rem);
+            --epc-bg-image: none;
+            position: relative;
+            padding: var(--epc-pad-y) 0;
+            color: #fff;
+            min-height: clamp(520px, 72vh, 760px);
+            display: flex;
+            align-items: center;
+        }
+
+        /* Clip window for classic fixed-background parallax */
+        .epc-services__media {
+            position: absolute;
+            inset: 0;
+            z-index: 0;
+            overflow: hidden;
+            pointer-events: none;
+        }
+
+        .epc-services__media-bg {
+            position: absolute;
+            inset: -30% 0;
+            height: auto;
+            min-height: 160%;
+            background-image: var(--epc-bg-image);
+            background-position: center center;
+            background-size: cover;
+            background-repeat: no-repeat;
+            will-change: transform;
+            backface-visibility: hidden;
+            transform: translate3d(0, 0, 0);
+        }
+
+        .epc-services__overlay {
+            position: absolute;
+            inset: 0;
+            z-index: 1;
+            background:
+                linear-gradient(115deg, rgba(0, 8, 16, 0.88) 0%, rgba(37, 60, 116, 0.72) 48%, rgba(0, 8, 16, 0.55) 100%),
+                radial-gradient(circle at 85% 20%, rgba(255, 223, 8, 0.18), transparent 40%);
+            pointer-events: none;
+        }
+
+        .epc-services .container {
+            position: relative;
+            z-index: 2;
+            width: 100%;
+        }
+
+        .epc-services__layout {
+            display: grid;
+            grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+            gap: clamp(1.5rem, 4vw, 3.5rem);
+            align-items: start;
+        }
+
+        .epc-services__eyebrow {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin: 0 0 14px;
+            padding: 6px 12px;
+            border-radius: 999px;
+            border: 1px solid rgba(255, 223, 8, 0.35);
+            background: rgba(255, 223, 8, 0.12);
+            color: #FFdf08;
+            font-family: Archivo, sans-serif;
+            font-size: 0.72rem;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+        }
+
+        .epc-services__title {
+            font-family: Archivo, sans-serif;
+            font-size: clamp(2.25rem, 5vw, 4rem);
+            font-weight: 700;
+            letter-spacing: 0.02em;
+            line-height: 1.05;
+            text-transform: uppercase;
+            margin: 0 0 16px;
+            color: #fff;
+        }
+
+        .epc-services__subtitle {
+            font-size: clamp(0.95rem, 1.5vw, 1.0625rem);
+            line-height: 1.75;
+            color: rgba(255, 255, 255, 0.82);
+            margin: 0 0 28px;
+            max-width: 34rem;
+        }
+
+        .epc-services__meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .epc-services__meta-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 14px;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.14);
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 0.8125rem;
+            font-weight: 600;
+            backdrop-filter: blur(8px);
+        }
+
+        .epc-services__meta-chip span {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #FFdf08;
+            flex-shrink: 0;
+        }
+
+        .epc-services__panel {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.14);
+            border-radius: 24px;
+            padding: clamp(1rem, 2.5vw, 1.5rem);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            box-shadow: 0 24px 60px rgba(0, 0, 0, 0.28);
+        }
+
+        .epc-services__grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 10px;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        .epc-services__item {
+            display: grid;
+            grid-template-columns: auto 1fr;
+            align-items: center;
+            gap: 12px;
+            min-height: 64px;
+            padding: 12px 14px;
+            border-radius: 16px;
+            background: rgba(255, 255, 255, 0.92);
+            color: #000810;
+            text-align: left;
+            box-shadow: 0 10px 28px rgba(0, 0, 0, 0.12);
+            transition: transform .25s ease, box-shadow .25s ease, background .25s ease;
+        }
+
+        .epc-services__item:hover {
+            transform: translateY(-3px);
+            background: #fff;
+            box-shadow: 0 16px 36px rgba(37, 60, 116, 0.22);
+        }
+
+        .epc-services__index {
+            width: 34px;
+            height: 34px;
+            border-radius: 10px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: #253C74;
+            color: #fff;
+            font-family: Archivo, sans-serif;
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 0.02em;
+            flex-shrink: 0;
+        }
+
+        .epc-services__label {
+            font-family: Archivo, sans-serif;
+            font-size: clamp(0.78rem, 1.2vw, 0.875rem);
+            font-weight: 650;
+            line-height: 1.35;
+            margin: 0;
+        }
+
+        @media (max-width: 991.98px) {
+            .epc-services__layout {
+                grid-template-columns: 1fr;
+                gap: 1.75rem;
+            }
+
+            .epc-services__panel {
+                border-radius: 20px;
+            }
+        }
+
+        @media (max-width: 767.98px) {
+            .epc-services {
+                min-height: auto;
+                align-items: stretch;
+            }
+
+            .epc-services__grid {
+                grid-template-columns: 1fr;
+            }
+
+            .epc-services__item {
+                min-height: 56px;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .epc-services__item {
+                transition: none !important;
+                transform: none !important;
+            }
+
+            .epc-services__media-bg {
+                transform: none !important;
+                inset: 0;
+                min-height: 100%;
+            }
+        }
+    </style>
 @endpush
 
 @section('header_extension')
@@ -181,55 +429,47 @@
                 </div>
             </div>
         </section>
-        <section class="services section-nopb">
+        <section
+            class="epc-services section-nopb"
+            data-epc-parallax
+            style="--epc-bg-image: url('{{ $service->detail_image_url ?? $service->image_url ?? asset('frontend/img/img-1.png') }}')"
+        >
+            <div class="epc-services__media" aria-hidden="true">
+                <div class="epc-services__media-bg" data-epc-parallax-bg></div>
+            </div>
+            <div class="epc-services__overlay" aria-hidden="true"></div>
+
             <div class="container">
-                <ul class="services_list row g-0">
-                    <li class="services_list-item col-12 col-md-6 col-xl-4" data-aos="fade-up">
-                        <div class="services_header section_header">
-                            <span class="subtitle" data-aos="fade-down">What we do</span>
-                            <h2 class="title">
-                                Other
-                                <span class="highlight">Services</span>
-                            </h2>
-                            <p class="text" data-aos="fade-in" data-aos-duration="500" data-aos-delay="150">
-                                Elementum sagittis vitae et leo duis ut diam. In nibh mauris cursus mattis molestie
-                            </p>
-                            <ul class="services_header-list">
-                                <li class="services_header-list_item d-flex align-items-center" data-aos="fade-up">
-                                    <i class="icon-check icon"></i>
-                                    Discovering possibility in concrete
-                                </li>
-                                <li class="services_header-list_item d-flex align-items-center" data-aos="fade-up" data-aos-delay="100">
-                                    <i class="icon-check icon"></i>
-                                    Sed id semper risus in hendrerit
-                                </li>
-                                <li class="services_header-list_item d-flex align-items-center" data-aos="fade-up" data-aos-delay="150">
-                                    <i class="icon-check icon"></i>
-                                    Nulla pellentesque dignissim
-                                </li>
-                            </ul>
+                <div class="epc-services__layout">
+                    <div class="epc-services__intro">
+                        <span class="epc-services__eyebrow">Integrated EPC Scope</span>
+                        <h2 class="epc-services__title">EPC Services</h2>
+                        <p class="epc-services__subtitle">
+                            PT EPIK provides EPC Service which includes end-to-end engineering, procurement, and construction capabilities for oil &amp; gas infrastructure.
+                        </p>
+                        <div class="epc-services__meta">
+                            <div class="epc-services__meta-chip"><span></span>{{ count($epcServiceItems) }} Service Scopes</div>
+                            <div class="epc-services__meta-chip"><span></span>Oil &amp; Gas Focused</div>
                         </div>
-                    </li>
-                    @foreach ($sidebarServices as $index => $related)
-                        <li class="services_list-item col-12 col-md-6 col-xl-4" data-aos="fade-up">
-                            <div class="wrapper d-flex flex-column align-items-start justify-content-between">
-                                <span class="number">{{ str_pad($index + 1, 2, '0', STR_PAD_LEFT) }}</span>
-                                <h4 class="title">{{ $related->title }}</h4>
-                                <p class="description">{{ Str::limit(strip_tags($related->description), 100) }}</p>
-                                <a class="link link-arrow" href="{{ route('frontend.detail-service', $related->id) }}">
-                                    Details
-                                    <i class="icon-arrow_right"></i>
-                                </a>
-                            </div>
-                        </li>
-                    @endforeach
-                </ul>
+                    </div>
+
+                    <div class="epc-services__panel">
+                        <ul class="epc-services__grid">
+                            @foreach ($epcServiceItems as $index => $item)
+                                <li class="epc-services__item">
+                                    <span class="epc-services__index">{{ str_pad($index + 1, 2, '0', STR_PAD_LEFT) }}</span>
+                                    <p class="epc-services__label">{{ $item }}</p>
+                                </li>
+                            @endforeach
+                        </ul>
+                    </div>
+                </div>
             </div>
         </section>
         <section class="reviews section-nopb">
             <div class="container">
                 <div class="reviews_header section_header">
-                    <span class="subtitle"> Our reviews </span>
+                    <span class="subtitle">Testimonials</span>
                     <h2 class="title">
                         What
                         <span class="highlight">Our Clients</span>
@@ -238,142 +478,62 @@
                 </div>
                 <div class="wrapper--slider">
                     <ul class="reviews_slider">
-                        <li class="reviews_slider-slide">
-                            <div class="reviews_slider-slide_wrapper d-flex flex-column justify-content-between align-items-start">
-                                <ul class="stars d-flex align-items-center">
-                                    <li class="stars_star"><i class="icon-star"></i></li>
-                                    <li class="stars_star"><i class="icon-star"></i></li>
-                                    <li class="stars_star"><i class="icon-star"></i></li>
-                                    <li class="stars_star"><i class="icon-star"></i></li>
-                                    <li class="stars_star"><i class="icon-star"></i></li>
-                                </ul>
-                                <p class="text">
-                                    Curabitur vitae nunc sed velit dignissim sodales ut. Maecenas ultricies mi eget mauris pharetra et.
-                                    Et ligula ullamcorper malesuada proin pellentesque diam volutpat commodo
-                                </p>
-                                <div class="author d-flex align-items-center">
-                                    <picture>
-                                        <source
-                                            data-srcset="{{ asset('frontend/img/placeholder.jpg') }}"
-                                            srcset="{{ asset('frontend/img/placeholder.jpg') }}"
-                                            type="image/webp"
-                                        />
-                                        <img
-                                            class="avatar lazy"
-                                            data-src="{{ asset('frontend/img/placeholder.jpg') }}"
-                                            src="{{ asset('frontend/img/placeholder.jpg') }}"
-                                            alt="Vera Robinson"
-                                        />
-                                    </picture>
-                                    <div class="wrapper">
-                                        <span class="name">Vera Robinson</span>
-                                        <span class="profession">Psychologist</span>
+                        @forelse ($testimonials as $testimonial)
+                            <li class="reviews_slider-slide">
+                                <div class="reviews_slider-slide_wrapper d-flex flex-column justify-content-between align-items-start">
+                                    <ul class="stars d-flex align-items-center">
+                                        @for ($i = 0; $i < 5; $i++)
+                                            <li class="stars_star"><i class="icon-star"></i></li>
+                                        @endfor
+                                    </ul>
+                                    <p class="text">{{ $testimonial->testimoni }}</p>
+                                    <div class="author d-flex align-items-center">
+                                        <picture>
+                                            <source
+                                                data-srcset="{{ $testimonial->gambar_url }}"
+                                                srcset="{{ $testimonial->gambar_url }}"
+                                                type="image/webp"
+                                            />
+                                            <img
+                                                class="avatar lazy"
+                                                data-src="{{ $testimonial->gambar_url }}"
+                                                src="{{ $testimonial->gambar_url }}"
+                                                alt="{{ $testimonial->nama }}"
+                                            />
+                                        </picture>
+                                        <div class="wrapper">
+                                            <span class="name">{{ $testimonial->nama }}</span>
+                                            <span class="profession">{{ $testimonial->instansi }}</span>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                        </li>
-                        <li class="reviews_slider-slide">
-                            <div class="reviews_slider-slide_wrapper d-flex flex-column justify-content-between align-items-start">
-                                <ul class="stars d-flex align-items-center">
-                                    <li class="stars_star"><i class="icon-star"></i></li>
-                                    <li class="stars_star"><i class="icon-star"></i></li>
-                                    <li class="stars_star"><i class="icon-star"></i></li>
-                                    <li class="stars_star"><i class="icon-star"></i></li>
-                                    <li class="stars_star"><i class="icon-star"></i></li>
-                                </ul>
-                                <p class="text">
-                                    Commodo quis imperdiet massa tincidunt nunc. Volutpat odio facilisis mauris sit amet. Mauris commodo
-                                    quis imperdiet massa tincidunt
-                                </p>
-                                <div class="author d-flex align-items-center">
-                                    <picture>
-                                        <source
-                                            data-srcset="{{ asset('frontend/img/placeholder.jpg') }}"
-                                            srcset="{{ asset('frontend/img/placeholder.jpg') }}"
-                                            type="image/webp"
-                                        />
-                                        <img
-                                            class="avatar lazy"
-                                            data-src="{{ asset('frontend/img/placeholder.jpg') }}"
-                                            src="{{ asset('frontend/img/placeholder.jpg') }}"
-                                            alt="Benjamin Norris"
-                                        />
-                                    </picture>
-                                    <div class="wrapper">
-                                        <span class="name">Benjamin Norris</span>
-                                        <span class="profession">Business analyst</span>
+                            </li>
+                        @empty
+                            <li class="reviews_slider-slide">
+                                <div class="reviews_slider-slide_wrapper d-flex flex-column justify-content-between align-items-start">
+                                    <ul class="stars d-flex align-items-center">
+                                        <li class="stars_star"><i class="icon-star"></i></li>
+                                        <li class="stars_star"><i class="icon-star"></i></li>
+                                        <li class="stars_star"><i class="icon-star"></i></li>
+                                        <li class="stars_star"><i class="icon-star"></i></li>
+                                        <li class="stars_star"><i class="icon-star"></i></li>
+                                    </ul>
+                                    <p class="text">
+                                        EPIK consistently delivers pipeline and gas infrastructure projects with strong discipline in safety, quality, and schedule.
+                                    </p>
+                                    <div class="author d-flex align-items-center">
+                                        <picture>
+                                            <source data-srcset="{{ asset('frontend/img/placeholder.jpg') }}" srcset="{{ asset('frontend/img/placeholder.jpg') }}" type="image/webp" />
+                                            <img class="avatar lazy" data-src="{{ asset('frontend/img/placeholder.jpg') }}" src="{{ asset('frontend/img/placeholder.jpg') }}" alt="Client" />
+                                        </picture>
+                                        <div class="wrapper">
+                                            <span class="name">Project Team PGN</span>
+                                            <span class="profession">PT PGN</span>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                        </li>
-                        <li class="reviews_slider-slide">
-                            <div class="reviews_slider-slide_wrapper d-flex flex-column justify-content-between align-items-start">
-                                <ul class="stars d-flex align-items-center">
-                                    <li class="stars_star"><i class="icon-star"></i></li>
-                                    <li class="stars_star"><i class="icon-star"></i></li>
-                                    <li class="stars_star"><i class="icon-star"></i></li>
-                                    <li class="stars_star"><i class="icon-star"></i></li>
-                                    <li class="stars_star"><i class="icon-star"></i></li>
-                                </ul>
-                                <p class="text">
-                                    Curabitur vitae nunc sed velit dignissim sodales ut. Maecenas ultricies mi eget mauris pharetra et.
-                                    Et ligula ullamcorper malesuada proin pellentesque diam volutpat commodo
-                                </p>
-                                <div class="author d-flex align-items-center">
-                                    <picture>
-                                        <source
-                                            data-srcset="{{ asset('frontend/img/placeholder.jpg') }}"
-                                            srcset="{{ asset('frontend/img/placeholder.jpg') }}"
-                                            type="image/webp"
-                                        />
-                                        <img
-                                            class="avatar lazy"
-                                            data-src="{{ asset('frontend/img/placeholder.jpg') }}"
-                                            src="{{ asset('frontend/img/placeholder.jpg') }}"
-                                            alt="Lisa Smith"
-                                        />
-                                    </picture>
-                                    <div class="wrapper">
-                                        <span class="name">Lisa Smith</span>
-                                        <span class="profession">Manager</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </li>
-                        <li class="reviews_slider-slide">
-                            <div class="reviews_slider-slide_wrapper d-flex flex-column justify-content-between align-items-start">
-                                <ul class="stars d-flex align-items-center">
-                                    <li class="stars_star"><i class="icon-star"></i></li>
-                                    <li class="stars_star"><i class="icon-star"></i></li>
-                                    <li class="stars_star"><i class="icon-star"></i></li>
-                                    <li class="stars_star"><i class="icon-star"></i></li>
-                                    <li class="stars_star"><i class="icon-star"></i></li>
-                                </ul>
-                                <p class="text">
-                                    Commodo quis imperdiet massa tincidunt nunc. Volutpat odio facilisis mauris sit amet. Mauris commodo
-                                    quis imperdiet massa tincidunt
-                                </p>
-                                <div class="author d-flex align-items-center">
-                                    <picture>
-                                        <source
-                                            data-srcset="{{ asset('frontend/img/placeholder.jpg') }}"
-                                            srcset="{{ asset('frontend/img/placeholder.jpg') }}"
-                                            type="image/webp"
-                                        />
-                                        <img
-                                            class="avatar lazy"
-                                            data-src="{{ asset('frontend/img/placeholder.jpg') }}"
-                                            src="{{ asset('frontend/img/placeholder.jpg') }}"
-                                            alt="John Doe"
-                                        />
-                                    </picture>
-                                    <div class="wrapper">
-                                        <span class="name">John Doe</span>
-                                        <span class="profession">Analyst</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </li>
+                            </li>
+                        @endforelse
                     </ul>
                     <div class="tns-arrows reviews_slider-controls">
                         <a class="tns-arrows_arrow tns-arrows_arrow--prev" href="#">
@@ -397,94 +557,36 @@
                         <span class="highlight">Contact Us</span>
                     </h2>
                     <p class="text">
-                        Porttitor rhoncus dolor purus non enim praesent elementum facilisis. Nisi scelerisque eu ultrices vitae auctor
-                        eu augue ut lectus
+                        Looking for clarity on EPC scope, project delivery, or how EPIK supports oil &amp; gas infrastructure works?
+                        Browse common questions below, or reach our team for a project consultation.
                     </p>
                     <div class="wrapper">
                         <a class="btn" href="{{ route('frontend.contact.index') }}">Contact Us</a>
                     </div>
                 </div>
                 <div class="accordion faq_accordion col-12 col-lg-12 col-xl-auto">
-                    <div class="faq_accordion accordion-wrapper">
-                        <button
-                            class="faq_accordion-trigger accordion-trigger"
-                            type="button"
-                            data-bs-toggle="collapse"
-                            data-bs-target="#collapseOne"
-                            aria-expanded="false"
-                            aria-controls="collapseOne"
-                        >
-                            <span class="question">What is a Structural Engineer?</span>
-                            <span class="faq_accordion-trigger_icon accordion-trigger_icon icon-plus"></span>
-                        </button>
-                        <div id="collapseOne" class="faq_accordion-content accordion-content collapse">
-                            <p class="text">
-                                Condimentum id venenatis a condimentum vitae sapien pellentesque habitant. Non quam lacus suspendisse
-                                faucibus interdum posuere lorem. Ut diam quam nulla porttitor massa id neque aliquam vestibulum. Mattis
-                                rhoncus urna neque viverra justo nec ultrices dui sapien
-                            </p>
+                    @foreach ($serviceFaqs as $index => $faq)
+                        @php
+                            $collapseId = 'serviceFaq' . $index;
+                            $isFirst = $index === 0;
+                        @endphp
+                        <div class="faq_accordion accordion-wrapper {{ $isFirst ? 'expanded' : '' }}">
+                            <button
+                                class="faq_accordion-trigger accordion-trigger"
+                                type="button"
+                                data-bs-toggle="collapse"
+                                data-bs-target="#{{ $collapseId }}"
+                                aria-expanded="{{ $isFirst ? 'true' : 'false' }}"
+                                aria-controls="{{ $collapseId }}"
+                            >
+                                <span class="question">{{ $faq['question'] }}</span>
+                                <span class="faq_accordion-trigger_icon accordion-trigger_icon {{ $isFirst ? 'icon-minus' : 'icon-plus' }}"></span>
+                            </button>
+                            <div id="{{ $collapseId }}" class="faq_accordion-content accordion-content collapse {{ $isFirst ? 'show' : '' }}">
+                                <p class="text">{{ $faq['answer'] }}</p>
+                            </div>
                         </div>
-                    </div>
-                    <div class="faq_accordion accordion-wrapper expanded">
-                        <button
-                            class="faq_accordion-trigger accordion-trigger"
-                            type="button"
-                            data-bs-toggle="collapse"
-                            data-bs-target="#collapseTwo"
-                            aria-expanded="true"
-                            aria-controls="collapseTwo"
-                        >
-                            <span class="question">What are the Service Provided by Company?</span>
-                            <span class="faq_accordion-trigger_icon accordion-trigger_icon icon-minus"></span>
-                        </button>
-                        <div id="collapseTwo" class="faq_accordion-content accordion-content collapse show">
-                            <p class="text">
-                                Condimentum id venenatis a condimentum vitae sapien pellentesque habitant. Non quam lacus suspendisse
-                                faucibus interdum posuere lorem. Ut diam quam nulla porttitor massa id neque aliquam vestibulum. Mattis
-                                rhoncus urna neque viverra justo nec ultrices dui sapien. Ut diam quam nulla porttitor massa id neque
-                                aliquam vestibulum. Mattis rhoncus urna neque viverra justo nec ultrices dui sapien
-                            </p>
-                        </div>
-                    </div>
-                    <div class="faq_accordion accordion-wrapper">
-                        <button
-                            class="faq_accordion-trigger accordion-trigger"
-                            type="button"
-                            data-bs-toggle="collapse"
-                            data-bs-target="#collapseThree"
-                            aria-expanded="false"
-                            aria-controls="collapseThree"
-                        >
-                            <span class="question">Where is Company Located?</span>
-                            <span class="faq_accordion-trigger_icon accordion-trigger_icon icon-plus"></span>
-                        </button>
-                        <div id="collapseThree" class="faq_accordion-content accordion-content collapse">
-                            <p class="text">
-                                Condimentum id venenatis a condimentum vitae sapien pellentesque habitant. Non quam lacus suspendisse
-                                faucibus interdum posuere lorem. Ut diam quam nulla porttitor.
-                            </p>
-                        </div>
-                    </div>
-                    <div class="faq_accordion accordion-wrapper">
-                        <button
-                            class="faq_accordion-trigger accordion-trigger"
-                            type="button"
-                            data-bs-toggle="collapse"
-                            data-bs-target="#collapseFour"
-                            aria-expanded="false"
-                            aria-controls="collapseFour"
-                        >
-                            <span class="question">How Long Does It Take to Build a House?</span>
-                            <span class="faq_accordion-trigger_icon accordion-trigger_icon icon-plus"></span>
-                        </button>
-                        <div id="collapseFour" class="faq_accordion-content accordion-content collapse">
-                            <p class="text">
-                                Condimentum id venenatis a condimentum vitae sapien pellentesque habitant. Non quam lacus suspendisse
-                                faucibus interdum posuere lorem. Ut diam quam nulla porttitor massa id neque aliquam vestibulum. Mattis
-                                rhoncus urna neque viverra justo nec ultrices dui sapien. Ut diam quam nulla porttitor massa
-                            </p>
-                        </div>
-                    </div>
+                    @endforeach
                 </div>
             </div>
         </section>
@@ -494,4 +596,54 @@
 
 @push('scripts')
     <script src="{{ asset('frontend/js/singleservice.min.js') }}"></script>
+    <script>
+        (function () {
+            var section = document.querySelector('[data-epc-parallax]');
+            if (!section) return;
+
+            var bg = section.querySelector('[data-epc-parallax-bg]');
+            if (!bg) return;
+
+            var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+            var ticking = false;
+
+            function travelAmount() {
+                return window.innerWidth < 768 ? 120 : 220;
+            }
+
+            function updateParallax() {
+                if (reduceMotion.matches) {
+                    bg.style.transform = 'translate3d(0, 0, 0)';
+                    ticking = false;
+                    return;
+                }
+
+                var rect = section.getBoundingClientRect();
+                var viewH = window.innerHeight || document.documentElement.clientHeight;
+                var progress = (viewH - rect.top) / (viewH + rect.height);
+                var clamped = Math.max(0, Math.min(1, progress));
+                var offset = (clamped - 0.5) * travelAmount() * 2;
+
+                bg.style.transform = 'translate3d(0, ' + offset.toFixed(2) + 'px, 0)';
+                ticking = false;
+            }
+
+            function requestTick() {
+                if (ticking) return;
+                ticking = true;
+                window.requestAnimationFrame(updateParallax);
+            }
+
+            updateParallax();
+            window.addEventListener('scroll', requestTick, { passive: true });
+            window.addEventListener('resize', requestTick, { passive: true });
+
+            if (reduceMotion.addEventListener) {
+                reduceMotion.addEventListener('change', requestTick);
+            } else if (reduceMotion.addListener) {
+                reduceMotion.addListener(requestTick);
+            }
+        })();
+    </script>
 @endpush
+

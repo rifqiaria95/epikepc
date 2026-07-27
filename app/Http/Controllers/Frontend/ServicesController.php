@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Frontend;
 use App\Http\Controllers\Controller;
 use App\Models\Service;
 use App\Models\ServiceType;
+use App\Models\Testimoni;
 
 class ServicesController extends Controller
 {
@@ -61,9 +62,49 @@ class ServicesController extends Controller
             ->where('id', $id)
             ->firstOrFail();
 
-        $sidebarServices = Service::forSidebar((int) $service->id)->get();
+        $testimonials = Testimoni::forHomepage(4)->get();
 
-        return view('frontend.services.detail', compact('service', 'sidebarServices'));
+        $epcServiceItems = [
+            'Gas Compressor Package',
+            'Pipeline & Piping For Oil & Gas',
+            'Onshore Civil & Building Work Include Piling Work',
+            'Telecommunication Infrastructure',
+            'Natural Gas, CNG & LNG Facilities',
+            'SO2 & CO2 Removal',
+            'Pressure Vessel And Tank',
+            'Steel Structure Fabrication And Erection',
+            'Mechanical Work',
+            'Electrical & Instrument Work',
+            'Painting, Fireproofing And Insulation Work',
+            'HDD & Auger Services',
+            'R&D High-End Intelligent Oil and Gas Equipment',
+        ];
+
+        $serviceFaqs = [
+            [
+                'question' => 'What EPC scopes does PT EPIK cover?',
+                'answer' => 'PT EPIK provides integrated EPC services for oil & gas infrastructure, including gas compressor packages, pipeline & piping, pressure vessels and tanks, steel structure fabrication and erection, mechanical work, electrical & instrument work, painting, fireproofing and insulation, HDD & auger services, onshore civil & building with piling, telecommunication infrastructure, natural gas/CNG/LNG facilities, SO2 & CO2 removal, and R&D for high-end intelligent oil and gas equipment.',
+            ],
+            [
+                'question' => 'Does EPIK deliver EPCIC, not only construction?',
+                'answer' => 'Yes. We support Engineering, Procurement, Construction, Installation, and Commissioning (EPCIC) for large-scale energy projects — from technical planning and material supply through site execution, testing, and handover.',
+            ],
+            [
+                'question' => 'Which industries and clients does EPIK typically serve?',
+                'answer' => 'We focus on upstream and downstream oil & gas infrastructure for partners such as PT PGN, Pertamina EP, Pertamina Gas, Perta Arun Gas, and PGN SAKA — covering pipeline networks, metering stations, LNG facilities, and customer attachment works across Indonesia.',
+            ],
+            [
+                'question' => 'How does EPIK manage safety and project quality?',
+                'answer' => 'Every project is executed under disciplined HSE and quality procedures aligned with industry standards and our ISO certifications (ISO 9001, ISO 14001, and ISO 45001). We emphasize schedule reliability, constructability review, and clear progress reporting to clients.',
+            ],
+        ];
+
+        return view('frontend.services.detail', compact(
+            'service',
+            'testimonials',
+            'epcServiceItems',
+            'serviceFaqs'
+        ));
     }
 
     public function kaiflowServices()
