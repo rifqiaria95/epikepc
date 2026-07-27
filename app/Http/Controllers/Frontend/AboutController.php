@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Frontend;
 
 use App\Http\Controllers\Controller;
 use App\Models\About;
+use App\Models\CompanyJourney;
 use App\Models\Galeri;
 use App\Models\Service;
 use App\Models\Testimoni;
@@ -63,7 +64,28 @@ class AboutController extends Controller
             ],
         ];
 
-        return view('frontend.about.index', compact('about', 'services', 'gallery', 'testimonials', 'visionMission'));
+        // Company profile video (video_url + poster from company_journeys)
+        $companyJourney = CompanyJourney::query()->firstOrCreate(
+            ['id' => 1],
+            CompanyJourney::defaults()
+        );
+
+        if ($companyJourney->video_poster) {
+            try {
+                $companyJourney->poster_url = $this->fileStorageService->getFileUrl($companyJourney->video_poster);
+            } catch (\Exception $e) {
+                $companyJourney->poster_url = null;
+            }
+        }
+
+        return view('frontend.about.index', compact(
+            'about',
+            'services',
+            'gallery',
+            'testimonials',
+            'visionMission',
+            'companyJourney'
+        ));
     }
 
     private function tryUrl(string $path): string

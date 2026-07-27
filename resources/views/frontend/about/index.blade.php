@@ -5,6 +5,54 @@
 
 @push('styles')
     <link rel="stylesheet" href="{{ asset('frontend/css/about.min.css') }}" />
+    <style>
+        .features_video {
+            position: relative;
+        }
+
+        .features_video-iframe {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            border: 0;
+            opacity: 0;
+            pointer-events: none;
+            z-index: 1;
+            background: #000;
+        }
+
+        .features_video.is-playing .features_video-iframe {
+            opacity: 1;
+            pointer-events: auto;
+            z-index: 3;
+        }
+
+        .features_video-poster {
+            position: absolute;
+            inset: 0;
+            z-index: 2;
+            transition: opacity .25s ease, visibility .25s ease;
+        }
+
+        .features_video-poster img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        .features_video.is-playing .features_video-poster {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+
+        .features_video .btn-play {
+            cursor: pointer;
+            background: transparent;
+        }
+    </style>
 @endpush
 
 @section('header_extension')
@@ -280,20 +328,53 @@
                         </div>
                     </div>
                 </div>
-                <div class="features_video col-12" data-aos="zoom-in" data-aos-duration="600" data-aos-once="true">
-                    <picture>
-                        <source data-srcset="{{ asset('frontend/img/placeholder.jpg') }}" srcset="{{ asset('frontend/img/placeholder.jpg') }}" />
-                        <img
-                            class="features_video-thumb lazy"
-                            data-src="{{ asset('frontend/img/placeholder.jpg') }}"
-                            src="{{ asset('frontend/img/placeholder.jpg') }}"
-                            alt="thumbnail"
-                        />
-                    </picture>
-                    <a class="btn-play d-inline-flex align-items-center justify-content-center" href="#">
-                        <i class="icon-play"></i>
-                    </a>
-                </div>
+                @php
+                    $videoEmbedUrl = $companyJourney->video_embed_url ?? null;
+                    $videoPoster = $companyJourney->poster_url
+                        ?? ($about->image_url ?? asset('frontend/img/placeholder.jpg'));
+                    $videoTitle = $companyJourney->video_poster_title ?? 'Company Profile Video';
+                @endphp
+
+                @if ($videoEmbedUrl)
+                    <div
+                        class="features_video col-12"
+                        data-aos="zoom-in"
+                        data-aos-duration="600"
+                        data-aos-once="true"
+                        data-about-video
+                    >
+                        <iframe
+                            class="features_video-iframe"
+                            data-about-iframe
+                            src=""
+                            data-src="{{ $videoEmbedUrl }}"
+                            title="{{ $videoTitle }}"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                            allowfullscreen
+                            loading="lazy"
+                        ></iframe>
+
+                        <div class="features_video-poster" data-about-poster>
+                            <picture>
+                                <source data-srcset="{{ $videoPoster }}" srcset="{{ $videoPoster }}" />
+                                <img
+                                    class="features_video-thumb lazy"
+                                    data-src="{{ $videoPoster }}"
+                                    src="{{ $videoPoster }}"
+                                    alt="{{ $videoTitle }}"
+                                />
+                            </picture>
+                            <button
+                                class="btn-play d-inline-flex align-items-center justify-content-center"
+                                type="button"
+                                data-about-play
+                                aria-label="Play video"
+                            >
+                                <i class="icon-play"></i>
+                            </button>
+                        </div>
+                    </div>
+                @endif
             </div>
         </section>
     </main>
@@ -301,4 +382,31 @@
 
 @push('scripts')
     <script src="{{ asset('frontend/js/about.min.js') }}"></script>
+    <script>
+        (function () {
+            var wrap = document.querySelector('[data-about-video]');
+            if (!wrap) return;
+
+            var poster = wrap.querySelector('[data-about-poster]');
+            var playBtn = wrap.querySelector('[data-about-play]');
+            var iframe = wrap.querySelector('[data-about-iframe]');
+            if (!poster || !iframe) return;
+
+            function playVideo(event) {
+                if (event) event.preventDefault();
+
+                var src = iframe.getAttribute('data-src');
+                if (!src || wrap.classList.contains('is-playing')) return;
+
+                iframe.setAttribute('src', src);
+                wrap.classList.add('is-playing');
+            }
+
+            if (playBtn) {
+                playBtn.addEventListener('click', playVideo);
+            }
+
+            poster.addEventListener('click', playVideo);
+        })();
+    </script>
 @endpush
