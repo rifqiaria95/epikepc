@@ -9,7 +9,7 @@
 
 @section('header_extension')
     @include('partials.frontend.header-extension', [
-        'subtitle' => 'Latest News',
+        'subtitle' => 'Building communities',
         'title'    => 'News',
         'items'    => [
             ['label' => 'Home', 'url' => url('/')],
@@ -67,7 +67,7 @@
                     </ul>
                     @if ($posts->hasPages())
                     <div class="pagination d-flex align-items-center justify-content-center justify-content-sm-start">
-                        {{ $posts->links() }}
+                        {{ $posts->links('vendor.pagination.frontend') }}
                     </div>
                     @endif
                 </div>
@@ -118,50 +118,6 @@
                             @endforeach
                         </ul>
                     </div>
-                    <div class="widgets_widget widgets_widget--newsletter">
-                        <h3 class="widgets_widget-title">Subscribe to our news</h3>
-                        <p class="text">Find out about the last days and the latest promotions of our Corporation</p>
-                        <form
-                            class="d-flex flex-wrap flex-sm-nowrap form"
-                            data-type="newsletter"
-                            action="#"
-                            method="POST"
-                            name="newsletterForm"
-                            id="newsletterForm--widget"
-                        >
-                            <input
-                                class="field required"
-                                name="newsletterEmail"
-                                id="newsletterEmail--widget"
-                                type="text"
-                                placeholder="Email"
-                                data-type="email"
-                            />
-                            <button class="btn btn--submit btn--static" type="submit">Subscribe</button>
-                        </form>
-                        <ul class="socials d-flex align-items-center justify-content-start">
-                            <li class="socials_item">
-                                <a class="socials_item-link" href="#" target="_blank" rel="noopener noreferrer">
-                                    <i class="icon-facebook"></i>
-                                </a>
-                            </li>
-                            <li class="socials_item">
-                                <a class="socials_item-link" href="#" target="_blank" rel="noopener noreferrer">
-                                    <i class="icon-instagram"></i>
-                                </a>
-                            </li>
-                            <li class="socials_item">
-                                <a class="socials_item-link" href="#" target="_blank" rel="noopener noreferrer">
-                                    <i class="icon-twitter"></i>
-                                </a>
-                            </li>
-                            <li class="socials_item">
-                                <a class="socials_item-link" href="#" target="_blank" rel="noopener noreferrer">
-                                    <i class="icon-whatsapp"></i>
-                                </a>
-                            </li>
-                        </ul>
-                    </div>
                     <div class="widgets_widget widgets_widget--tags">
                         <h3 class="widgets_widget-title">Tags</h3>
                         <ul class="list d-flex flex-wrap align-items-baseline">
@@ -207,35 +163,6 @@
                                 <a class="link" href="#">
                                     <span class="username">Admin</span>
                                     in tempor eros tortor, a ornare
-                                </a>
-                            </li>
-                        </ul>
-                    </div>
-                    <div class="widgets_widget widgets_widget--archives">
-                        <h3 class="widgets_widget-title">Archives</h3>
-                        <ul class="list">
-                            <li class="list-item">
-                                <a class="link d-flex align-items-center" href="#">
-                                    <i class="icon-arrow_right icon--arrow"></i>
-                                    December
-                                </a>
-                            </li>
-                            <li class="list-item">
-                                <a class="link d-flex align-items-center" href="#">
-                                    <i class="icon-arrow_right icon--arrow"></i>
-                                    January
-                                </a>
-                            </li>
-                            <li class="list-item">
-                                <a class="link d-flex align-items-center" href="#">
-                                    <i class="icon-arrow_right icon--arrow"></i>
-                                    February
-                                </a>
-                            </li>
-                            <li class="list-item">
-                                <a class="link d-flex align-items-center" href="#">
-                                    <i class="icon-arrow_right icon--arrow"></i>
-                                    March
                                 </a>
                             </li>
                         </ul>

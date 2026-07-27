@@ -5,41 +5,17 @@
 
 @push('styles')
     <link rel="stylesheet" href="{{ asset('frontend/css/about.min.css') }}" />
-    <style>
-        .header_extension .plan[data-role="deco"] {
-            width: min(82vw, 1200px);
-            max-width: 1200px;
-            right: -6%;
-            bottom: -20%;
-            opacity: .32;
-            transform: none;
-            pointer-events: none;
-        }
-    </style>
 @endpush
 
 @section('header_extension')
-    <div class="header_extension">
-        <div class="container">
-            <div class="section_header">
-                <span class="subtitle subtitle--extended">Building communities</span>
-                <h1 class="title">About</h1>
-                <ul class="breadcrumbs d-flex align-items-center">
-                    <li class="breadcrumbs_item">
-                        <a href="{{ route('frontend.about.index') }}">Home</a>
-                    </li>
-                    <li class="breadcrumbs_item breadcrumbs_item--current">
-                        <span>About</span>
-                    </li>
-                </ul>
-            </div>
-        </div>
-        <picture>
-            <source data-srcset="{{ asset('frontend/img/lineart.png') }}" srcset="{{ asset('frontend/img/lineart.png') }}" type="image/png" data-role="deco" />
-            <img class="lazy plan" data-src="{{ asset('frontend/img/lineart.png') }}" src="{{ asset('frontend/img/lineart.png') }}" alt="Construction lineart decoration" data-role="deco" />
-        </picture>
-   
-    </div>
+    @include('partials.frontend.header-extension', [
+        'subtitle' => 'Building communities',
+        'title'    => 'About',
+        'items'    => [
+            ['label' => 'Home', 'url' => url('/')],
+            ['label' => 'About'],
+        ],
+    ])
 @endsection
 
 @section('content')
@@ -220,7 +196,7 @@
         @endif
 
         {{-- ===== FEATURES / WHY US ===== --}}
-        <section class="features pb-100" style="padding-bottom: 100px;">
+        <section class="features pb-100 pt-100" style="padding-bottom: 100px; padding-top: 100px;">
             <div class="container">
                 <div class="row g-0">
                     <div class="features_header section_header col-12 col-md-12 col-lg-6 col-xl-4">

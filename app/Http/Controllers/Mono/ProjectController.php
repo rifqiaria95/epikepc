@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Mono;
 
+use App\Enums\ProjectStatus;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ProjectRequest;
 use App\Models\Project;
@@ -24,8 +25,8 @@ class ProjectController extends Controller
         if ($request->ajax()) {
             $projects = Project::withoutTrashed()
                 ->select([
-                    'id', 'title', 'slug', 'excerpt', 'category', 'client',
-                    'project_date', 'is_published', 'sort_order', 'image', 'created_at',
+                    'id', 'title', 'slug', 'excerpt', 'category', 'client', 'location',
+                    'status', 'project_date', 'is_published', 'sort_order', 'image', 'created_at',
                 ])
                 ->with(['createdBy:id,name', 'updatedBy:id,name']);
 
@@ -39,6 +40,15 @@ class ProjectController extends Controller
                     }
                     return '<span class="text-muted">-</span>';
                 })
+                ->editColumn('status', function ($row) {
+                    $status = $row->status instanceof ProjectStatus
+                        ? $row->status
+                        : ProjectStatus::tryFromMixed($row->status) ?? ProjectStatus::Completed;
+
+                    $badge = $status === ProjectStatus::Ongoing ? 'warning' : 'success';
+
+                    return '<span class="badge bg-label-' . $badge . '">' . e($status->label()) . '</span>';
+                })
                 ->editColumn('is_published', function ($row) {
                     if ($row->is_published) {
                         return '<span class="badge bg-label-success">Published</span>';
@@ -48,7 +58,7 @@ class ProjectController extends Controller
                 ->editColumn('project_date', fn ($row) => $row->project_date?->format('d M Y') ?? '-')
                 ->addColumn('image_url', fn ($row) => $row->image ? $this->fileStorageService->getFileUrl($row->image) : null)
                 ->addColumn('aksi', fn ($row) => '')
-                ->rawColumns(['image', 'is_published', 'aksi'])
+                ->rawColumns(['image', 'status', 'is_published', 'aksi'])
                 ->addIndexColumn()
                 ->toJson();
         }
@@ -57,9 +67,12 @@ class ProjectController extends Controller
         $published       = Project::withoutTrashed()->where('is_published', true)->count();
         $unpublished     = Project::withoutTrashed()->where('is_published', false)->count();
         $recentProjects  = Project::withoutTrashed()->whereDate('created_at', '>=', now()->subDays(30))->count();
+        $ongoingProjects = Project::withoutTrashed()->where('status', ProjectStatus::Ongoing)->count();
+        $completedProjects = Project::withoutTrashed()->where('status', ProjectStatus::Completed)->count();
 
         return view('internal/project.index', compact(
-            'totalProjects', 'published', 'unpublished', 'recentProjects'
+            'totalProjects', 'published', 'unpublished', 'recentProjects',
+            'ongoingProjects', 'completedProjects'
         ));
     }
 
@@ -88,9 +101,12 @@ class ProjectController extends Controller
                 }
             }
 
-            $validatedData['created_by']  = auth()->id();
+            $validatedData['created_by']   = auth()->id();
             $validatedData['is_published'] = (bool) ($validatedData['is_published'] ?? false);
+            $validatedData['status']       = $validatedData['status'] ?? ProjectStatus::Completed->value;
             $validatedData['slug']         = Str::slug($validatedData['title']);
+            $validatedData['latitude']     = $validatedData['latitude'] ?? null;
+            $validatedData['longitude']    = $validatedData['longitude'] ?? null;
 
             $project = Project::create($validatedData);
 
@@ -123,11 +139,14 @@ class ProjectController extends Controller
                 ->with(['createdBy:id,name', 'updatedBy:id,name'])
                 ->findOrFail($id);
 
-            $data               = $project->toArray();
+            $data                         = $project->toArray();
             $data['image_url']            = $project->image ? $this->fileStorageService->getFileUrl($project->image) : null;
             $data['image_secondary_url']  = $project->image_secondary ? $this->fileStorageService->getFileUrl($project->image_secondary) : null;
             $data['image_tertiary_url']   = $project->image_tertiary ? $this->fileStorageService->getFileUrl($project->image_tertiary) : null;
             $data['project_date_raw']     = $project->project_date?->format('Y-m-d');
+            $data['status']               = $project->status instanceof ProjectStatus
+                ? $project->status->value
+                : ($project->status ?? ProjectStatus::Completed->value);
 
             return response()->json([
                 'success' => true,

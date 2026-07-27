@@ -782,7 +782,7 @@
 
                 <!-- CTA -->
                 <div class="text-center mt-5" data-aos="fade-up">
-                    <a href="{{ route('frontend.news.index') }}" style="display:inline-block; font-family:Archivo,sans-serif; font-weight:700; font-size:0.9375rem; padding:16px 40px; background:#253C74; color:#fff; border-radius:4px; text-decoration:none; letter-spacing:0.02em; transition: background .2s;">View All News</a>
+                    <a href="{{ route('frontend.news.index') }}" class="nm-view-all-btn">View All News</a>
                 </div>
 
             </div><!-- /container -->
@@ -977,17 +977,51 @@
                 }
 
                 .nm-news-card__link {
-                    display: inline-flex; align-items: center; gap: 6px;
+                    display: inline-flex;
+                    align-items: center;
+                    gap: 6px;
+                    width: fit-content;
+                    max-width: 100%;
                     font-family: Archivo, sans-serif;
-                    font-size: 0.875rem; font-weight: 700;
-                    color: #253C74; text-decoration: none;
-                    transition: gap .2s, color .2s;
+                    font-size: 0.875rem;
+                    font-weight: 700;
+                    color: #253C74;
+                    text-decoration: none;
+                    background: transparent;
+                    border-radius: 4px;
+                    padding: 0;
+                    transition: gap .2s ease, color .2s ease, background .2s ease, padding .2s ease;
                     margin-top: auto;
                 }
-                .nm-news-card__link:hover { gap: 10px; color: #013494; }
+                .nm-news-card__link:hover,
+                .nm-news-card__link:focus-visible {
+                    gap: 10px;
+                    color: #013494;
+                    background: transparent;
+                }
+                .nm-news-card__link svg {
+                    flex-shrink: 0;
+                }
 
-                /* View All News button hover */
-                .news-media a[href]:last-of-type:hover { background: #013494 !important; }
+                /* View All News CTA */
+                .nm-view-all-btn {
+                    display: inline-block;
+                    font-family: Archivo, sans-serif;
+                    font-weight: 700;
+                    font-size: 0.9375rem;
+                    padding: 16px 40px;
+                    background: #253C74;
+                    color: #fff;
+                    border-radius: 4px;
+                    text-decoration: none;
+                    letter-spacing: 0.02em;
+                    transition: background .2s ease, color .2s ease;
+                }
+                .nm-view-all-btn:hover,
+                .nm-view-all-btn:focus-visible {
+                    background: #013494;
+                    color: #fff;
+                }
 
                 /* Responsive */
                 @media (max-width: 575.98px) {
@@ -1138,6 +1172,13 @@
 @push('scripts')
     <script src="{{ asset('frontend/js/index_alt.min.js') }}"></script>
     <script src="{{ asset('frontend/js/board-slider.js') }}"></script>
+    <script>
+        window.PROJECT_MAP_DATA = @json($projectMap['markers'] ?? []);
+        window.PROJECT_MAP_CONFIG = @json($projectMap['config'] ?? [
+            'filterMode' => 'category',
+            'leafletBasePath' => asset('frontend/img/leaflet'),
+        ]);
+    </script>
     <script src="{{ asset('frontend/js/leaflet.min.js') }}"></script>
     <script src="{{ asset('frontend/js/indonesia-map.js') }}"></script>
     <script src="{{ asset('frontend/js/company-journey.js') }}"></script>

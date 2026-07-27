@@ -105,7 +105,9 @@
                         <th>Title</th>
                         <th>Category</th>
                         <th>Client</th>
-                        <th>Status</th>
+                        <th>Project Status</th>
+                        <th>Location</th>
+                        <th>Publish</th>
                         <th>Tanggal</th>
                         <th>Actions</th>
                     </tr>
@@ -177,7 +179,7 @@
                                             <div class="col-xl-4 mb-4">
                                                 <label class="form-label" for="category">Category</label>
                                                 <input type="text" class="form-control" id="category" name="category"
-                                                    placeholder="e.g. Web Design, Branding" />
+                                                    placeholder="e.g. EPC, Pipeline" />
                                                 <div class="text-danger small" id="category-error"></div>
                                             </div>
                                             <div class="col-xl-4 mb-4">
@@ -191,7 +193,40 @@
                                                 <input type="date" class="form-control" id="project_date" name="project_date" />
                                                 <div class="text-danger small" id="project_date-error"></div>
                                             </div>
-                                            <div class="col-xl-8 mb-4">
+                                            <div class="col-xl-4 mb-4">
+                                                <label class="form-label" for="project_value">Project Value (IDR)</label>
+                                                <input type="number" class="form-control" id="project_value" name="project_value"
+                                                    placeholder="e.g. 8500000000" min="0" step="1" />
+                                                <div class="form-text">Used to rank portfolio (highest value first).</div>
+                                                <div class="text-danger small" id="project_value-error"></div>
+                                            </div>
+                                            <div class="col-xl-4 mb-4">
+                                                <label class="form-label" for="location">Location</label>
+                                                <input type="text" class="form-control" id="location" name="location"
+                                                    placeholder="e.g. Batam, Kendal" />
+                                                <div class="text-danger small" id="location-error"></div>
+                                            </div>
+                                            <div class="col-xl-4 mb-4">
+                                                <label class="form-label" for="latitude">Latitude</label>
+                                                <input type="number" step="any" class="form-control" id="latitude" name="latitude"
+                                                    placeholder="-6.2000000" />
+                                                <div class="text-danger small" id="latitude-error"></div>
+                                            </div>
+                                            <div class="col-xl-4 mb-4">
+                                                <label class="form-label" for="longitude">Longitude</label>
+                                                <input type="number" step="any" class="form-control" id="longitude" name="longitude"
+                                                    placeholder="106.8160000" />
+                                                <div class="text-danger small" id="longitude-error"></div>
+                                            </div>
+                                            <div class="col-xl-4 mb-4">
+                                                <label class="form-label" for="status">Project Status <span class="text-danger">*</span></label>
+                                                <select class="form-select" id="status" name="status">
+                                                    <option value="completed">Completed</option>
+                                                    <option value="ongoing">On Going</option>
+                                                </select>
+                                                <div class="text-danger small" id="status-error"></div>
+                                            </div>
+                                            <div class="col-xl-4 mb-4">
                                                 <label class="form-label" for="website_url">Website URL</label>
                                                 <input type="url" class="form-control" id="website_url" name="website_url"
                                                     placeholder="https://contoh.com" />

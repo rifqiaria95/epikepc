@@ -113,6 +113,17 @@ $(document).ready(function () {
                 render: function (data) { return data || '-'; }
             },
             {
+                data: 'status',
+                name: 'status',
+                orderable: true,
+                searchable: true
+            },
+            {
+                data: 'location',
+                name: 'location',
+                render: function (data) { return data || '-'; }
+            },
+            {
                 data: 'is_published',
                 name: 'is_published',
                 orderable: false,
@@ -242,6 +253,11 @@ $(document).ready(function () {
         $('#id').val('');
         $('#modal-judul').text('Add Project');
         $('#is_published').prop('checked', false);
+        $('#status').val('completed');
+        $('#location').val('');
+        $('#latitude').val('');
+        $('#longitude').val('');
+        $('#project_value').val('');
 
         ['image-preview', 'image_secondary-preview', 'image_tertiary-preview'].forEach(function (id) {
             $('#' + id).html('');
@@ -333,6 +349,11 @@ function editProject(id) {
                 $('#project_date').val(p.project_date_raw || '');
                 $('#website_url').val(p.website_url || '');
                 $('#sort_order').val(p.sort_order ?? 0);
+                $('#location').val(p.location || '');
+                $('#latitude').val(p.latitude ?? '');
+                $('#longitude').val(p.longitude ?? '');
+                $('#project_value').val(p.project_value ?? '');
+                $('#status').val(p.status || 'completed');
                 $('#is_published').prop('checked', p.is_published == true || p.is_published == 1);
 
                 setTinyMCEContent('content', p.content);

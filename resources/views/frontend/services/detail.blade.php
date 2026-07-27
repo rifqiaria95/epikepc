@@ -9,7 +9,7 @@
 
 @section('header_extension')
     @include('partials.frontend.header-extension', [
-        'subtitle' => 'Services',
+        'subtitle' => 'Building communities',
         'title'    => $service->title,
         'items'    => [
             ['label' => 'Home', 'url' => url('/')],

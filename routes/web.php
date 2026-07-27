@@ -85,7 +85,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/api/analytics/track', [DashboardController::class, 'trackAnalytics'])->name('analytics.track');
 
     // Route Kategori
-    Route::prefix('frontend/news/kategori')->name('kategori.')->group(function () {
+    Route::prefix('internal/news/kategori')->name('kategori.')->group(function () {
         Route::get('/', [KategoriController::class, 'index'])->name('index');
         Route::post('/store', [KategoriController::class, 'store'])->name('store');
         Route::get('/edit/{id}', [KategoriController::class, 'edit'])->name('edit');
@@ -94,7 +94,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     });
 
     // Route Tag
-    Route::prefix('frontend/news/tag')->name('tag.')->group(function () {
+    Route::prefix('internal/news/tag')->name('tag.')->group(function () {
         Route::get('/', [TagController::class, 'index'])->name('index');
         Route::post('/store', [TagController::class, 'store'])->name('store');
         Route::get('/edit/{id}', [TagController::class, 'edit'])->name('edit');
@@ -103,7 +103,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     });
 
     // Route Service Type
-    Route::prefix('services/service_type')->name('service_type.')->group(function () {
+    Route::prefix('internal/services/service_type')->name('service_type.')->group(function () {
         Route::get('/', [ServiceTypeController::class, 'index'])
         ->name('index');
         Route::post('/store', [ServiceTypeController::class, 'store'])
@@ -117,7 +117,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     });
 
     // Route Services
-    Route::prefix('services/service_list')->name('service_list.')->group(function () {
+    Route::prefix('internal/services/service_list')->name('service_list.')->group(function () {
         Route::get('/', [MonoServicesController::class, 'index'])
             ->name('index')
             ->middleware('permission:view_services');
@@ -136,7 +136,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     });
 
     // Route Pricing
-    Route::prefix('frontend/pricing')->name('pricing.')->group(function () {
+    Route::prefix('internal/pricing')->name('pricing.')->group(function () {
         Route::get('/', [PricingController::class, 'index'])
             ->name('index')
             ->middleware('permission:view_pricing');
@@ -155,7 +155,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     });
 
     // Route Coverage Area
-    Route::prefix('frontend/coverage')->name('coverage.')->group(function () {
+    Route::prefix('internal/coverage')->name('coverage.')->group(function () {
         Route::get('/', [CoverageLocationController::class, 'index'])
             ->name('index')
             ->middleware('permission:view_coverage');
@@ -176,7 +176,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
             ->middleware('permission:delete_coverage');
     });
 
-    Route::prefix('frontend/consultation')->name('consultation.')->group(function () {
+    Route::prefix('internal/consultation')->name('consultation.')->group(function () {
         Route::get('/', [MonoConsultationRequestController::class, 'index'])
             ->name('index')
             ->middleware('permission:view_consultation');
@@ -195,7 +195,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     });
 
     // Route News
-    Route::prefix('frontend/news')->name('news.')->group(function () {
+    Route::prefix('internal/news')->name('news.')->group(function () {
         Route::get('/', [NewsController::class, 'index'])
             ->name('index')
             ->middleware('permission:view_news');
@@ -214,7 +214,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     });
 
     // Route Company (Journey + Milestones)
-    Route::prefix('frontend/profile/about')->name('about.')->group(function () {
+    Route::prefix('internal/profile/about')->name('about.')->group(function () {
         Route::get('/', [AboutController::class, 'index'])
             ->name('index')
             ->middleware('permission:view_profile');
@@ -236,7 +236,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     });
 
     // Route Project
-    Route::prefix('frontend/project')->name('project.')->group(function () {
+    Route::prefix('internal/project')->name('project.')->group(function () {
         Route::get('/', [MonoProjectController::class, 'index'])
             ->name('index')
             ->middleware('permission:view_project');
@@ -255,7 +255,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     });
 
     // Route Galeri
-    Route::prefix('frontend/galeri/list-galeri')->name('list-galeri.')->group(function () {
+    Route::prefix('internal/galeri/list-galeri')->name('list-galeri.')->group(function () {
         Route::get('/', [GaleriController::class, 'index'])
             ->name('index')
             ->middleware('permission:view_galeri');
@@ -274,7 +274,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     });
 
     // Route Kategori Galeri
-    Route::prefix('frontend/galeri/kategori-galeri')->name('kategori-galeri.')->group(function () {
+    Route::prefix('internal/galeri/kategori-galeri')->name('kategori-galeri.')->group(function () {
         Route::get('/', [KategoriGaleriController::class, 'index'])
             ->name('index')
             ->middleware('permission:view_galeri');
@@ -293,7 +293,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     });
 
     // Route Organisasi
-    Route::prefix('frontend/organisasi')->name('organisasi.')->group(function () {
+    Route::prefix('internal/organisasi')->name('organisasi.')->group(function () {
         Route::get('/', [OrganisasiController::class, 'index'])
             ->name('index')
             ->middleware('permission:view_organisasi');
@@ -312,7 +312,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     });
 
     // Route Testimoni
-    Route::prefix('frontend/testimoni')->name('testimoni.')->group(function () {
+    Route::prefix('internal/testimoni')->name('testimoni.')->group(function () {
         Route::get('/', [TestimoniController::class, 'index'])
             ->name('index')
             ->middleware('permission:view_testimoni');

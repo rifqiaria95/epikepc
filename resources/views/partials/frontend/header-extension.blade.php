@@ -1,3 +1,4 @@
+{{-- Shared header_extension — same structure as About page --}}
 <div class="header_extension">
     <div class="container">
         <div class="section_header">
@@ -7,7 +8,7 @@
             <h1 class="title">{{ $title }}</h1>
             @if (!empty($items))
                 <ul class="breadcrumbs d-flex align-items-center">
-                    @foreach ($items as $index => $item)
+                    @foreach ($items as $item)
                         @if ($loop->last)
                             <li class="breadcrumbs_item breadcrumbs_item--current">
                                 <span>{{ $item['label'] }}</span>
@@ -23,7 +24,7 @@
         </div>
     </div>
     <picture>
-        <source data-srcset="{{ asset('frontend/img/placeholder.jpg') }}" srcset="{{ asset('frontend/img/placeholder.jpg') }}" type="image/webp" data-role="deco" />
-        <img class="lazy plan" data-src="{{ asset('frontend/img/placeholder.jpg') }}" src="{{ asset('frontend/img/placeholder.jpg') }}" alt="" data-role="deco" />
+        <source data-srcset="{{ asset('frontend/img/lineart.png') }}" srcset="{{ asset('frontend/img/lineart.png') }}" type="image/png" data-role="deco" />
+        <img class="lazy plan" data-src="{{ asset('frontend/img/lineart.png') }}" src="{{ asset('frontend/img/lineart.png') }}" alt="Construction lineart decoration" data-role="deco" />
     </picture>
 </div>

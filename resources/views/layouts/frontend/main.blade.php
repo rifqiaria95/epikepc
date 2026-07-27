@@ -10,6 +10,18 @@
     <link rel="shortcut icon" type="image/x-icon" href="{{ asset('frontend/img/logo-2.png') }}">
     <link rel="stylesheet preload" as="style" href="{{ asset('frontend/css/preload.min.css') }}" />
     <link rel="stylesheet preload" as="style" href="{{ asset('frontend/css/libs.min.css') }}" />
+    {{-- Shared header_extension deco styles (same as About) --}}
+    <style>
+        .header_extension .plan[data-role="deco"] {
+            width: min(82vw, 1200px);
+            max-width: 1200px;
+            right: -6%;
+            bottom: -20%;
+            opacity: .32;
+            transform: none;
+            pointer-events: none;
+        }
+    </style>
     @stack('styles')
 </head>
 <body>

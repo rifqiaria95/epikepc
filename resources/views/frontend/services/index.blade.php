@@ -5,40 +5,17 @@
 
 @push('styles')
     <link rel="stylesheet" href="{{ asset('frontend/css/services.min.css') }}" />
-    <style>
-        .header_extension .plan[data-role="deco"] {
-            width: min(82vw, 1200px);
-            max-width: 1200px;
-            right: -6%;
-            bottom: -20%;
-            opacity: .32;
-            transform: none;
-            pointer-events: none;
-        }
-    </style>
 @endpush
 
 @section('header_extension')
-    <div class="header_extension">
-        <div class="container">
-            <div class="section_header">
-                <span class="subtitle subtitle--extended">Building communities</span>
-                <h1 class="title">Services</h1>
-                <ul class="breadcrumbs d-flex align-items-center">
-                    <li class="breadcrumbs_item">
-                        <a href="{{ route('frontend.about.index') }}">Home</a>
-                    </li>
-                    <li class="breadcrumbs_item breadcrumbs_item--current">
-                        <span>Services</span>
-                    </li>
-                </ul>
-            </div>
-        </div>
-        <picture>
-            <source data-srcset="{{ asset('frontend/img/lineart.png') }}" srcset="{{ asset('frontend/img/lineart.png') }}" type="image/webp" data-role="deco" />
-            <img class="lazy plan" data-src="{{ asset('frontend/img/lineart.png') }}" src="{{ asset('frontend/img/lineart.png') }}" alt="media" data-role="deco" />
-        </picture>
-    </div>
+    @include('partials.frontend.header-extension', [
+        'subtitle' => 'Building communities',
+        'title'    => 'Services',
+        'items'    => [
+            ['label' => 'Home', 'url' => url('/')],
+            ['label' => 'Services'],
+        ],
+    ])
 @endsection
 
 @section('content')

@@ -14,13 +14,16 @@ use App\Models\Project;
 use App\Models\Service;
 use App\Models\Testimoni;
 use App\Services\FileStorageService;
+use App\Services\ProjectMapService;
 
 class HomeController extends Controller
 {
     protected $fileStorageService;
 
-    public function __construct(FileStorageService $fileStorageService)
-    {
+    public function __construct(
+        FileStorageService $fileStorageService,
+        protected ProjectMapService $projectMapService,
+    ) {
         $this->fileStorageService = $fileStorageService;
     }
 
@@ -56,8 +59,11 @@ class HomeController extends Controller
         // Get pricing plans for homepage (eager-loaded to avoid N+1)
         $pricingPlans = Pricing::forHomepage()->get();
 
-        // Get projects for homepage (image_url resolved via model accessor)
-        $projects = Project::forHomepage()->get();
+        // Top 4 portfolio projects by value (highest first)
+        $projects = Project::forHomepage(4)->get();
+
+        // Map markers + counts from DB (single optimized payload, no N+1)
+        $projectMap = $this->projectMapService->buildFrontendPayload('category');
 
         // Get news for homepage
         $news = News::forHomepage()->get();
@@ -117,6 +123,7 @@ class HomeController extends Controller
             'services',
             'pricingPlans',
             'projects',
+            'projectMap',
             'news',
             'galleryItems',
             'teamMembers',

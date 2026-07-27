@@ -45,7 +45,7 @@
 
 @section('header_extension')
     @include('partials.frontend.header-extension', [
-        'subtitle' => 'Contact Us',
+        'subtitle' => 'Building communities',
         'title'    => 'Contact',
         'items'    => [
             ['label' => 'Home', 'url' => url('/')],
