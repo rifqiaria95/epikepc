@@ -257,7 +257,7 @@
                             />
                         </picture>
                     </div>
-                    <div class="text-wrapper col-12 col-md-6">
+                    <div class="text-wrapper col-12 col-md-6 mt-5">
                         <h3 class="title">Vision</h3>
                         <p class="text">{{ $visionMission['vision'] }}</p>
 
