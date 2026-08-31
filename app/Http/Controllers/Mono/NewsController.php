@@ -74,9 +74,7 @@ class NewsController extends Controller
         }
 
         $kategori = Kategori::select(['id', 'name'])->orderBy('name')->get();
-        $tags = Cache::remember('tags_list', 1800, function() {
-            return Tag::select(['id', 'name'])->get();
-        });
+        $tags = Tag::select(['id', 'name'])->orderBy('name')->get();
         $users = Cache::remember('users_author_list', 1800, function() {
             return User::select(['id', 'name'])->where('active', true)->get();
         });
