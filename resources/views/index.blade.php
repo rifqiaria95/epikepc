@@ -132,7 +132,7 @@
                                     <div class="board-directors__slide" data-board-slide>
                                         <article class="board-directors__card">
                                             <div class="board-directors__card-media">
-                                                <img src="{{ $member->image_url ?: asset('frontend/img/img-1.png') }}" alt="{{ $member->nama }}" width="400" height="533" loading="lazy" decoding="async" />
+                                                <img src="{{ $member->image_url ?: asset('frontend/img/img-8.png') }}" alt="{{ $member->nama }}" width="400" height="533" loading="lazy" decoding="async" />
                                                 <div class="board-directors__card-overlay">
                                                     <h3 class="board-directors__card-name">{{ $member->nama }}</h3>
                                                     <p class="board-directors__card-position">{{ $member->jabatan }}</p>
@@ -146,7 +146,7 @@
                                 <div class="board-directors__slide" data-board-slide>
                                     <article class="board-directors__card">
                                         <div class="board-directors__card-media">
-                                            <img src="{{ asset('frontend/img/img-1.png') }}" alt="Jonathan R. Mitchell" width="400" height="533" loading="lazy" decoding="async" />
+                                            <img src="{{ asset('frontend/img/img-9.png') }}" alt="Jonathan R. Mitchell" width="400" height="533" loading="lazy" decoding="async" />
                                             <div class="board-directors__card-overlay">
                                                 <h3 class="board-directors__card-name">Jonathan R. Mitchell</h3>
                                                 <p class="board-directors__card-position">Chief Executive Officer</p>
@@ -157,7 +157,7 @@
                                 <div class="board-directors__slide" data-board-slide>
                                     <article class="board-directors__card">
                                         <div class="board-directors__card-media">
-                                            <img src="{{ asset('frontend/img/img-1.png') }}" alt="Benjamin Miller" width="400" height="533" loading="lazy" decoding="async" />
+                                            <img src="{{ asset('frontend/img/img-10.png') }}" alt="Benjamin Miller" width="400" height="533" loading="lazy" decoding="async" />
                                             <div class="board-directors__card-overlay">
                                                 <h3 class="board-directors__card-name">Benjamin Miller</h3>
                                                 <p class="board-directors__card-position">Chief Engineering Officer</p>
@@ -168,7 +168,7 @@
                                 <div class="board-directors__slide" data-board-slide>
                                     <article class="board-directors__card">
                                         <div class="board-directors__card-media">
-                                            <img src="{{ asset('frontend/img/img-1.png') }}" alt="Stephanie Ramirez" width="400" height="533" loading="lazy" decoding="async" />
+                                            <img src="{{ asset('frontend/img/img-11.png') }}" alt="Stephanie Ramirez" width="400" height="533" loading="lazy" decoding="async" />
                                             <div class="board-directors__card-overlay">
                                                 <h3 class="board-directors__card-name">Stephanie Ramirez</h3>
                                                 <p class="board-directors__card-position">Board Director</p>
@@ -179,7 +179,7 @@
                                 <div class="board-directors__slide" data-board-slide>
                                     <article class="board-directors__card">
                                         <div class="board-directors__card-media">
-                                            <img src="{{ asset('frontend/img/img-1.png') }}" alt="David Chen" width="400" height="533" loading="lazy" decoding="async" />
+                                            <img src="{{ asset('frontend/img/img-12.png') }}" alt="David Chen" width="400" height="533" loading="lazy" decoding="async" />
                                             <div class="board-directors__card-overlay">
                                                 <h3 class="board-directors__card-name">David Chen</h3>
                                                 <p class="board-directors__card-position">Chief Financial Officer</p>
@@ -190,7 +190,7 @@
                                 <div class="board-directors__slide" data-board-slide>
                                     <article class="board-directors__card">
                                         <div class="board-directors__card-media">
-                                            <img src="{{ asset('frontend/img/img-1.png') }}" alt="Sarah Thompson" width="400" height="533" loading="lazy" decoding="async" />
+                                            <img src="{{ asset('frontend/img/img-13.png') }}" alt="Sarah Thompson" width="400" height="533" loading="lazy" decoding="async" />
                                             <div class="board-directors__card-overlay">
                                                 <h3 class="board-directors__card-name">Sarah Thompson</h3>
                                                 <p class="board-directors__card-position">Independent Director</p>
@@ -201,7 +201,7 @@
                                 <div class="board-directors__slide" data-board-slide>
                                     <article class="board-directors__card">
                                         <div class="board-directors__card-media">
-                                            <img src="{{ asset('frontend/img/img-1.png') }}" alt="Michael Okafor" width="400" height="533" loading="lazy" decoding="async" />
+                                            <img src="{{ asset('frontend/img/img-14.png') }}" alt="Michael Okafor" width="400" height="533" loading="lazy" decoding="async" />
                                             <div class="board-directors__card-overlay">
                                                 <h3 class="board-directors__card-name">Michael Okafor</h3>
                                                 <p class="board-directors__card-position">Board Director</p>
