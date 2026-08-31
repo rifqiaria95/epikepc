@@ -1,6 +1,6 @@
 $(document).ready(function () {
     // Initialize Select2 after page loads
-    setTeameout(function() {
+    setTimeout(function() {
         $('.select2').select2({
             dropdownParent: $('#multiStepsForm'),
             width: '100%'

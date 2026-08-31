@@ -380,7 +380,7 @@ $(document).ready(function () {
                     initializeSelect2();
 
                     // Handle category as array (multiple categories)
-                    setTeameout(function() {
+                    setTimeout(function() {
                         if (news.category_id && Array.isArray(news.category_id)) {
                             var categoryValue = news.category_id.length > 0 ? news.category_id[0] : '';
                             $('#category_id').val(categoryValue).trigger('change');
@@ -402,7 +402,7 @@ $(document).ready(function () {
                     }, 100);
                 } catch (e) {
                         // Fallback: set values after a short delay
-                        setTeameout(function() {
+                        setTimeout(function() {
                             try {
                                 // Handle category fallback
                                 if (news.category_id && Array.isArray(news.category_id)) {

@@ -376,7 +376,7 @@ $(document).ready(function () {
                         $("#menu_groups").val(response.permission.menu_groups).trigger("change");
                         
                         // Tunggu sebentar agar event change menu_groups selesai, lalu set menu_details
-                        setTeameout(function() {
+                        setTimeout(function() {
                             if (response.permission.menu_details && response.permission.menu_details.length > 0) {
                                 $("#menu_details").val(response.permission.menu_details).trigger("change");
                             }

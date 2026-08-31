@@ -266,7 +266,7 @@ $(document).ready(function () {
         
         // Event listener untuk perubahan halaman DataTable
         $('#permissionsTable').on('page.dt', function () {
-            setTeameout(function() {
+            setTimeout(function() {
                 restoreCheckboxState();
                 updateSelectAllState();
             }, 100);
@@ -274,14 +274,14 @@ $(document).ready(function () {
         
         // Event listener untuk pencarian DataTable  
         $('#permissionsTable').on('search.dt', function () {
-            setTeameout(function() {
+            setTimeout(function() {
                 restoreCheckboxState();
                 updateSelectAllState();
             }, 100);
         });
         
         // Reset Select All checkbox saat modal dibuka
-        setTeameout(function() {
+        setTimeout(function() {
             updateSelectAllState();
         }, 100);
     });
@@ -456,7 +456,7 @@ $(document).ready(function () {
                     }
 
                     // Update Select All checkbox berdasarkan permission yang dipilih  
-                    setTeameout(function() {
+                    setTimeout(function() {
                         updateSelectAllState();
                     }, 200);
 
