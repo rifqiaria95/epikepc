@@ -173,7 +173,7 @@ $(document).ready(function () {
         processing: true,
         serverSide: true,
         ajax: {
-            url: "/frontend/news/",
+            url: "/internal/news/",
             type: 'GET'
         },
         columns: [
@@ -347,8 +347,8 @@ $(document).ready(function () {
 
         // Use debug route if user doesn't have permission
         var ajaxUrl = userPermissions.includes('edit_news')
-            ? '/frontend/news/edit/' + id
-            : '/frontend/news/debug-edit/' + id;
+            ? '/internal/news/edit/' + id
+            : '/internal/news/debug-edit/' + id;
 
         $.ajax({
             url: ajaxUrl,
@@ -492,11 +492,11 @@ $(document).ready(function () {
         var method = '';
 
         if(id){
-            url = '/frontend/news/update/' + id;
+            url = '/internal/news/update/' + id;
             method = 'POST';
             formData.append('_method', 'PUT');
         } else {
-            url = '/frontend/news/store';
+            url = '/internal/news/store';
             method = 'POST';
         }
 
@@ -581,7 +581,7 @@ $(document).ready(function () {
         }).then(function(result) {
             if (result.isConfirmed) {
                 $.ajax({
-                    url: '/frontend/news/delete/' + id,
+                    url: '/internal/news/delete/' + id,
                     type: 'DELETE',
                     data: {
                         _method: 'DELETE',

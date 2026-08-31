@@ -180,7 +180,7 @@ $(document).ready(function () {
         processing: true,
         serverSide: true,
         ajax: {
-            url: "frontend/organisasi/",
+            url: "internal/organisasi/",
             type: 'GET'
         },
         columns: [{
@@ -299,11 +299,11 @@ $(document).ready(function () {
         let method = '';
 
         if(id){
-            url = '/frontend/organisasi/update/' + id;
+            url = '/internal/organisasi/update/' + id;
             method = 'POST';
             formData.append('_method', 'PUT');
         } else {
-            url = '/frontend/organisasi/store';
+            url = '/internal/organisasi/store';
             method = 'POST';
         }
 
@@ -375,7 +375,7 @@ function editOrganisasi(id) {
     setTinyMCEError(false);
 
     $.ajax({
-        url: '/frontend/organisasi/edit/' + id,
+        url: '/internal/organisasi/edit/' + id,
         type: 'GET',
         success: function(response) {
             if (response.success) {
@@ -427,7 +427,7 @@ $(document).on('click', '.delete-record', function () {
     }).then((result) => {
         if (result.isConfirmed) {
             $.ajax({
-                url: '/frontend/organisasi/delete/' + id,
+                url: '/internal/organisasi/delete/' + id,
                 type: 'DELETE',
                 data: {
                     _method: 'DELETE',
