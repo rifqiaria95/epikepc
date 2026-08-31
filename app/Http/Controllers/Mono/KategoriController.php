@@ -6,9 +6,15 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Http\Requests\KategoriRequest;
 use App\Models\Kategori;
+use Illuminate\Support\Facades\Cache;
 
 class KategoriController extends Controller
 {
+    protected function forgetNewsCategoryCache(): void
+    {
+        Cache::forget('kategori_news_list');
+    }
+
     public function index(Request $request)
     {
         if ($request->ajax()) {
@@ -33,6 +39,7 @@ class KategoriController extends Controller
         $validatedData = $request->validated();
 
         $kategori = Kategori::create($validatedData);
+        $this->forgetNewsCategoryCache();
 
         return response()->json([
             'success'  => true,
@@ -57,6 +64,7 @@ class KategoriController extends Controller
 
         $kategori = Kategori::findOrFail($id);
         $kategori->update($validatedData);
+        $this->forgetNewsCategoryCache();
 
         return response()->json([
             'success' => true,
@@ -72,6 +80,7 @@ class KategoriController extends Controller
 
         if ($kategori) {
             $kategori->delete();
+            $this->forgetNewsCategoryCache();
             return response()->json([
                 'status'    => 200,
                 'message'   => 'Category deleted successfully'

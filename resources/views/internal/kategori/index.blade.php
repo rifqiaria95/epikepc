@@ -116,9 +116,9 @@
         class="offcanvas offcanvas-end"
         tabindex="-1"
         id="offcanvasAddkategori"
-        aria-labelledby="offcanvasAddUserLabel">
+        aria-labelledby="offcanvasAddkategoriLabel">
             <div class="offcanvas-header border-bottom">
-                <h5 id="offcanvasAddUserLabel" class="offcanvas-title">Add Category</h5>
+                <h5 id="offcanvasAddkategoriLabel" class="offcanvas-title">Add Category</h5>
                 <button
                 type="button"
                 class="btn-close text-reset"

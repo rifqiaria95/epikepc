@@ -28,17 +28,6 @@ class NewsController extends Controller
 
     public function index(Request $request)
     {
-        // Cache data dropdown yang jarang berubah
-        $kategori = Cache::remember('kategori_news_list', 1800, function() {
-            return Kategori::select(['id', 'name'])->get();
-        });
-        $tags = Cache::remember('tags_list', 1800, function() {
-            return Tag::select(['id', 'name'])->get();
-        });
-        $users = Cache::remember('users_author_list', 1800, function() {
-            return User::select(['id', 'name'])->where('active', true)->get();
-        });
-
         if ($request->ajax()) {
             // Samakan pendekatan dengan Services: select field yang dibutuhkan,
             // dan kirimkan URL thumbnail (bukan langsung HTML <img>).
@@ -83,6 +72,14 @@ class NewsController extends Controller
                 ->addIndexColumn()
                 ->toJson();
         }
+
+        $kategori = Kategori::select(['id', 'name'])->orderBy('name')->get();
+        $tags = Cache::remember('tags_list', 1800, function() {
+            return Tag::select(['id', 'name'])->get();
+        });
+        $users = Cache::remember('users_author_list', 1800, function() {
+            return User::select(['id', 'name'])->where('active', true)->get();
+        });
 
         return view('internal/news.index', compact(['kategori', 'tags', 'users']));
     }

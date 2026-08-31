@@ -207,8 +207,12 @@ $(document).ready(function () {
                 name: 'aksi',
                 render: function (data, type, full, meta) {
                   let userPermissions = window.userPermissions || [];
-                  let canEdit         = userPermissions.includes("edit_kategori");
-                  let canDelete       = userPermissions.includes("delete_kategori");
+                  let canEdit = ['edit_kategori', 'edit_categories', 'edit_news'].some(function (name) {
+                      return userPermissions.includes(name);
+                  });
+                  let canDelete = ['delete_kategori', 'delete_categories', 'delete_news'].some(function (name) {
+                      return userPermissions.includes(name);
+                  });
 
                   let buttons = '<div class="d-flex align-items-center">';
 
@@ -251,7 +255,7 @@ $(document).ready(function () {
         $('.text-danger').text('');
 
         $.ajax({
-            url: `/internal/news/kategori/edit/${id}/`,
+            url: `/internal/news/kategori/edit/${id}`,
             type: "GET",
             success: function (response) {
                 if (response.success) {
