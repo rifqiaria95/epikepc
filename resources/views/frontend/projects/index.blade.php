@@ -284,7 +284,7 @@
             <div class="proj-map proj-map--light" data-proj-map data-aos="fade-up" data-aos-delay="80">
                 <div class="proj-map__layout">
                     <div class="proj-map__canvas" data-proj-map-canvas>
-                        <div id="indonesia-leaflet-map" style="width:100%;height:100%;min-height:320px;border-radius:16px;"></div>
+                        <div id="indonesia-leaflet-map"></div>
                     </div>
                     <div class="proj-map__panel" data-proj-map-panel>
                         <div class="proj-map__panel-placeholder" data-proj-map-placeholder>

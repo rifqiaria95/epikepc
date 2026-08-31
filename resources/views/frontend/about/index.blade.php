@@ -52,6 +52,81 @@
             cursor: pointer;
             background: transparent;
         }
+
+        /* Vision & Mission – mobile layout fix */
+        .about-vision-mission .services_slider-slide {
+            gap: 28px;
+        }
+
+        .about-vision-mission .img-wrapper,
+        .about-vision-mission .text-wrapper {
+            width: 100%;
+            max-width: 100%;
+            flex: 0 0 100%;
+        }
+
+        .about-vision-mission .img-wrapper {
+            position: relative;
+            aspect-ratio: 4 / 3;
+            max-height: none;
+            margin-bottom: 0;
+            overflow: hidden;
+            border-radius: 12px;
+        }
+
+        .about-vision-mission .img-wrapper::before,
+        .about-vision-mission .img-wrapper::after {
+            display: none;
+            content: none;
+        }
+
+        .about-vision-mission .img-wrapper img {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .about-vision-mission .text-wrapper .title {
+            margin-bottom: 16px;
+        }
+
+        .about-vision-mission .text-wrapper .text {
+            margin-bottom: 24px;
+            line-height: 1.75;
+        }
+
+        .about-vision-mission .text-wrapper .list {
+            margin-bottom: 32px;
+        }
+
+        .about-vision-mission .text-wrapper .hero_header-list_item {
+            align-items: flex-start !important;
+            margin-bottom: 14px;
+            line-height: 1.65;
+        }
+
+        .about-vision-mission .text-wrapper .hero_header-list_item .icon {
+            flex-shrink: 0;
+            margin-top: 4px;
+            margin-right: 10px;
+        }
+
+        @media screen and (min-width: 768px) {
+            .about-vision-mission .services_slider-slide {
+                gap: 0;
+            }
+
+            .about-vision-mission .img-wrapper,
+            .about-vision-mission .text-wrapper {
+                flex: 0 0 auto;
+            }
+
+            .about-vision-mission .img-wrapper {
+                aspect-ratio: 60 / 53;
+            }
+        }
     </style>
 @endpush
 
@@ -157,7 +232,7 @@
         </section>
 
         {{-- ===== VISION & MISSION ===== --}}
-        <section class="services section">
+        <section class="services section about-vision-mission">
             <div class="container">
                 <div class="services_header section_header">
                     <span class="subtitle">Company Direction</span>
@@ -167,7 +242,7 @@
                     </h2>
                 </div>
                 <div class="services_slider-slide d-flex flex-wrap align-items-start align-items-xl-center">
-                    <div class="img-wrapper col-md-5">
+                    <div class="img-wrapper col-12 col-md-5">
                         <picture>
                             <source
                                 data-srcset="{{ $about?->image_url ?: asset('frontend/img/placeholder.jpg') }}"
@@ -182,7 +257,7 @@
                             />
                         </picture>
                     </div>
-                    <div class="text-wrapper col-md-6">
+                    <div class="text-wrapper col-12 col-md-6">
                         <h3 class="title">Vision</h3>
                         <p class="text">{{ $visionMission['vision'] }}</p>
 

@@ -7,7 +7,7 @@
             <div class="footer_main-block col-sm-12 col-xl-auto">
                 <figure class="logo-box">
                     <a href="{{ url('/') }}">
-                        <img src="{{ asset('frontend/img/logo-2.png') }}" alt="EPIKEPC" style="width: 180px;">
+                        <img src="{{ asset('frontend/img/logo-3.png') }}" alt="EPIKEPC" style="width: 180px;">
                     </a>
                 </figure>
                 <p class="footer_main-block_subtitle footer_main-block_subtitle--brand">

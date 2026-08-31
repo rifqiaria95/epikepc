@@ -5,6 +5,9 @@
 /* ── Layout ─────────────────────────────────────────── */
 .proj-map {
     margin-bottom: 48px;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
 }
 
 .proj-map__layout {
@@ -12,24 +15,35 @@
     grid-template-columns: 1fr;
     gap: 20px;
     align-items: stretch;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
 }
 
 /* ── Map canvas ──────────────────────────────────────── */
 .proj-map__canvas {
     position: relative;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
     border-radius: 16px;
     overflow: hidden;
     border: 1px solid rgba(255, 255, 255, 0.15);
     box-shadow: 0 16px 48px rgba(0, 0, 0, 0.22);
-    min-height: 300px;
-    aspect-ratio: 16 / 7;
+    min-height: 260px;
+    aspect-ratio: 4 / 3;
 }
 
 #indonesia-leaflet-map {
-    width: 100%;
+    width: 100% !important;
     height: 100%;
-    min-height: 300px;
+    min-height: 260px;
     border-radius: 16px;
+}
+
+#indonesia-leaflet-map.leaflet-container {
+    width: 100% !important;
+    max-width: 100%;
 }
 
 /* ── Leaflet controls – light themed ────────────────── */
@@ -320,9 +334,28 @@
 }
 
 /* ── Responsive ──────────────────────────────────────── */
+@media screen and (min-width: 576px) {
+    .proj-map__canvas {
+        min-height: 300px;
+        aspect-ratio: 16 / 9;
+    }
+
+    #indonesia-leaflet-map {
+        min-height: 300px;
+    }
+}
+
 @media screen and (min-width: 768px) {
     .proj-map__detail-inner {
         padding: 22px 28px 28px;
+    }
+
+    .proj-map__canvas {
+        min-height: 320px;
+    }
+
+    #indonesia-leaflet-map {
+        min-height: 320px;
     }
 }
 
@@ -333,6 +366,11 @@
     }
 
     .proj-map__canvas {
+        min-height: 340px;
+        aspect-ratio: 16 / 7;
+    }
+
+    #indonesia-leaflet-map {
         min-height: 340px;
     }
 

@@ -262,7 +262,7 @@
                 <div class="proj-map" data-proj-map data-aos="fade-up" data-aos-delay="80">
                     <div class="proj-map__layout">
                         <div class="proj-map__canvas" data-proj-map-canvas>
-                            <div id="indonesia-leaflet-map" style="width:100%;height:100%;min-height:320px;border-radius:16px;"></div>
+                            <div id="indonesia-leaflet-map"></div>
                         </div>
                         <div class="proj-map__panel" data-proj-map-panel>
                             <div class="proj-map__panel-placeholder" data-proj-map-placeholder>
@@ -346,6 +346,13 @@
                 .proj-filter-wrap::-webkit-scrollbar { height: 3px; }
                 .proj-filter-wrap::-webkit-scrollbar-track { background: transparent; }
                 .proj-filter-wrap::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); border-radius: 10px; }
+                /* Keep map section within viewport on mobile */
+                .proj-highlights .proj-map,
+                .proj-highlights .proj-map__layout,
+                .proj-highlights .proj-map__canvas {
+                    max-width: 100%;
+                    min-width: 0;
+                }
                 /* CTA button hover */
                 .proj-highlights .btn:hover {
                     background: #ffd464 !important;
@@ -650,22 +657,6 @@
                                     <span class="nm-badge nm-badge--blue">Infrastructure</span>
                                     <h3 class="nm-video-title">Harbor Bridge Expansion — Behind the Scenes</h3>
                                     <p class="nm-video-meta">Surabaya &middot; 2022</p>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Slide 4 -->
-                        <div class="nm-slide">
-                            <div class="nm-video-box">
-                                <img src="{{ asset('frontend/img/img-1.png') }}" class="nm-thumb" alt="Green Tech Campus">
-                                <button class="nm-play" data-src="https://www.youtube.com/embed/LXb3EKWsInQ?autoplay=1" onclick="nmPlay(this)">
-                                    <svg width="20" height="23" viewBox="0 0 20 23" fill="none"><path d="M1.5 1.5l17 9.5-17 9.5V1.5z" fill="#000810" stroke="#000810" stroke-width="1.5" stroke-linejoin="round"/></svg>
-                                </button>
-                                <iframe class="nm-iframe" allowfullscreen allow="autoplay; encrypted-media"></iframe>
-                                <div class="nm-info-bar">
-                                    <span class="nm-badge nm-badge--yellow">Sustainability</span>
-                                    <h3 class="nm-video-title">Green Tech Campus — LEED Platinum Journey</h3>
-                                    <p class="nm-video-meta">Tangerang &middot; 2024</p>
                                 </div>
                             </div>
                         </div>

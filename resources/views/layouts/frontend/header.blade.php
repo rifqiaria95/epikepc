@@ -6,7 +6,7 @@
         <div class="container d-flex flex-wrap flex-lg-nowrap align-items-center justify-content-between">
             <figure class="logo-box">
                 <a href="{{ url('/') }}">
-                    <img src="{{ asset('frontend/img/logo-3.png') }}" alt="EPIKEPC" style="width: 180px;">
+                    <img src="{{ asset('frontend/img/logo-3.png') }}" alt="EPIKEPC" class="site-logo">
                 </a>
             </figure>
             <nav class="header_navbar-nav">

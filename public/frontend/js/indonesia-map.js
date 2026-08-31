@@ -263,8 +263,58 @@
             applyFilter(currentFilter);
         }
 
-        setTimeout(function () { map.invalidateSize(); }, 400);
-        window.addEventListener('resize', function () { map.invalidateSize(); });
+        var getVisibleLatLngs = function () {
+            return PROJECTS
+                .filter(function (project) {
+                    return matchesFilter(project, currentFilter) && project.lat != null && project.lng != null;
+                })
+                .map(function (project) {
+                    return [project.lat, project.lng];
+                });
+        };
+
+        var refreshMapSize = function () {
+            var visibleLatLngs = getVisibleLatLngs();
+
+            map.invalidateSize({ animate: false });
+
+            if (visibleLatLngs.length > 1) {
+                map.fitBounds(L.latLngBounds(visibleLatLngs), { padding: [20, 20], maxZoom: 8 });
+            } else if (visibleLatLngs.length === 1) {
+                map.setView(visibleLatLngs[0], 7);
+            } else {
+                map.fitBounds(indoBounds, { padding: [10, 10] });
+            }
+        };
+
+        setTimeout(refreshMapSize, 100);
+        setTimeout(refreshMapSize, 500);
+        setTimeout(refreshMapSize, 1200);
+
+        window.addEventListener('resize', refreshMapSize);
+        window.addEventListener('orientationchange', function () {
+            setTimeout(refreshMapSize, 300);
+        });
+
+        if (typeof ResizeObserver !== 'undefined') {
+            var resizeTimer;
+            new ResizeObserver(function () {
+                clearTimeout(resizeTimer);
+                resizeTimer = setTimeout(refreshMapSize, 150);
+            }).observe(container);
+        }
+
+        var mapSection = container.closest('[data-proj-map]');
+        if (mapSection) {
+            mapSection.addEventListener('aos:in', function () {
+                refreshMapSize();
+                setTimeout(refreshMapSize, 50);
+            });
+        }
+
+        if (document.fonts && document.fonts.ready) {
+            document.fonts.ready.then(refreshMapSize);
+        }
     }
 
     if (document.readyState === 'loading') {

@@ -149,3 +149,69 @@
         }
     }
 }
+
+// About page – Vision & Mission mobile layout
+.about-vision-mission {
+    .services_slider-slide {
+        gap: 28px;
+    }
+
+    .img-wrapper,
+    .text-wrapper {
+        width: 100%;
+        max-width: 100%;
+        flex: 0 0 100%;
+    }
+
+    .img-wrapper {
+        position: relative;
+        aspect-ratio: 4 / 3;
+        max-height: none;
+        margin-bottom: 0;
+        overflow: hidden;
+        border-radius: 12px;
+
+        &::before,
+        &::after {
+            display: none;
+            content: none;
+        }
+
+        img {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+    }
+
+    .text-wrapper {
+        .hero_header-list_item {
+            align-items: flex-start !important;
+            margin-bottom: 14px;
+            line-height: 1.65;
+
+            .icon {
+                flex-shrink: 0;
+                margin-top: 4px;
+                margin-right: 10px;
+            }
+        }
+    }
+
+    @media screen and (min-width: 767.98px) {
+        .services_slider-slide {
+            gap: 0;
+        }
+
+        .img-wrapper,
+        .text-wrapper {
+            flex: 0 0 auto;
+        }
+
+        .img-wrapper {
+            aspect-ratio: 60 / 53;
+        }
+    }
+}

@@ -12,6 +12,23 @@
     <link rel="stylesheet preload" as="style" href="{{ asset('frontend/css/libs.min.css') }}" />
     {{-- Shared header_extension deco styles (same as About) --}}
     <style>
+        .header_navbar .logo-box .site-logo {
+            width: 110px;
+            max-width: 100%;
+            height: auto;
+        }
+
+        @media screen and (min-width: 991.98px) {
+            .header_navbar .logo-box .site-logo {
+                width: 180px;
+            }
+        }
+
+        .header_navbar-nav .link--single.current,
+        .header_navbar-nav .link--single.active {
+            color: #FFdf08;
+        }
+
         .header_extension .plan[data-role="deco"] {
             width: min(82vw, 1200px);
             max-width: 1200px;
