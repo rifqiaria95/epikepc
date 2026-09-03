@@ -3,12 +3,13 @@
 namespace App\Http\Controllers\Mono;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
-use App\Services\FileStorageService;
-use App\Models\Testimoni;
 use App\Http\Requests\TestimoniRequest;
-use Illuminate\Support\Facades\DB;
+use App\Models\Testimoni;
+use App\Queries\Internal\InternalSummaryQuery;
+use App\Services\FileStorageService;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class TestimoniController extends Controller
 {
@@ -19,7 +20,7 @@ class TestimoniController extends Controller
         $this->fileStorageService = $fileStorageService;
     }
 
-    public function index(Request $request)
+    public function index(Request $request, InternalSummaryQuery $summary)
     {
         // Menampilkan Data about
         $testimoni = Testimoni::withoutTrashed()->with(['createdBy', 'updatedBy', 'deletedBy']);
@@ -41,6 +42,7 @@ class TestimoniController extends Controller
                 })
                 ->addColumn('aksi', function ($data) {
                     $button = '';
+
                     return $button;
                 })
                 ->rawColumns(['created_by', 'updated_by', 'deleted_by', 'gambar', 'aksi'])
@@ -48,7 +50,9 @@ class TestimoniController extends Controller
                 ->toJson();
         }
 
-        return view('internal/testimoni.index', compact(['testimoni']));
+        return view('internal/testimoni.index', [
+            'stats' => $summary->cards('testimoni'),
+        ]);
     }
 
     public function store(TestimoniRequest $request)
@@ -59,11 +63,11 @@ class TestimoniController extends Controller
             DB::beginTransaction();
 
             // Upload image ke object storage - wajib saat create
-            if (!$request->hasFile('gambar')) {
+            if (! $request->hasFile('gambar')) {
                 return response()->json([
                     'status' => 422,
                     'message' => 'Image is required when creating a new testimonial.',
-                    'errors' => ['gambar' => ['Image is required when creating a new testimonial.']]
+                    'errors' => ['gambar' => ['Image is required when creating a new testimonial.']],
                 ], 422);
             }
 
@@ -72,11 +76,11 @@ class TestimoniController extends Controller
                 'testimoni/images'
             );
 
-            if (!$uploadResult['success']) {
+            if (! $uploadResult['success']) {
                 return response()->json([
                     'status' => 422,
-                    'message' => 'Failed to upload image: ' . $uploadResult['error'],
-                    'errors' => ['gambar' => ['Failed to upload image: ' . $uploadResult['error']]]
+                    'message' => 'Failed to upload image: '.$uploadResult['error'],
+                    'errors' => ['gambar' => ['Failed to upload image: '.$uploadResult['error']]],
                 ], 422);
             }
 
@@ -94,7 +98,7 @@ class TestimoniController extends Controller
             return response()->json([
                 'status' => 200,
                 'message' => 'Testimonial saved successfully!',
-                'data' => $testimoni
+                'data' => $testimoni,
             ]);
         } catch (\Exception $e) {
             DB::rollBack();
@@ -107,7 +111,7 @@ class TestimoniController extends Controller
             return response()->json([
                 'status' => 500,
                 'message' => 'A server error occurred.',
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ], 500);
         }
     }
@@ -117,10 +121,10 @@ class TestimoniController extends Controller
         try {
             $testimoni = Testimoni::with(['createdBy', 'updatedBy', 'deletedBy'])->where('id', $id)->first();
 
-            if (!$testimoni) {
+            if (! $testimoni) {
                 return response()->json([
                     'status' => 404,
-                    'message' => 'Testimonial data not found'
+                    'message' => 'Testimonial data not found',
                 ], 404);
             }
 
@@ -129,13 +133,13 @@ class TestimoniController extends Controller
 
             return response()->json([
                 'success' => true,
-                'testimoni' => $testimoniData
+                'testimoni' => $testimoniData,
             ]);
         } catch (\Exception $e) {
             return response()->json([
                 'status' => 500,
                 'message' => 'A server error occurred.',
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ], 500);
         }
     }
@@ -156,8 +160,8 @@ class TestimoniController extends Controller
                     'testimoni/images'
                 );
 
-                if (!$uploadResult['success']) {
-                    throw new \Exception('Failed to upload image: ' . $uploadResult['error']);
+                if (! $uploadResult['success']) {
+                    throw new \Exception('Failed to upload image: '.$uploadResult['error']);
                 }
 
                 $validatedData['gambar'] = $uploadResult['path'];
@@ -177,8 +181,8 @@ class TestimoniController extends Controller
             DB::commit();
 
             return response()->json([
-                'status'  => 200,
-                'message' => 'Testimonial updated successfully'
+                'status' => 200,
+                'message' => 'Testimonial updated successfully',
             ]);
         } catch (\Exception $e) {
             DB::rollBack();
@@ -191,7 +195,7 @@ class TestimoniController extends Controller
             return response()->json([
                 'status' => 500,
                 'message' => 'A server error occurred.',
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ], 500);
         }
     }
@@ -203,10 +207,10 @@ class TestimoniController extends Controller
 
             $testimoni = Testimoni::where('id', $id)->first();
 
-            if (!$testimoni) {
+            if (! $testimoni) {
                 return response()->json([
                     'status' => 404,
-                    'errors' => 'Data Testimoni Tidak Ditemukan'
+                    'errors' => 'Data Testimoni Tidak Ditemukan',
                 ]);
             }
 
@@ -226,7 +230,7 @@ class TestimoniController extends Controller
 
             return response()->json([
                 'status' => 200,
-                'message' => 'Testimonial deleted successfully'
+                'message' => 'Testimonial deleted successfully',
             ]);
         } catch (\Exception $e) {
             DB::rollBack();
@@ -234,7 +238,7 @@ class TestimoniController extends Controller
             return response()->json([
                 'status' => 500,
                 'message' => 'A server error occurred.',
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ], 500);
         }
     }

@@ -3,13 +3,14 @@
 namespace App\Http\Controllers\Mono;
 
 use App\Http\Controllers\Controller;
-use App\Models\KategoriGaleri;
 use App\Http\Requests\KategoriGaleriRequest;
+use App\Models\KategoriGaleri;
+use App\Queries\Internal\InternalSummaryQuery;
 use Illuminate\Http\Request;
 
 class KategoriGaleriController extends Controller
 {
-    public function index(Request $request)
+    public function index(Request $request, InternalSummaryQuery $summary)
     {
         if ($request->ajax()) {
             // Optimasi: Query data hanya saat AJAX request
@@ -18,6 +19,7 @@ class KategoriGaleriController extends Controller
             return datatables()->of($kategori)
                 ->addColumn('aksi', function ($data) {
                     $button = '';
+
                     return $button;
                 })
                 ->rawColumns(['aksi'])
@@ -25,7 +27,9 @@ class KategoriGaleriController extends Controller
                 ->toJson();
         }
 
-        return view('internal/kategori_galeri.index');
+        return view('internal/kategori_galeri.index', [
+            'stats' => $summary->cards('kategori_galeri'),
+        ]);
     }
 
     public function store(KategoriGaleriRequest $request)
@@ -35,9 +39,9 @@ class KategoriGaleriController extends Controller
         $kategori = KategoriGaleri::create($validatedData);
 
         return response()->json([
-            'success'  => true,
-            'message'  => 'Category added successfully!',
-            'kategori' => $kategori
+            'success' => true,
+            'message' => 'Category added successfully!',
+            'kategori' => $kategori,
         ]);
     }
 
@@ -47,7 +51,7 @@ class KategoriGaleriController extends Controller
 
         return response()->json([
             'success' => true,
-            'kategori' => $kategori
+            'kategori' => $kategori,
         ]);
     }
 
@@ -60,7 +64,7 @@ class KategoriGaleriController extends Controller
 
         return response()->json([
             'success' => true,
-            'message' => 'Category updated successfully!'
+            'message' => 'Category updated successfully!',
         ]);
     }
 
@@ -72,14 +76,15 @@ class KategoriGaleriController extends Controller
 
         if ($kategori) {
             $kategori->delete();
+
             return response()->json([
-                'status'    => 200,
-                'message'   => 'Category deleted successfully'
+                'status' => 200,
+                'message' => 'Category deleted successfully',
             ]);
         } else {
             return response()->json([
-                'status'    => 404,
-                'errors'    => 'Error! Category data not found'
+                'status' => 404,
+                'errors' => 'Error! Category data not found',
             ]);
         }
     }

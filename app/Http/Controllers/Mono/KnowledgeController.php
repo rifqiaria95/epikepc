@@ -3,43 +3,28 @@
 namespace App\Http\Controllers\Mono;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
-use App\Models\Knowledge;
 use App\Http\Requests\KnowledgeRequest;
+use App\Models\Knowledge;
+use App\Queries\Internal\InternalSummaryQuery;
+use Illuminate\Http\Request;
 
 class KnowledgeController extends Controller
 {
-    public function index(Request $request)
+    public function index(Request $request, InternalSummaryQuery $summary)
     {
-        // Menampilkan Data pegawai
         if ($request->ajax()) {
-            // Optimasi: Query data hanya saat AJAX request
-            $knowledge = Knowledge::select(['id', 'title', 'content', 'category', 'created_at']);
+            $knowledge = Knowledge::query()->select(['id', 'question', 'answer', 'created_at']);
 
             return datatables()->of($knowledge)
-                ->addColumn('aksi', function ($data) {
-                    $button = '';
-                    return $button;
-                })
+                ->addColumn('aksi', fn () => '')
                 ->rawColumns(['aksi'])
                 ->addIndexColumn()
                 ->toJson();
         }
 
-        return view('internal/knowledge.index');
-        // dd($pegawai);
-        if ($request->ajax()) {
-            return datatables()->of($knowledge)
-                ->addColumn('aksi', function ($data) {
-                    $button = '';
-                    return $button;
-                })
-                ->rawColumns(['aksi'])
-                ->addIndexColumn()
-                ->toJson();
-        }
-
-        return view('internal/knowledge.index', compact(['knowledge']));
+        return view('internal/knowledge.index', [
+            'stats' => $summary->cards('knowledge'),
+        ]);
     }
 
     public function store(KnowledgeRequest $request)
@@ -49,9 +34,9 @@ class KnowledgeController extends Controller
         $knowledge = Knowledge::create($validatedData);
 
         return response()->json([
-            'success'  => true,
-            'message'  => 'Knowledge article added successfully!',
-            'knowledge' => $knowledge
+            'success' => true,
+            'message' => 'Knowledge added successfully!',
+            'knowledge' => $knowledge,
         ]);
     }
 
@@ -61,40 +46,29 @@ class KnowledgeController extends Controller
 
         return response()->json([
             'success' => true,
-            'knowledge' => $knowledge
+            'knowledge' => $knowledge,
         ]);
     }
 
     public function update(KnowledgeRequest $request, $id)
     {
-        $validatedData = $request->validated();
-
         $knowledge = Knowledge::findOrFail($id);
-        $knowledge->update($validatedData);
+        $knowledge->update($request->validated());
 
         return response()->json([
             'success' => true,
-            'message' => 'Knowledge article updated successfully!'
+            'message' => 'Knowledge updated successfully!',
+            'knowledge' => $knowledge,
         ]);
     }
 
     public function destroy($id)
     {
-        $knowledge = Knowledge::find($id);
+        Knowledge::findOrFail($id)->delete();
 
-        // \ActivityLog::addToLog('Menghapus data kategori');
-
-        if ($knowledge) {
-            $knowledge->delete();
-            return response()->json([
-                'status'    => 200,
-                'message'   => 'Knowledge article deleted successfully'
-            ]);
-        } else {
-            return response()->json([
-                'status'    => 404,
-                'errors'    => 'Error! Knowledge data not found'
-            ]);
-        }
+        return response()->json([
+            'success' => true,
+            'message' => 'Knowledge deleted successfully!',
+        ]);
     }
 }

@@ -2,15 +2,16 @@
 
 namespace App\Http\Controllers\Mono;
 
-use App\Models\MenuGroup;
-use App\Models\MenuDetail;
-use App\Models\Permission;
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Models\MenuDetail;
+use App\Models\MenuGroup;
+use App\Models\Permission;
+use App\Queries\Internal\InternalSummaryQuery;
+use Illuminate\Http\Request;
 
 class PermissionController extends Controller
 {
-    public function index(Request $request)
+    public function index(Request $request, InternalSummaryQuery $summary)
     {
         if ($request->ajax()) {
             // Optimasi: Query permissions dengan eager loading efisien
@@ -18,7 +19,7 @@ class PermissionController extends Controller
                 ->with([
                     'roles:id,name',
                     'menuGroups:id,name',
-                    'menuDetails:id,name'
+                    'menuDetails:id,name',
                 ]);
 
             return datatables()->of($permissions)
@@ -39,27 +40,31 @@ class PermissionController extends Controller
         }
 
         // Cache data dropdown yang jarang berubah
-        $menuGroups = \Cache::remember('menu_groups_permissions', 1800, function() {
+        $menuGroups = \Cache::remember('menu_groups_permissions', 1800, function () {
             return MenuGroup::select(['id', 'name'])->get();
         });
-        $menuDetails = \Cache::remember('menu_details_permissions', 1800, function() {
+        $menuDetails = \Cache::remember('menu_details_permissions', 1800, function () {
             return MenuDetail::select(['id', 'name'])->get();
         });
 
-        return view('internal/permission.index', compact('menuGroups', 'menuDetails'));
+        return view('internal/permission.index', [
+            'menuGroups' => $menuGroups,
+            'menuDetails' => $menuDetails,
+            'stats' => $summary->cards('permissions'),
+        ]);
     }
 
     public function store(Request $request)
     {
         $request->validate([
-            'name'            => 'required|string|max:255|unique:permissions,name',
-            'roles'           => 'array',
-            'menu_groups'  => 'required|string|max:255',
+            'name' => 'required|string|max:255|unique:permissions,name',
+            'roles' => 'array',
+            'menu_groups' => 'required|string|max:255',
             'menu_details' => 'required|string|max:255',
         ]);
 
         // Buat permission baru
-        $permission = new Permission();
+        $permission = new Permission;
         $permission->name = $request->name;
         $permission->save();
 
@@ -79,24 +84,23 @@ class PermissionController extends Controller
         }
 
         return response()->json([
-            'success'    => true,
-            'message'    => 'Permission added successfully!',
-            'permission' => $permission
+            'success' => true,
+            'message' => 'Permission added successfully!',
+            'permission' => $permission,
         ]);
     }
-
 
     public function edit($id)
     {
         $permission = Permission::with(['roles', 'menuGroups', 'menuDetails'])->findOrFail($id);
 
         return response()->json([
-            'success'    => true,
+            'success' => true,
             'permission' => [
-                'id'           => $permission->id,
-                'name'         => $permission->name,
-                'menu_groups'  => $permission->menuGroups->pluck('id'), // Ambil hanya ID
-                'menu_details' => $permission->menuDetails->pluck('id') // Ambil hanya ID
+                'id' => $permission->id,
+                'name' => $permission->name,
+                'menu_groups' => $permission->menuGroups->pluck('id'), // Ambil hanya ID
+                'menu_details' => $permission->menuDetails->pluck('id'), // Ambil hanya ID
             ],
         ]);
     }
@@ -104,9 +108,9 @@ class PermissionController extends Controller
     public function update(Request $request, $id)
     {
         $request->validate([
-            'name'         => 'required|string|max:255|unique:permissions,name,' . $id,
-            'roles'        => 'array',
-            'menu_groups'  => 'required|string|max:255',
+            'name' => 'required|string|max:255|unique:permissions,name,'.$id,
+            'roles' => 'array',
+            'menu_groups' => 'required|string|max:255',
             'menu_details' => 'required|string|max:255',
         ]);
 
@@ -131,7 +135,7 @@ class PermissionController extends Controller
 
         return response()->json([
             'success' => true,
-            'message' => 'Permission updated successfully!'
+            'message' => 'Permission updated successfully!',
         ]);
     }
 
@@ -149,14 +153,14 @@ class PermissionController extends Controller
             $permission->delete();
 
             return response()->json([
-                'status'  => 200,
-                'message' => 'Permission deleted successfully'
+                'status' => 200,
+                'message' => 'Permission deleted successfully',
             ]);
 
         } catch (\Exception $e) {
             return response()->json([
-                'status'  => 500,
-                'message' => 'An error occurred: ' . $e->getMessage()
+                'status' => 500,
+                'message' => 'An error occurred: '.$e->getMessage(),
             ]);
         }
     }
@@ -165,7 +169,7 @@ class PermissionController extends Controller
     {
         $request->validate([
             'ids' => 'required|array',
-            'ids.*' => 'exists:permissions,id'
+            'ids.*' => 'exists:permissions,id',
         ]);
 
         try {
@@ -176,12 +180,12 @@ class PermissionController extends Controller
             foreach ($ids as $id) {
                 try {
                     $permission = Permission::findOrFail($id);
-                    
+
                     // Detach relationships
                     $permission->roles()->detach();
                     $permission->menuDetails()->detach();
                     $permission->menuGroups()->detach();
-                    
+
                     // Delete permission
                     $permission->delete();
                     $deletedCount++;
@@ -199,13 +203,13 @@ class PermissionController extends Controller
                 'status' => 200,
                 'message' => $message,
                 'deleted_count' => $deletedCount,
-                'failed_count' => $failedCount
+                'failed_count' => $failedCount,
             ]);
 
         } catch (\Exception $e) {
             return response()->json([
                 'status' => 500,
-                'message' => 'An error occurred: ' . $e->getMessage()
+                'message' => 'An error occurred: '.$e->getMessage(),
             ]);
         }
     }
@@ -213,12 +217,14 @@ class PermissionController extends Controller
     public function getMenuGroups()
     {
         $menuGroups = MenuGroup::select('id', 'name')->get();
+
         return response()->json($menuGroups);
     }
 
     public function getMenuDetails()
     {
         $menuDetails = MenuDetail::select('id', 'name')->get();
+
         return response()->json($menuDetails);
     }
 
@@ -226,7 +232,7 @@ class PermissionController extends Controller
     {
         $menuGroupId = $request->input('menu_group_id');
 
-        if (!$menuGroupId) {
+        if (! $menuGroupId) {
             return response()->json([]);
         }
 
@@ -236,6 +242,4 @@ class PermissionController extends Controller
 
         return response()->json($menuDetails);
     }
-
-
 }

@@ -31,6 +31,9 @@ class DatabaseSeeder extends Seeder
             ConsultationPermissionSeeder::class,
             CoveragePermissionSeeder::class,
             CoverageLocationSeeder::class,
+            CareerPermissionSeeder::class,
+            CareerMenuSeeder::class,
+            CareerDemoSeeder::class,
         ]);
     }
 }

@@ -27,6 +27,9 @@
                         <a class="link link--single {{ request()->is('news*') ? 'current' : '' }}" href="{{ route('frontend.news.index') }}" data-page="blog">News</a>
                     </li>
                     <li class="list-item">
+                        <a class="link link--single {{ request()->is('careers*') ? 'current' : '' }}" href="{{ route('frontend.careers.index') }}" data-page="careers">Careers</a>
+                    </li>
+                    <li class="list-item">
                         <a class="link link--single {{ request()->is('contact') ? 'current' : '' }}" href="{{ route('frontend.contact.index') }}" data-page="contacts">Contact</a>
                     </li>
                 </ul>

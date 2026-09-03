@@ -4,14 +4,7 @@
 @endsection
 @section('content')
 <div class="container-xxl flex-grow-1 container-p-y">
-    @include('internal.partials.stat-cards', [
-        'stats' => [
-            ['label' => 'Total Milestone', 'value' => $totalMilestones, 'hint' => 'All milestones', 'icon' => 'ti-timeline', 'color' => 'primary'],
-            ['label' => 'Active', 'value' => $activeMilestones, 'hint' => 'Shown on homepage', 'icon' => 'ti-eye', 'color' => 'success'],
-            ['label' => 'Inactive', 'value' => $inactiveMilestones, 'hint' => 'Hidden', 'icon' => 'ti-eye-off', 'color' => 'secondary'],
-            ['label' => 'Recent', 'value' => $recentMilestones, 'hint' => 'Last 30 days', 'icon' => 'ti-clock', 'color' => 'warning'],
-        ],
-    ])
+    @include('internal.partials.stat-cards', ['stats' => $stats])
 
     <div class="nav-align-top nav-tabs mb-6">
         <ul class="nav nav-tabs" role="tablist">
@@ -22,7 +15,7 @@
             </li>
             <li class="nav-item">
                 <button type="button" class="nav-link" role="tab" data-bs-toggle="tab" data-bs-target="#tab-milestones" aria-selected="false">
-                    Company Milestones
+                    Project Timeline
                 </button>
             </li>
         </ul>

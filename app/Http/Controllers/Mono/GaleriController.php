@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\GaleriRequest;
 use App\Models\Galeri;
 use App\Models\KategoriGaleri;
+use App\Queries\Internal\InternalSummaryQuery;
 use App\Services\FileStorageService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -13,11 +14,9 @@ use Illuminate\Support\Facades\DB;
 
 class GaleriController extends Controller
 {
-    public function __construct(protected FileStorageService $fileStorageService)
-    {
-    }
+    public function __construct(protected FileStorageService $fileStorageService) {}
 
-    public function index(Request $request)
+    public function index(Request $request, InternalSummaryQuery $summary)
     {
         $kategoriGaleri = KategoriGaleri::query()
             ->select(['id', 'name'])
@@ -52,14 +51,9 @@ class GaleriController extends Controller
                 ->toJson();
         }
 
-        $baseQuery = Galeri::query()->withoutTrashed();
-
         return view('internal.galeri.index', [
-            'kategoriGaleri'   => $kategoriGaleri,
-            'totalGallery'     => (clone $baseQuery)->count(),
-            'withCategory'     => (clone $baseQuery)->whereNotNull('kategori_galeri_id')->count(),
-            'withImage'        => (clone $baseQuery)->whereNotNull('image')->where('image', '!=', '')->count(),
-            'recentGallery'    => (clone $baseQuery)->where('created_at', '>=', now()->subDays(30))->count(),
+            'kategoriGaleri' => $kategoriGaleri,
+            'stats' => $summary->cards('galeri'),
         ]);
     }
 
@@ -87,7 +81,7 @@ class GaleriController extends Controller
 
             return response()->json([
                 'success' => true,
-                'galeri'  => $data,
+                'galeri' => $data,
             ]);
         } catch (\Throwable $e) {
             return $this->errorResponse($e);
@@ -117,7 +111,7 @@ class GaleriController extends Controller
             DB::commit();
 
             return response()->json([
-                'status'  => 200,
+                'status' => 200,
                 'message' => 'Gallery item deleted successfully.',
             ]);
         } catch (\Throwable $e) {
@@ -136,7 +130,7 @@ class GaleriController extends Controller
 
             $galeri = $id
                 ? Galeri::query()->withoutTrashed()->findOrFail($id)
-                : new Galeri();
+                : new Galeri;
 
             $validated = $request->validated();
 
@@ -147,7 +141,7 @@ class GaleriController extends Controller
                 );
 
                 if (! $uploadResult['success']) {
-                    throw new \RuntimeException('Failed to upload image: ' . $uploadResult['error']);
+                    throw new \RuntimeException('Failed to upload image: '.$uploadResult['error']);
                 }
 
                 if ($galeri->exists && $galeri->image) {
@@ -171,9 +165,9 @@ class GaleriController extends Controller
             DB::commit();
 
             return response()->json([
-                'status'  => 200,
+                'status' => 200,
                 'message' => $message,
-                'data'    => $galeri,
+                'data' => $galeri,
             ]);
         } catch (\Throwable $e) {
             DB::rollBack();
@@ -189,9 +183,9 @@ class GaleriController extends Controller
     private function errorResponse(\Throwable $e): JsonResponse
     {
         return response()->json([
-            'status'  => 500,
+            'status' => 500,
             'message' => 'A server error occurred.',
-            'error'   => $e->getMessage(),
+            'error' => $e->getMessage(),
         ], 500);
     }
 }

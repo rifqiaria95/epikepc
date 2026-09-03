@@ -2,17 +2,18 @@
 
 namespace App\Http\Controllers\Mono;
 
-use App\Models\MenuGroup;
+use App\Http\Controllers\Controller;
 use App\Models\MenuDetail;
+use App\Models\MenuGroup;
 use App\Models\Permission;
 use App\Models\Role;
-use App\Http\Controllers\Controller;
+use App\Queries\Internal\InternalSummaryQuery;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class RolePermissionController extends Controller
 {
-    public function index(Request $request)
+    public function index(Request $request, InternalSummaryQuery $summary)
     {
         if ($request->ajax()) {
             // Optimasi: Query role dengan eager loading yang efisien
@@ -22,6 +23,7 @@ class RolePermissionController extends Controller
             return datatables()->of($role)
                 ->addColumn('aksi', function ($data) {
                     $button = '';
+
                     return $button;
                 })
                 ->rawColumns(['aksi', 'permissions'])
@@ -30,34 +32,39 @@ class RolePermissionController extends Controller
         }
 
         // Cache data dropdown yang jarang berubah
-        $menuGroups = \Cache::remember('menu_groups_list', 1800, function() {
+        $menuGroups = \Cache::remember('menu_groups_list', 1800, function () {
             return MenuGroup::select(['id', 'name'])->get();
         });
 
         $menuGroupIds = $menuGroups->pluck('id')->toArray();
-        $menuDetails = \Cache::remember("menu_details_for_groups_" . md5(implode(',', $menuGroupIds)), 1800, function() use ($menuGroupIds) {
+        $menuDetails = \Cache::remember('menu_details_for_groups_'.md5(implode(',', $menuGroupIds)), 1800, function () use ($menuGroupIds) {
             return MenuDetail::select(['id', 'name', 'menu_group_id'])
                 ->whereIn('menu_group_id', $menuGroupIds)
                 ->get();
         });
 
-        $permissions = \Cache::remember('permissions_with_relations', 900, function() {
+        $permissions = \Cache::remember('permissions_with_relations', 900, function () {
             return Permission::select(['id', 'name'])
                 ->with([
                     'roles:id,name',
                     'menuGroups:id,name',
-                    'menuDetails:id,name'
+                    'menuDetails:id,name',
                 ])->get();
         });
 
-        return view('internal/role.index', compact(['permissions', 'menuGroups', 'menuDetails']));
+        return view('internal/role.index', [
+            'permissions' => $permissions,
+            'menuGroups' => $menuGroups,
+            'menuDetails' => $menuDetails,
+            'stats' => $summary->cards('roles'),
+        ]);
     }
 
     public function store(Request $request)
     {
         $request->validate([
-            'name'          => 'required|string|max:255',
-            'permissions'   => 'nullable|array',
+            'name' => 'required|string|max:255',
+            'permissions' => 'nullable|array',
             'permissions.*' => 'exists:permissions,id',
         ]);
 
@@ -66,7 +73,7 @@ class RolePermissionController extends Controller
 
             // Buat role baru
             $role = Role::create([
-                'name'       => $request->name,
+                'name' => $request->name,
                 'guard_name' => 'web',
             ]);
 
@@ -81,14 +88,15 @@ class RolePermissionController extends Controller
             return response()->json([
                 'success' => true,
                 'message' => 'Role added successfully!',
-                'role'    => $role
+                'role' => $role,
             ]);
         } catch (\Exception $e) {
             DB::rollBack();
+
             return response()->json([
                 'success' => false,
                 'message' => 'Failed to add role!',
-                'error'   => $e->getMessage()
+                'error' => $e->getMessage(),
             ], 500);
         }
     }
@@ -99,16 +107,16 @@ class RolePermissionController extends Controller
             ->with(['permissions:id,name'])
             ->findOrFail($id);
 
-        $permissions = \Cache::remember('permissions_list_edit', 900, function() {
+        $permissions = \Cache::remember('permissions_list_edit', 900, function () {
             return Permission::select(['id', 'name'])->get();
         });
 
         $rolePermissions = $role->permissions->pluck('id');
 
         return response()->json([
-            'role'            => $role,
-            'permissions'     => $permissions,
-            'rolePermissions' => $rolePermissions
+            'role' => $role,
+            'permissions' => $permissions,
+            'rolePermissions' => $rolePermissions,
         ]);
     }
 
@@ -116,15 +124,15 @@ class RolePermissionController extends Controller
     {
         // dd($request->all());
         $request->validate([
-            'name'          => 'required|string|max:255|unique:roles,name,' . $id,
-            'permissions'   => 'nullable|array',
-            'permissions.*' => 'exists:permissions,id'
+            'name' => 'required|string|max:255|unique:roles,name,'.$id,
+            'permissions' => 'nullable|array',
+            'permissions.*' => 'exists:permissions,id',
         ]);
 
         $role = Role::findOrFail($id);
 
         $role->update([
-            'name' => $request->input('name')
+            'name' => $request->input('name'),
         ]);
 
         // Konversi ID permission ke nama permission sebelum sync
@@ -135,7 +143,7 @@ class RolePermissionController extends Controller
 
         return response()->json([
             'success' => true,
-            'message' => 'Role updated successfully!'
+            'message' => 'Role updated successfully!',
         ]);
     }
 
@@ -143,23 +151,24 @@ class RolePermissionController extends Controller
     {
         $role = Role::find($id);
 
-        if (!$role) {
+        if (! $role) {
             return response()->json([
-                'status'  => 404,
-                'message' => 'Error! Role data not found'
+                'status' => 404,
+                'message' => 'Error! Role data not found',
             ]);
         }
 
         try {
             $role->delete();
+
             return response()->json([
-                'status'  => 200,
-                'message' => 'Role deleted successfully'
+                'status' => 200,
+                'message' => 'Role deleted successfully',
             ]);
         } catch (\Exception $e) {
             return response()->json([
-                'status'  => 500,
-                'message' => 'An error occurred while deleting data: ' . $e->getMessage()
+                'status' => 500,
+                'message' => 'An error occurred while deleting data: '.$e->getMessage(),
             ]);
         }
     }
@@ -169,13 +178,11 @@ class RolePermissionController extends Controller
         $permissions = Permission::with(['menuGroups', 'menuDetails'])
             ->get()
             ->sortBy(function ($permission) {
-                return optional($permission->menuGroups->first())->name . optional($permission->menuDetails->first())->name;
+                return optional($permission->menuGroups->first())->name.optional($permission->menuDetails->first())->name;
             });
 
         return response()->json([
-            'permissions' => $permissions
+            'permissions' => $permissions,
         ]);
     }
-
-
 }

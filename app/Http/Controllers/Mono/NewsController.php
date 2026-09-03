@@ -2,20 +2,21 @@
 
 namespace App\Http\Controllers\Mono;
 
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Models\News;
+use App\Http\Requests\NewsRequest;
 use App\Models\Kategori;
+use App\Models\News;
 use App\Models\Tag;
 use App\Models\User;
-use App\Http\Requests\NewsRequest;
-use Illuminate\Support\Arr;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Facades\File;
-use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Auth;
+use App\Queries\Internal\InternalSummaryQuery;
 use App\Services\FileStorageService;
+use Illuminate\Http\Request;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Storage;
 
 class NewsController extends Controller
 {
@@ -26,28 +27,28 @@ class NewsController extends Controller
         $this->fileStorageService = $fileStorageService;
     }
 
-    public function index(Request $request)
+    public function index(Request $request, InternalSummaryQuery $summary)
     {
         if ($request->ajax()) {
             // Samakan pendekatan dengan Services: select field yang dibutuhkan,
             // dan kirimkan URL thumbnail (bukan langsung HTML <img>).
             $news = News::select([
-                    'id',
-                    'title',
-                    'slug',
-                    'content',
-                    'summary',
-                    'thumbnail',
-                    'status',
-                    'published_at',
-                    'archived_at',
-                    'author_id'
-                ])
+                'id',
+                'title',
+                'slug',
+                'content',
+                'summary',
+                'thumbnail',
+                'status',
+                'published_at',
+                'archived_at',
+                'author_id',
+            ])
                 ->withoutTrashed()
                 ->with([
                     'user',
                     'categories',
-                    'tags'
+                    'tags',
                 ]);
 
             return datatables()->of($news)
@@ -66,6 +67,7 @@ class NewsController extends Controller
                 })
                 ->addColumn('aksi', function ($data) {
                     $button = '';
+
                     return $button;
                 })
                 ->rawColumns(['author', 'category', 'tags', 'aksi'])
@@ -75,11 +77,16 @@ class NewsController extends Controller
 
         $kategori = Kategori::select(['id', 'name'])->orderBy('name')->get();
         $tags = Tag::select(['id', 'name'])->orderBy('name')->get();
-        $users = Cache::remember('users_author_list', 1800, function() {
+        $users = Cache::remember('users_author_list', 1800, function () {
             return User::select(['id', 'name'])->where('active', true)->get();
         });
 
-        return view('internal/news.index', compact(['kategori', 'tags', 'users']));
+        return view('internal/news.index', [
+            'kategori' => $kategori,
+            'tags' => $tags,
+            'users' => $users,
+            'stats' => $summary->cards('news'),
+        ]);
     }
 
     public function store(NewsRequest $request)
@@ -96,8 +103,8 @@ class NewsController extends Controller
                     'news/thumbnails'
                 );
 
-                if (!$uploadResult['success']) {
-                    throw new \Exception('Failed to upload thumbnail: ' . $uploadResult['error']);
+                if (! $uploadResult['success']) {
+                    throw new \Exception('Failed to upload thumbnail: '.$uploadResult['error']);
                 }
 
                 $validatedData['thumbnail'] = $uploadResult['path'];
@@ -132,7 +139,7 @@ class NewsController extends Controller
             return response()->json([
                 'status' => 200,
                 'message' => 'News saved successfully!',
-                'data' => $news
+                'data' => $news,
             ]);
         } catch (\Exception $e) {
             DB::rollBack();
@@ -145,7 +152,7 @@ class NewsController extends Controller
             return response()->json([
                 'status' => 500,
                 'message' => 'A server error occurred.',
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ], 500);
         }
     }
@@ -155,10 +162,10 @@ class NewsController extends Controller
         try {
             $news = News::with(['user', 'categories', 'tags'])->where('id', $id)->first();
 
-            if (!$news) {
+            if (! $news) {
                 return response()->json([
                     'status' => 404,
-                    'message' => 'News data not found'
+                    'message' => 'News data not found',
                 ], 404);
             }
 
@@ -171,13 +178,13 @@ class NewsController extends Controller
 
             return response()->json([
                 'success' => true,
-                'news' => $newsData
+                'news' => $newsData,
             ]);
         } catch (\Exception $e) {
             return response()->json([
                 'status' => 500,
                 'message' => 'A server error occurred.',
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ], 500);
         }
     }
@@ -198,8 +205,8 @@ class NewsController extends Controller
                     'news/thumbnails'
                 );
 
-                if (!$uploadResult['success']) {
-                    throw new \Exception('Failed to upload thumbnail: ' . $uploadResult['error']);
+                if (! $uploadResult['success']) {
+                    throw new \Exception('Failed to upload thumbnail: '.$uploadResult['error']);
                 }
 
                 $validatedData['thumbnail'] = $uploadResult['path'];
@@ -236,8 +243,8 @@ class NewsController extends Controller
             DB::commit();
 
             return response()->json([
-                'status'  => 200,
-                'message' => 'News updated successfully'
+                'status' => 200,
+                'message' => 'News updated successfully',
             ]);
         } catch (\Exception $e) {
             DB::rollBack();
@@ -250,7 +257,7 @@ class NewsController extends Controller
             return response()->json([
                 'status' => 500,
                 'message' => 'A server error occurred.',
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ], 500);
         }
     }
@@ -262,10 +269,10 @@ class NewsController extends Controller
 
             $news = News::where('id', $id)->first();
 
-            if (!$news) {
+            if (! $news) {
                 return response()->json([
                     'status' => 404,
-                    'errors' => 'Data News Tidak Ditemukan'
+                    'errors' => 'Data News Tidak Ditemukan',
                 ]);
             }
 
@@ -285,7 +292,7 @@ class NewsController extends Controller
 
             return response()->json([
                 'status' => 200,
-                'message' => 'News deleted successfully'
+                'message' => 'News deleted successfully',
             ]);
         } catch (\Exception $e) {
             DB::rollBack();
@@ -293,7 +300,7 @@ class NewsController extends Controller
             return response()->json([
                 'status' => 500,
                 'message' => 'A server error occurred.',
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ], 500);
         }
     }
@@ -301,11 +308,9 @@ class NewsController extends Controller
     /**
      * Handle automatic timestamps for published_at and archived_at based on status
      *
-     * @param array &$validatedData
-     * @param News|null $existingNews
      * @return void
      */
-    private function handleStatusTeamestamps(array &$validatedData, News $existingNews = null)
+    private function handleStatusTeamestamps(array &$validatedData, ?News $existingNews = null)
     {
         $status = $validatedData['status'] ?? null;
         $now = now();
@@ -314,7 +319,7 @@ class NewsController extends Controller
             case 'published':
                 // Set published_at jika belum ada or jika status berubah dari non-published ke published
                 if (empty($validatedData['published_at'])) {
-                    if (!$existingNews || $existingNews->status !== 'published') {
+                    if (! $existingNews || $existingNews->status !== 'published') {
                         $validatedData['published_at'] = $now;
                     } elseif ($existingNews && $existingNews->published_at) {
                         // Pertahankan published_at yang sudah ada jika news sudah published sebelumnya
@@ -328,7 +333,7 @@ class NewsController extends Controller
             case 'archived':
                 // Set archived_at jika belum ada or jika status berubah ke archived
                 if (empty($validatedData['archived_at'])) {
-                    if (!$existingNews || $existingNews->status !== 'archived') {
+                    if (! $existingNews || $existingNews->status !== 'archived') {
                         $validatedData['archived_at'] = $now;
                     } elseif ($existingNews && $existingNews->archived_at) {
                         // Pertahankan archived_at yang sudah ada jika news sudah archived sebelumnya

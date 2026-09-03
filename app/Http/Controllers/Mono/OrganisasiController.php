@@ -3,10 +3,11 @@
 namespace App\Http\Controllers\Mono;
 
 use App\Http\Controllers\Controller;
-use App\Services\FileStorageService;
-use App\Models\Organisasi;
-use Illuminate\Http\Request;
 use App\Http\Requests\OrganisasiRequest;
+use App\Models\Organisasi;
+use App\Queries\Internal\InternalSummaryQuery;
+use App\Services\FileStorageService;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class OrganisasiController extends Controller
@@ -18,7 +19,7 @@ class OrganisasiController extends Controller
         $this->fileStorageService = $fileStorageService;
     }
 
-    public function index(Request $request)
+    public function index(Request $request, InternalSummaryQuery $summary)
     {
         // Menampilkan Data organisasi
         $organisasi = Organisasi::withoutTrashed()->with(['createdBy', 'updatedBy', 'deleter']);
@@ -38,12 +39,15 @@ class OrganisasiController extends Controller
                     // Return HTML img tag untuk image
                     if ($data->image) {
                         $imageUrl = $this->fileStorageService->getFileUrl($data->image);
-                        return '<img src="' . $imageUrl . '" alt="Organisasi Image" style="width: 50px; height: 50px; object-fit: cover; border-radius: 4px;">';
+
+                        return '<img src="'.$imageUrl.'" alt="Organisasi Image" style="width: 50px; height: 50px; object-fit: cover; border-radius: 4px;">';
                     }
+
                     return '<span class="text-muted">No Image</span>';
                 })
                 ->addColumn('aksi', function ($data) {
                     $button = '';
+
                     return $button;
                 })
                 ->rawColumns(['created_by', 'updated_by', 'deleted_by', 'image', 'aksi'])
@@ -51,7 +55,9 @@ class OrganisasiController extends Controller
                 ->toJson();
         }
 
-        return view('internal/organisasi.index', compact(['organisasi']));
+        return view('internal/organisasi.index', [
+            'stats' => $summary->cards('organisasi'),
+        ]);
     }
 
     public function store(OrganisasiRequest $request)
@@ -68,8 +74,8 @@ class OrganisasiController extends Controller
                     'organisasi/images'
                 );
 
-                if (!$uploadResult['success']) {
-                    throw new \Exception('Failed to upload image: ' . $uploadResult['error']);
+                if (! $uploadResult['success']) {
+                    throw new \Exception('Failed to upload image: '.$uploadResult['error']);
                 }
 
                 $validatedData['image'] = $uploadResult['path'];
@@ -86,7 +92,7 @@ class OrganisasiController extends Controller
             return response()->json([
                 'status' => 200,
                 'message' => 'Team member saved successfully!',
-                'data' => $organisasi
+                'data' => $organisasi,
             ]);
         } catch (\Exception $e) {
             DB::rollBack();
@@ -99,7 +105,7 @@ class OrganisasiController extends Controller
             return response()->json([
                 'status' => 500,
                 'message' => 'A server error occurred.',
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ], 500);
         }
     }
@@ -109,10 +115,10 @@ class OrganisasiController extends Controller
         try {
             $organisasi = Organisasi::with(['createdBy', 'updatedBy', 'deleter'])->where('id', $id)->first();
 
-            if (!$organisasi) {
+            if (! $organisasi) {
                 return response()->json([
                     'status' => 404,
-                    'message' => 'Organization data not found'
+                    'message' => 'Organization data not found',
                 ], 404);
             }
 
@@ -121,13 +127,13 @@ class OrganisasiController extends Controller
 
             return response()->json([
                 'success' => true,
-                'organisasi' => $organisasiData
+                'organisasi' => $organisasiData,
             ]);
         } catch (\Exception $e) {
             return response()->json([
                 'status' => 500,
                 'message' => 'A server error occurred.',
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ], 500);
         }
     }
@@ -148,8 +154,8 @@ class OrganisasiController extends Controller
                     'organisasi/images'
                 );
 
-                if (!$uploadResult['success']) {
-                    throw new \Exception('Failed to upload image: ' . $uploadResult['error']);
+                if (! $uploadResult['success']) {
+                    throw new \Exception('Failed to upload image: '.$uploadResult['error']);
                 }
 
                 $validatedData['image'] = $uploadResult['path'];
@@ -169,8 +175,8 @@ class OrganisasiController extends Controller
             DB::commit();
 
             return response()->json([
-                'status'  => 200,
-                'message' => 'Team member updated successfully'
+                'status' => 200,
+                'message' => 'Team member updated successfully',
             ]);
         } catch (\Exception $e) {
             DB::rollBack();
@@ -183,7 +189,7 @@ class OrganisasiController extends Controller
             return response()->json([
                 'status' => 500,
                 'message' => 'A server error occurred.',
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ], 500);
         }
     }
@@ -195,10 +201,10 @@ class OrganisasiController extends Controller
 
             $organisasi = Organisasi::where('id', $id)->first();
 
-            if (!$organisasi) {
+            if (! $organisasi) {
                 return response()->json([
                     'status' => 404,
-                    'errors' => 'Data Organisasi Tidak Ditemukan'
+                    'errors' => 'Data Organisasi Tidak Ditemukan',
                 ]);
             }
 
@@ -218,7 +224,7 @@ class OrganisasiController extends Controller
 
             return response()->json([
                 'status' => 200,
-                'message' => 'Organization deleted successfully'
+                'message' => 'Organization deleted successfully',
             ]);
         } catch (\Exception $e) {
             DB::rollBack();
@@ -226,7 +232,7 @@ class OrganisasiController extends Controller
             return response()->json([
                 'status' => 500,
                 'message' => 'A server error occurred.',
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ], 500);
         }
     }

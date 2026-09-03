@@ -4,11 +4,12 @@ namespace App\Http\Controllers\Mono;
 
 use App\Http\Controllers\Controller;
 use App\Models\MenuGroup;
+use App\Queries\Internal\InternalSummaryQuery;
 use Illuminate\Http\Request;
 
 class MenuGroupController extends Controller
 {
-    public function index(Request $request)
+    public function index(Request $request, InternalSummaryQuery $summary)
     {
         // Menampilkan Data pegawai
         $menuGroups = MenuGroup::with('menuDetails.subMenuDetails')->get();
@@ -17,6 +18,7 @@ class MenuGroupController extends Controller
             return datatables()->of($menuGroups)
                 ->addColumn('aksi', function ($data) {
                     $button = '';
+
                     return $button;
                 })
                 ->rawColumns(['aksi'])
@@ -24,16 +26,19 @@ class MenuGroupController extends Controller
                 ->toJson();
         }
 
-        return view('internal/menu_groups.index', compact(['menuGroups']));
+        return view('internal/menu_groups.index', [
+            'menuGroups' => $menuGroups,
+            'stats' => $summary->cards('menu_groups'),
+        ]);
     }
 
     public function store(Request $request)
     {
         $request->validate([
-            'name'       => 'required|string|max:255',
+            'name' => 'required|string|max:255',
             'jenis_menu' => 'required|integer',
-            'icon'       => 'nullable|string',
-            'order'      => 'required|integer'
+            'icon' => 'nullable|string',
+            'order' => 'required|integer',
         ]);
 
         $menu = MenuGroup::create($request->all());
@@ -41,7 +46,7 @@ class MenuGroupController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Menu added successfully!',
-            'menu'    => $menu
+            'menu' => $menu,
         ]);
     }
 
@@ -51,17 +56,17 @@ class MenuGroupController extends Controller
 
         return response()->json([
             'success' => true,
-            'menu' => $menuGroup
+            'menu' => $menuGroup,
         ]);
     }
 
     public function update(Request $request, $id)
     {
         $request->validate([
-            'name'       => 'required|string|max:255',
+            'name' => 'required|string|max:255',
             'jenis_menu' => 'required|integer',
-            'icon'       => 'nullable|string',
-            'order'      => 'required|integer'
+            'icon' => 'nullable|string',
+            'order' => 'required|integer',
         ]);
 
         $menuGroup = MenuGroup::findOrFail($id);
@@ -69,19 +74,18 @@ class MenuGroupController extends Controller
 
         return response()->json([
             'success' => true,
-            'message' => 'Menu updated successfully!'
+            'message' => 'Menu updated successfully!',
         ]);
     }
-
 
     public function destroy($id)
     {
         $menuGroup = MenuGroup::where('id', $id)->first();
 
-        if (!$menuGroup) {
+        if (! $menuGroup) {
             return response()->json([
                 'status' => 404,
-                'errors' => 'Data Menu Tidak Ditemukan'
+                'errors' => 'Data Menu Tidak Ditemukan',
             ]);
         }
 
@@ -90,8 +94,7 @@ class MenuGroupController extends Controller
 
         return response()->json([
             'status' => 200,
-            'message' => 'Menu deleted successfully'
+            'message' => 'Menu deleted successfully',
         ]);
     }
 }
-

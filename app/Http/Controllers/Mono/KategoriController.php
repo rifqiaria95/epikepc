@@ -3,9 +3,10 @@
 namespace App\Http\Controllers\Mono;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
 use App\Http\Requests\KategoriRequest;
 use App\Models\Kategori;
+use App\Queries\Internal\InternalSummaryQuery;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 
 class KategoriController extends Controller
@@ -15,7 +16,7 @@ class KategoriController extends Controller
         Cache::forget('kategori_news_list');
     }
 
-    public function index(Request $request)
+    public function index(Request $request, InternalSummaryQuery $summary)
     {
         if ($request->ajax()) {
             // Optimasi: Query data hanya saat AJAX request
@@ -24,6 +25,7 @@ class KategoriController extends Controller
             return datatables()->of($kategori)
                 ->addColumn('aksi', function ($data) {
                     $button = '';
+
                     return $button;
                 })
                 ->rawColumns(['aksi'])
@@ -31,7 +33,9 @@ class KategoriController extends Controller
                 ->toJson();
         }
 
-        return view('internal/kategori.index');
+        return view('internal/kategori.index', [
+            'stats' => $summary->cards('kategori'),
+        ]);
     }
 
     public function store(KategoriRequest $request)
@@ -42,9 +46,9 @@ class KategoriController extends Controller
         $this->forgetNewsCategoryCache();
 
         return response()->json([
-            'success'  => true,
-            'message'  => 'Category added successfully!',
-            'kategori' => $kategori
+            'success' => true,
+            'message' => 'Category added successfully!',
+            'kategori' => $kategori,
         ]);
     }
 
@@ -54,7 +58,7 @@ class KategoriController extends Controller
 
         return response()->json([
             'success' => true,
-            'kategori' => $kategori
+            'kategori' => $kategori,
         ]);
     }
 
@@ -68,7 +72,7 @@ class KategoriController extends Controller
 
         return response()->json([
             'success' => true,
-            'message' => 'Category updated successfully!'
+            'message' => 'Category updated successfully!',
         ]);
     }
 
@@ -81,14 +85,15 @@ class KategoriController extends Controller
         if ($kategori) {
             $kategori->delete();
             $this->forgetNewsCategoryCache();
+
             return response()->json([
-                'status'    => 200,
-                'message'   => 'Category deleted successfully'
+                'status' => 200,
+                'message' => 'Category deleted successfully',
             ]);
         } else {
             return response()->json([
-                'status'    => 404,
-                'errors'    => 'Error! Category data not found'
+                'status' => 404,
+                'errors' => 'Error! Category data not found',
             ]);
         }
     }

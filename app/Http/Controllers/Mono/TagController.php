@@ -3,9 +3,10 @@
 namespace App\Http\Controllers\Mono;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
 use App\Http\Requests\TagRequest;
 use App\Models\Tag;
+use App\Queries\Internal\InternalSummaryQuery;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 
 class TagController extends Controller
@@ -15,7 +16,7 @@ class TagController extends Controller
         Cache::forget('tags_list');
     }
 
-    public function index(Request $request)
+    public function index(Request $request, InternalSummaryQuery $summary)
     {
         if ($request->ajax()) {
             // Optimasi: Query data hanya saat AJAX request
@@ -24,6 +25,7 @@ class TagController extends Controller
             return datatables()->of($tag)
                 ->addColumn('aksi', function ($data) {
                     $button = '';
+
                     return $button;
                 })
                 ->rawColumns(['aksi'])
@@ -31,7 +33,9 @@ class TagController extends Controller
                 ->toJson();
         }
 
-        return view('internal/tag.index');
+        return view('internal/tag.index', [
+            'stats' => $summary->cards('tags'),
+        ]);
     }
 
     public function store(TagRequest $request)
@@ -42,9 +46,9 @@ class TagController extends Controller
         $this->forgetNewsTagCache();
 
         return response()->json([
-            'success'  => true,
-            'message'  => 'Tag added successfully!',
-            'tag' => $tag
+            'success' => true,
+            'message' => 'Tag added successfully!',
+            'tag' => $tag,
         ]);
     }
 
@@ -54,7 +58,7 @@ class TagController extends Controller
 
         return response()->json([
             'success' => true,
-            'tag' => $tag
+            'tag' => $tag,
         ]);
     }
 
@@ -68,7 +72,7 @@ class TagController extends Controller
 
         return response()->json([
             'success' => true,
-            'message' => 'Tag updated successfully!'
+            'message' => 'Tag updated successfully!',
         ]);
     }
 
@@ -81,14 +85,15 @@ class TagController extends Controller
         if ($tag) {
             $tag->delete();
             $this->forgetNewsTagCache();
+
             return response()->json([
-                'status'    => 200,
-                'message'   => 'Tag deleted successfully'
+                'status' => 200,
+                'message' => 'Tag deleted successfully',
             ]);
         } else {
             return response()->json([
-                'status'    => 404,
-                'errors'    => 'Error! Tag data not found'
+                'status' => 404,
+                'errors' => 'Error! Tag data not found',
             ]);
         }
     }

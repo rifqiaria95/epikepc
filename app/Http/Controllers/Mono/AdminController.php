@@ -2,45 +2,48 @@
 
 namespace App\Http\Controllers\Mono;
 
-use DB;
-use App\Models\User;
-use App\Models\Gudang;
-use App\Models\Pegawai;
-use App\Models\MenuDetail;
-use App\Models\Item;
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Models\Gudang;
+use App\Models\Item;
+use App\Models\MenuDetail;
+use App\Models\Pegawai;
+use App\Models\User;
+use App\Queries\Internal\InternalSummaryQuery;
+use DB;
+use Illuminate\Http\Request;
 
 class AdminController extends Controller
 {
-    public function getDeletedRecords(Request $request)
+    public function getDeletedRecords(Request $request, InternalSummaryQuery $summary)
     {
         $pegawai = Pegawai::onlyTrashed()->select(DB::raw('CAST(id AS VARCHAR) as id'), 'nm_pegawai as nama', 'deleted_at', DB::raw("'Pegawai' as kategori"));
-        $menu    = MenuDetail::onlyTrashed()->select(DB::raw('CAST(id AS VARCHAR) as id'), 'name as nama', 'deleted_at', DB::raw("'Menu' as kategori"));
-        $users   = User::onlyTrashed()->select(DB::raw('CAST(id AS VARCHAR) as id'), 'name as nama', 'deleted_at', DB::raw("'User' as kategori"));
-        $gudang  = Gudang::onlyTrashed()->select(DB::raw('CAST(id AS VARCHAR) as id'), 'nama_gudang as nama', 'deleted_at', DB::raw("'Gudang' as kategori"));
-        $item    = Item::onlyTrashed()->select(DB::raw('CAST(id AS VARCHAR) as id'), 'nm_item as nama', 'deleted_at', DB::raw("'Item' as kategori"));
+        $menu = MenuDetail::onlyTrashed()->select(DB::raw('CAST(id AS VARCHAR) as id'), 'name as nama', 'deleted_at', DB::raw("'Menu' as kategori"));
+        $users = User::onlyTrashed()->select(DB::raw('CAST(id AS VARCHAR) as id'), 'name as nama', 'deleted_at', DB::raw("'User' as kategori"));
+        $gudang = Gudang::onlyTrashed()->select(DB::raw('CAST(id AS VARCHAR) as id'), 'nama_gudang as nama', 'deleted_at', DB::raw("'Gudang' as kategori"));
+        $item = Item::onlyTrashed()->select(DB::raw('CAST(id AS VARCHAR) as id'), 'nm_item as nama', 'deleted_at', DB::raw("'Item' as kategori"));
 
         // Gabungkan semua query
-        $deletedData = 
+        $deletedData =
         $pegawai
-        ->union($menu)
-        ->union($users)
-        ->union($gudang)
-        ->union($item);
+            ->union($menu)
+            ->union($users)
+            ->union($gudang)
+            ->union($item);
 
         if ($request->ajax()) {
             return datatables()->of($deletedData)
                 ->addColumn('aksi', function ($row) {
-                    return '<button class="btn btn-success btn-sm restore-record" data-id="' . $row->id . '" data-kategori="' . $row->kategori . '">Restore</button>
-                    <button class="btn btn-danger btn-sm delete-record" data-id="' . $row->id . '" data-kategori="' . $row->kategori . '">Delete</button>';
+                    return '<button class="btn btn-success btn-sm restore-record" data-id="'.$row->id.'" data-kategori="'.$row->kategori.'">Restore</button>
+                    <button class="btn btn-danger btn-sm delete-record" data-id="'.$row->id.'" data-kategori="'.$row->kategori.'">Delete</button>';
                 })
                 ->rawColumns(['aksi'])
                 ->addIndexColumn()
                 ->toJson();
         }
 
-        return view('trash.index', compact(['deletedData']));
+        return view('internal.trash.index', [
+            'stats' => $summary->cards('trash'),
+        ]);
     }
 
     public function restoreRecord(Request $request)
@@ -67,8 +70,8 @@ class AdminController extends Controller
         }
 
         return response()->json([
-            'status'  => 200,
-            'message' => 'Data restored successfully!'
+            'status' => 200,
+            'message' => 'Data restored successfully!',
         ]);
     }
 
@@ -97,28 +100,27 @@ class AdminController extends Controller
                 default:
                     return response()->json([
                         'status' => 400,
-                        'message' => 'Kategori tidak valid.'
+                        'message' => 'Kategori tidak valid.',
                     ], 400);
             }
 
             if ($deleted) {
                 return response()->json([
                     'status' => 200,
-                    'message' => 'Data permanently deleted!'
+                    'message' => 'Data permanently deleted!',
                 ]);
             } else {
                 return response()->json([
                     'status' => 404,
-                    'message' => 'Data not found or already permanently deleted.'
+                    'message' => 'Data not found or already permanently deleted.',
                 ], 404);
             }
         } catch (\Exception $e) {
             return response()->json([
                 'status' => 500,
                 'message' => 'A server error occurred.',
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ], 500);
         }
     }
-
 }

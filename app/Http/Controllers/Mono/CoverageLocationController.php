@@ -5,13 +5,14 @@ namespace App\Http\Controllers\Mono;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CoverageLocationRequest;
 use App\Models\CoverageLocation;
+use App\Queries\Internal\InternalSummaryQuery;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class CoverageLocationController extends Controller
 {
-    public function index(Request $request)
+    public function index(Request $request, InternalSummaryQuery $summary)
     {
         if ($request->ajax()) {
             $locations = CoverageLocation::forAdminListing();
@@ -32,7 +33,9 @@ class CoverageLocationController extends Controller
                 ->toJson();
         }
 
-        return view('internal.coverage.index');
+        return view('internal.coverage.index', [
+            'stats' => $summary->cards('coverage'),
+        ]);
     }
 
     public function options()

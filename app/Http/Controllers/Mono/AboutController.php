@@ -7,6 +7,7 @@ use App\Http\Requests\CompanyJourneyRequest;
 use App\Http\Requests\CompanyMilestoneRequest;
 use App\Models\CompanyJourney;
 use App\Models\CompanyMilestone;
+use App\Queries\Internal\InternalSummaryQuery;
 use App\Services\FileStorageService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -15,11 +16,9 @@ use Illuminate\Support\Facades\DB;
 
 class AboutController extends Controller
 {
-    public function __construct(protected FileStorageService $fileStorageService)
-    {
-    }
+    public function __construct(protected FileStorageService $fileStorageService) {}
 
-    public function index(Request $request)
+    public function index(Request $request, InternalSummaryQuery $summary)
     {
         if ($request->ajax() && $request->get('type') === 'milestones') {
             return $this->milestonesDatatable();
@@ -34,14 +33,9 @@ class AboutController extends Controller
             $journey->poster_url = $this->fileStorageService->getFileUrl($journey->video_poster);
         }
 
-        $baseQuery = CompanyMilestone::query()->withoutTrashed();
-
         return view('internal.about.index', [
-            'journey'           => $journey,
-            'totalMilestones'   => (clone $baseQuery)->count(),
-            'activeMilestones'  => (clone $baseQuery)->where('is_active', true)->count(),
-            'inactiveMilestones'=> (clone $baseQuery)->where('is_active', false)->count(),
-            'recentMilestones'  => (clone $baseQuery)->where('created_at', '>=', now()->subDays(30))->count(),
+            'journey' => $journey,
+            'stats' => $summary->cards('about'),
         ]);
     }
 
@@ -67,7 +61,7 @@ class AboutController extends Controller
                 );
 
                 if (! $uploadResult['success']) {
-                    throw new \RuntimeException('Failed to upload poster: ' . $uploadResult['error']);
+                    throw new \RuntimeException('Failed to upload poster: '.$uploadResult['error']);
                 }
 
                 if ($journey->video_poster) {
@@ -90,9 +84,9 @@ class AboutController extends Controller
             DB::commit();
 
             return response()->json([
-                'status'  => 200,
+                'status' => 200,
                 'message' => 'Company Journey settings saved successfully.',
-                'data'    => $journey->fresh(),
+                'data' => $journey->fresh(),
             ]);
         } catch (\Throwable $e) {
             DB::rollBack();
@@ -119,7 +113,7 @@ class AboutController extends Controller
                 ->findOrFail($id);
 
             return response()->json([
-                'success'   => true,
+                'success' => true,
                 'milestone' => $milestone,
             ]);
         } catch (\Throwable $e) {
@@ -145,7 +139,7 @@ class AboutController extends Controller
             DB::commit();
 
             return response()->json([
-                'status'  => 200,
+                'status' => 200,
                 'message' => 'Milestone deleted successfully.',
             ]);
         } catch (\Throwable $e) {
@@ -183,7 +177,7 @@ class AboutController extends Controller
 
             $milestone = $id
                 ? CompanyMilestone::query()->withoutTrashed()->findOrFail($id)
-                : new CompanyMilestone();
+                : new CompanyMilestone;
 
             $validated = $request->validated();
             $validated['is_active'] = $request->boolean('is_active', true);
@@ -205,9 +199,9 @@ class AboutController extends Controller
             DB::commit();
 
             return response()->json([
-                'status'  => 200,
+                'status' => 200,
                 'message' => $message,
-                'data'    => $milestone,
+                'data' => $milestone,
             ]);
         } catch (\Throwable $e) {
             DB::rollBack();
@@ -219,9 +213,9 @@ class AboutController extends Controller
     private function errorResponse(\Throwable $e): JsonResponse
     {
         return response()->json([
-            'status'  => 500,
+            'status' => 500,
             'message' => 'A server error occurred.',
-            'error'   => $e->getMessage(),
+            'error' => $e->getMessage(),
         ], 500);
     }
 }

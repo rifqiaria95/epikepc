@@ -124,14 +124,7 @@
 @endsection
 @section('content')
     <div class="container-xxl flex-grow-1 container-p-y">
-        @include('internal.partials.stat-cards', [
-            'stats' => [
-                ['label' => 'Total Services', 'value' => $totalServices, 'hint' => 'All services', 'icon' => 'ti-briefcase', 'color' => 'primary'],
-                ['label' => 'With Image', 'value' => $withImage, 'hint' => 'Has photo', 'icon' => 'ti-photo', 'color' => 'success'],
-                ['label' => 'With Type', 'value' => $withType, 'hint' => 'Has service type', 'icon' => 'ti-category', 'color' => 'info'],
-                ['label' => 'Recent', 'value' => $recentServices, 'hint' => 'Last 30 days', 'icon' => 'ti-clock', 'color' => 'warning'],
-            ],
-        ])
+        @include('internal.partials.stat-cards', ['stats' => $stats])
         <div class="card">
             <div class="card-header border-bottom">
                 <h5 class="card-title mb-0">Filters</h5>

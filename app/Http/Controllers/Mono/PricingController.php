@@ -6,20 +6,21 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\PricingRequest;
 use App\Models\Pricing;
 use App\Models\PricingFeature;
+use App\Queries\Internal\InternalSummaryQuery;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class PricingController extends Controller
 {
-    public function index(Request $request)
+    public function index(Request $request, InternalSummaryQuery $summary)
     {
         if ($request->ajax()) {
             $pricing = Pricing::forAdminListing();
 
             return datatables()->of($pricing)
                 ->editColumn('price', function ($data) {
-                    return 'Rp ' . number_format((float) $data->price, 0, ',', '.');
+                    return 'Rp '.number_format((float) $data->price, 0, ',', '.');
                 })
                 ->editColumn('billing_period', function ($data) {
                     return $data->billing_period === 'year' ? 'Year' : 'Bulan';
@@ -48,7 +49,9 @@ class PricingController extends Controller
                 ->toJson();
         }
 
-        return view('internal.pricing.index');
+        return view('internal.pricing.index', [
+            'stats' => $summary->cards('pricing'),
+        ]);
     }
 
     public function store(PricingRequest $request)
@@ -93,7 +96,7 @@ class PricingController extends Controller
                 },
             ])->find($id);
 
-            if (!$pricing) {
+            if (! $pricing) {
                 return response()->json([
                     'status' => 404,
                     'message' => 'Pricing data not found',
@@ -149,7 +152,7 @@ class PricingController extends Controller
 
             $pricing = Pricing::find($id);
 
-            if (!$pricing) {
+            if (! $pricing) {
                 return response()->json([
                     'status' => 404,
                     'errors' => 'Data Pricing Tidak Ditemukan',

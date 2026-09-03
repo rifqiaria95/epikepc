@@ -5,14 +5,7 @@
 @endsection
 @section('content')
     <div class="container-xxl flex-grow-1 container-p-y">
-        @include('internal.partials.stat-cards', [
-            'stats' => [
-                ['label' => 'Total Gallery', 'value' => $totalGallery, 'hint' => 'All gallery items', 'icon' => 'ti-photo', 'color' => 'primary'],
-                ['label' => 'With Category', 'value' => $withCategory, 'hint' => 'Has category assigned', 'icon' => 'ti-category', 'color' => 'success'],
-                ['label' => 'With Image', 'value' => $withImage, 'hint' => 'Has photo', 'icon' => 'ti-camera', 'color' => 'info'],
-                ['label' => 'Recent', 'value' => $recentGallery, 'hint' => 'Last 30 days', 'icon' => 'ti-clock', 'color' => 'warning'],
-            ],
-        ])
+        @include('internal.partials.stat-cards', ['stats' => $stats])
         <div class="card">
             <div class="card-header border-bottom">
                 <h5 class="card-title mb-0">Filters</h5>

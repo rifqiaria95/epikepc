@@ -6,16 +6,17 @@ use App\Http\Controllers\Controller;
 use App\Models\MenuDetail;
 use App\Models\MenuGroup;
 use App\Models\Permission;
+use App\Queries\Internal\InternalSummaryQuery;
 use Illuminate\Http\Request;
 
 class MenuDetailController extends Controller
 {
-    public function index(Request $request)
+    public function index(Request $request, InternalSummaryQuery $summary)
     {
         // Menampilkan Data pegawai
         $menuDetail = MenuDetail::with('menuGroup');
         // Cache data menu group untuk dropdown
-        $menuGroup = \Cache::remember('menu_groups_for_details', 1800, function() {
+        $menuGroup = \Cache::remember('menu_groups_for_details', 1800, function () {
             return MenuGroup::select(['id', 'name'])->get();
         });
         // dd($pegawai);
@@ -26,6 +27,7 @@ class MenuDetailController extends Controller
                 })
                 ->addColumn('aksi', function ($data) {
                     $button = '';
+
                     return $button;
                 })
                 ->rawColumns(['menu_group_id', 'aksi'])
@@ -33,7 +35,11 @@ class MenuDetailController extends Controller
                 ->toJson();
         }
 
-        return view('internal/menu_details.index', compact(['menuDetail', 'menuGroup']));
+        return view('internal/menu_details.index', [
+            'menuDetail' => $menuDetail,
+            'menuGroup' => $menuGroup,
+            'stats' => $summary->cards('menu_details'),
+        ]);
     }
 
     public function store(Request $request)
@@ -41,7 +47,7 @@ class MenuDetailController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'icon' => 'nullable|string',
-            'order' => 'nullable|integer'
+            'order' => 'nullable|integer',
         ]);
 
         // Buat menu detail baru
@@ -53,7 +59,7 @@ class MenuDetailController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Menu added with permissions successfully!',
-            'menu'    => $menu
+            'menu' => $menu,
         ]);
     }
 
@@ -67,13 +73,13 @@ class MenuDetailController extends Controller
 
         // Daftar permission yang akan dibuat
         $permissionTypes = [
-            'view_' . $menuName,
-            'create_' . $menuName,
-            'edit_' . $menuName,
-            'show_' . $menuName,
-            'delete_' . $menuName,
-            'approve_' . $menuName,
-            'reject_' . $menuName
+            'view_'.$menuName,
+            'create_'.$menuName,
+            'edit_'.$menuName,
+            'show_'.$menuName,
+            'delete_'.$menuName,
+            'approve_'.$menuName,
+            'reject_'.$menuName,
         ];
 
         $createdPermissions = [];
@@ -82,11 +88,11 @@ class MenuDetailController extends Controller
             // Cek apakah permission sudah ada
             $existingPermission = Permission::where('name', $permissionName)->first();
 
-            if (!$existingPermission) {
+            if (! $existingPermission) {
                 // Buat permission baru
                 $permission = Permission::create([
                     'name' => $permissionName,
-                    'guard_name' => 'web'
+                    'guard_name' => 'web',
                 ]);
 
                 // Hubungkan permission dengan menu detail
@@ -107,24 +113,23 @@ class MenuDetailController extends Controller
     {
         $menuDetail = MenuDetail::find($id); // Gunakan find() dulu, bukan findOrFail()
 
-        if (!$menuDetail) {
+        if (! $menuDetail) {
             return response()->json([
                 'success' => false,
-                'message' => 'Data not found'
+                'message' => 'Data not found',
             ], 404);
         }
 
         return response()->json([
             'success' => true,
-            'menuDetail' => $menuDetail
+            'menuDetail' => $menuDetail,
         ]);
     }
-
 
     public function update(Request $request, $id)
     {
         $request->validate([
-            'name' => 'required|string|max:255'
+            'name' => 'required|string|max:255',
         ]);
 
         $menuDetail = MenuDetail::findOrFail($id);
@@ -140,7 +145,7 @@ class MenuDetailController extends Controller
 
         return response()->json([
             'success' => true,
-            'message' => 'Menu updated successfully!'
+            'message' => 'Menu updated successfully!',
         ]);
     }
 
@@ -156,8 +161,8 @@ class MenuDetailController extends Controller
         $permissionTypes = ['view_', 'create_', 'edit_', 'show_', 'delete_', 'approve_', 'reject_'];
 
         foreach ($permissionTypes as $type) {
-            $oldPermissionName = $type . $oldMenuName;
-            $newPermissionName = $type . $newMenuName;
+            $oldPermissionName = $type.$oldMenuName;
+            $newPermissionName = $type.$newMenuName;
 
             // Cari permission lama
             $oldPermission = Permission::where('name', $oldPermissionName)->first();
@@ -166,7 +171,7 @@ class MenuDetailController extends Controller
                 // Cek apakah permission baru sudah ada
                 $existingNewPermission = Permission::where('name', $newPermissionName)->first();
 
-                if (!$existingNewPermission) {
+                if (! $existingNewPermission) {
                     // Update nama permission
                     $oldPermission->update(['name' => $newPermissionName]);
                 } else {
@@ -208,13 +213,13 @@ class MenuDetailController extends Controller
             $menu_detail->delete();
 
             return response()->json([
-                'status'    => 200,
-                'message'   => 'Menu detail and related permissions deleted successfully'
+                'status' => 200,
+                'message' => 'Menu detail and related permissions deleted successfully',
             ]);
         } else {
             return response()->json([
-                'status'    => 404,
-                'errors'    => 'Error! Menu detail data not found'
+                'status' => 404,
+                'errors' => 'Error! Menu detail data not found',
             ]);
         }
     }
@@ -223,7 +228,7 @@ class MenuDetailController extends Controller
     {
         $request->validate([
             'ids' => 'required|array',
-            'ids.*' => 'exists:menu_details,id'
+            'ids.*' => 'exists:menu_details,id',
         ]);
 
         try {
@@ -234,10 +239,10 @@ class MenuDetailController extends Controller
             foreach ($ids as $id) {
                 try {
                     $menuDetail = MenuDetail::findOrFail($id);
-                    
+
                     // Delete relasi permissions dengan menu detail ini
                     $this->cleanupMenuPermissions($menuDetail);
-                    
+
                     // Delete menu detail
                     $menuDetail->delete();
                     $deletedCount++;
@@ -255,13 +260,13 @@ class MenuDetailController extends Controller
                 'status' => 200,
                 'message' => $message,
                 'deleted_count' => $deletedCount,
-                'failed_count' => $failedCount
+                'failed_count' => $failedCount,
             ]);
 
         } catch (\Exception $e) {
             return response()->json([
                 'status' => 500,
-                'message' => 'An error occurred: ' . $e->getMessage()
+                'message' => 'An error occurred: '.$e->getMessage(),
             ]);
         }
     }
@@ -275,13 +280,13 @@ class MenuDetailController extends Controller
 
         // Daftar permission yang akan dibersihkan
         $permissionTypes = [
-            'view_' . $menuName,
-            'create_' . $menuName,
-            'edit_' . $menuName,
-            'show_' . $menuName,
-            'delete_' . $menuName,
-            'approve_' . $menuName,
-            'reject_' . $menuName
+            'view_'.$menuName,
+            'create_'.$menuName,
+            'edit_'.$menuName,
+            'show_'.$menuName,
+            'delete_'.$menuName,
+            'approve_'.$menuName,
+            'reject_'.$menuName,
         ];
 
         foreach ($permissionTypes as $permissionName) {
@@ -300,6 +305,4 @@ class MenuDetailController extends Controller
             }
         }
     }
-
 }
-

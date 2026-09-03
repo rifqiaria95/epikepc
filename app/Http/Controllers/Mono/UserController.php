@@ -2,18 +2,16 @@
 
 namespace App\Http\Controllers\Mono;
 
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\File;
-use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Str;
-use App\Models\User;
-use App\Models\UserProfile;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\UpdateUserRequest;
+use App\Models\User;
+use App\Models\UserProfile;
+use App\Queries\Internal\InternalSummaryQuery;
 use App\Services\FileStorageService;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Storage;
 use Spatie\Permission\Models\Role;
-use Spatie\Permission\Models\Permission;
 
 class UserController extends Controller
 {
@@ -23,7 +21,8 @@ class UserController extends Controller
     {
         $this->fileStorageService = $fileStorageService;
     }
-    public function index(Request $request)
+
+    public function index(Request $request, InternalSummaryQuery $summary)
     {
         if ($request->ajax()) {
             // Optimasi: Select hanya field yang diperlukan dan eager load roles
@@ -39,7 +38,7 @@ class UserController extends Controller
                 })
                 ->addColumn('role', function (User $user) {
                     return $user->roles
-                        ->map(fn ($role) => '<span class="badge bg-label-primary">' . $role->name . '</span>')
+                        ->map(fn ($role) => '<span class="badge bg-label-primary">'.$role->name.'</span>')
                         ->implode(' ');
                 })
                 ->addColumn('aksi', function () {
@@ -50,7 +49,9 @@ class UserController extends Controller
                 ->toJson();
         }
 
-        return view('internal/user.index');
+        return view('internal/user.index', [
+            'stats' => $summary->cards('users'),
+        ]);
     }
 
     public function edit($id)
@@ -60,20 +61,20 @@ class UserController extends Controller
             ->with(['roles:id,name'])
             ->findOrFail($id);
 
-        $roles = Cache::remember('roles_list', 3600, function() {
+        $roles = Cache::remember('roles_list', 3600, function () {
             return Role::select(['id', 'name'])->get();
         });
 
         return response()->json([
-            'user'            => $user,
-            'roles'           => $roles,
-            'userRole'        => $user->roles->pluck('id')->first()
+            'user' => $user,
+            'roles' => $roles,
+            'userRole' => $user->roles->pluck('id')->first(),
         ]);
     }
 
     public function create()
     {
-        $roles = Cache::remember('roles_list', 3600, function() {
+        $roles = Cache::remember('roles_list', 3600, function () {
             return Role::select(['id', 'name'])->get();
         });
 
@@ -90,10 +91,10 @@ class UserController extends Controller
             'password' => ['required', 'string', 'min:8', 'confirmed'],
             'active' => ['required', 'in:0,1'],
             'role' => ['required', 'exists:roles,id'],
-            'avatar' => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif,svg', 'max:2048']
+            'avatar' => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif,svg', 'max:2048'],
         ]);
 
-        $user = new User();
+        $user = new User;
         $user->name = $validated['name'];
         $user->email = $validated['email'];
         $user->active = (int) $validated['active'];
@@ -107,8 +108,8 @@ class UserController extends Controller
                 'users/avatars'
             );
 
-            if (!$uploadResult['success']) {
-                throw new \Exception('Failed to upload avatar: ' . $uploadResult['error']);
+            if (! $uploadResult['success']) {
+                throw new \Exception('Failed to upload avatar: '.$uploadResult['error']);
             }
 
             $user->update(['avatar' => $uploadResult['path']]);
@@ -122,7 +123,7 @@ class UserController extends Controller
         return response()->json([
             'status' => 200,
             'message' => 'User saved successfully',
-            'user_id' => $user->id
+            'user_id' => $user->id,
         ]);
     }
 
@@ -130,10 +131,10 @@ class UserController extends Controller
     {
         $user = User::findOrFail($id);
 
-        if (!$user) {
+        if (! $user) {
             return response()->json([
                 'status' => 404,
-                'errors' => 'User Tidak Ditemukan'
+                'errors' => 'User Tidak Ditemukan',
             ]);
         }
 
@@ -161,8 +162,8 @@ class UserController extends Controller
                 'users/avatars'
             );
 
-            if (!$uploadResult['success']) {
-                throw new \Exception('Failed to upload avatar: ' . $uploadResult['error']);
+            if (! $uploadResult['success']) {
+                throw new \Exception('Failed to upload avatar: '.$uploadResult['error']);
             }
 
             // Delete avatar lama jika ada
@@ -174,8 +175,8 @@ class UserController extends Controller
         }
 
         return response()->json([
-            'status'  => 200,
-            'message' => 'User updated successfully'
+            'status' => 200,
+            'message' => 'User updated successfully',
         ]);
     }
 
@@ -183,22 +184,22 @@ class UserController extends Controller
     {
         $user = User::find($id);
 
-        if (!$user) {
+        if (! $user) {
             return response()->json([
                 'status' => 404,
-                'errors' => 'Data User Tidak Ditemukan'
+                'errors' => 'Data User Tidak Ditemukan',
             ]);
         }
 
         if ($user->avatar) {
-            Storage::delete('public/avatars/' . $user->avatar);
+            Storage::delete('public/avatars/'.$user->avatar);
         }
 
         $user->delete();
 
         return response()->json([
             'status' => 200,
-            'message' => 'User deleted successfully'
+            'message' => 'User deleted successfully',
         ]);
     }
 
@@ -206,14 +207,14 @@ class UserController extends Controller
     {
         // Optimasi: Eager load dan select field yang diperlukan
         $user = User::with([
-                'roles:id,name',
-                'user_profile'
-            ])
+            'roles:id,name',
+            'user_profile',
+        ])
             ->select(['id', 'name', 'email', 'active', 'avatar', 'created_at'])
             ->findOrFail($id);
 
         $userProfile = UserProfile::where('user_id', $id)->first();
+
         return view('internal/user.profile', compact('user', 'userProfile'));
     }
-
 }

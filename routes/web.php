@@ -1,44 +1,45 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
-
-use App\Http\Controllers\Mono\TagController;
-use App\Http\Controllers\Auth\AuthController;
-use App\Http\Controllers\Mono\NewsController;
-use App\Http\Controllers\Mono\HomeController;
+use App\Http\Controllers\Frontend\AboutController as FrontendAboutController;
+use App\Http\Controllers\Frontend\Career\CareerController as FrontendCareerController;
+use App\Http\Controllers\Frontend\ConsultationRequestController as FrontendConsultationRequestController;
+use App\Http\Controllers\Frontend\ContactController as FrontendContactController;
+use App\Http\Controllers\Frontend\CoverageController as FrontendCoverageController;
+use App\Http\Controllers\Frontend\FaqController as FrontendFaqController;
+use App\Http\Controllers\Frontend\GalleryController as FrontendGalleryController;
 use App\Http\Controllers\Frontend\NewsController as FrontendNewsController;
-use App\Http\Controllers\Mono\UserController;
+use App\Http\Controllers\Frontend\ProjectController as FrontendProjectController;
+use App\Http\Controllers\Frontend\ServicesController as FrontendServicesController;
+use App\Http\Controllers\Frontend\TeamController as FrontendTeamController;
 use App\Http\Controllers\Mono\AboutController;
 use App\Http\Controllers\Mono\AdminController;
-use App\Http\Controllers\Mono\GaleriController;
-use App\Http\Controllers\Mono\KategoriController;
+use App\Http\Controllers\Mono\Career\ApplicationController as MonoApplicationController;
+use App\Http\Controllers\Mono\Career\CandidateController as MonoCandidateController;
+use App\Http\Controllers\Mono\Career\CareerDashboardController;
+use App\Http\Controllers\Mono\Career\VacancyController as MonoVacancyController;
+use App\Http\Controllers\Mono\ConsultationRequestController as MonoConsultationRequestController;
+use App\Http\Controllers\Mono\CoverageLocationController;
 use App\Http\Controllers\Mono\DashboardController;
+use App\Http\Controllers\Mono\GaleriController;
+use App\Http\Controllers\Mono\HomeController;
+use App\Http\Controllers\Mono\KategoriController;
+use App\Http\Controllers\Mono\KategoriGaleriController;
 use App\Http\Controllers\Mono\KnowledgeController;
-use App\Http\Controllers\Mono\MenuGroupController;
 use App\Http\Controllers\Mono\MenuDetailController;
+use App\Http\Controllers\Mono\MenuGroupController;
+use App\Http\Controllers\Mono\NewsController;
 use App\Http\Controllers\Mono\OrganisasiController;
 use App\Http\Controllers\Mono\PermissionController;
-use App\Http\Controllers\Ext\RegistrationController;
-use App\Http\Controllers\Mono\SubMenuDetailController;
-use App\Http\Controllers\Mono\KategoriGaleriController;
-use App\Http\Controllers\Mono\RolePermissionController;
-use App\Http\Controllers\Auth\EmailVerificationController;
-use App\Http\Controllers\Mono\TestimoniController;
 use App\Http\Controllers\Mono\PricingController;
-use App\Http\Controllers\Mono\CoverageLocationController;
-use App\Http\Controllers\Mono\ConsultationRequestController as MonoConsultationRequestController;
-use App\Http\Controllers\Mono\ServiceTypeController;
-use App\Http\Controllers\Mono\ServicesController as MonoServicesController;
 use App\Http\Controllers\Mono\ProjectController as MonoProjectController;
-use App\Http\Controllers\Frontend\ServicesController as FrontendServicesController;
-use App\Http\Controllers\Frontend\ProjectController as FrontendProjectController;
-use App\Http\Controllers\Frontend\ContactController as FrontendContactController;
-use App\Http\Controllers\Frontend\ConsultationRequestController as FrontendConsultationRequestController;
-use App\Http\Controllers\Frontend\CoverageController as FrontendCoverageController;
-use App\Http\Controllers\Frontend\AboutController as FrontendAboutController;
-use App\Http\Controllers\Frontend\TeamController as FrontendTeamController;
-use App\Http\Controllers\Frontend\GalleryController as FrontendGalleryController;
-use App\Http\Controllers\Frontend\FaqController as FrontendFaqController;
+use App\Http\Controllers\Mono\RolePermissionController;
+use App\Http\Controllers\Mono\ServicesController as MonoServicesController;
+use App\Http\Controllers\Mono\ServiceTypeController;
+use App\Http\Controllers\Mono\SubMenuDetailController;
+use App\Http\Controllers\Mono\TagController;
+use App\Http\Controllers\Mono\TestimoniController;
+use App\Http\Controllers\Mono\UserController;
+use Illuminate\Support\Facades\Route;
 
 Route::get('/', [HomeController::class, 'index']);
 
@@ -75,6 +76,39 @@ Route::get('/coverage/reverse', [FrontendCoverageController::class, 'reverse'])
     ->middleware('throttle:30,1')
     ->name('frontend.coverage.reverse');
 
+Route::prefix('careers')->name('frontend.careers.')->group(function () {
+    Route::get('/', [FrontendCareerController::class, 'index'])->name('index');
+    Route::get('/verify/{token}', [FrontendCareerController::class, 'verify'])
+        ->middleware('throttle:career-verify')
+        ->where('token', '[A-Za-z0-9]{32,128}')
+        ->name('verify');
+    Route::get('/status/{token}', [FrontendCareerController::class, 'status'])
+        ->middleware('throttle:career-verify')
+        ->where('token', '[A-Za-z0-9]{32,128}')
+        ->name('status');
+    Route::post('/status/{token}/withdraw', [FrontendCareerController::class, 'withdraw'])
+        ->middleware('throttle:career-resend')
+        ->where('token', '[A-Za-z0-9]{32,128}')
+        ->name('withdraw');
+    Route::get('/{vacancy:slug}', [FrontendCareerController::class, 'show'])
+        ->where('vacancy', '[a-z0-9\-]+')
+        ->name('show');
+    Route::get('/{vacancy:slug}/apply', [FrontendCareerController::class, 'applyForm'])
+        ->where('vacancy', '[a-z0-9\-]+')
+        ->name('apply');
+    Route::post('/{vacancy:slug}/applications', [FrontendCareerController::class, 'store'])
+        ->middleware(['throttle:career-apply'])
+        ->where('vacancy', '[a-z0-9\-]+')
+        ->name('apply.store');
+    Route::get('/{vacancy:slug}/received', [FrontendCareerController::class, 'received'])
+        ->where('vacancy', '[a-z0-9\-]+')
+        ->name('received');
+    Route::post('/{vacancy:slug}/resend', [FrontendCareerController::class, 'resend'])
+        ->middleware('throttle:career-resend')
+        ->where('vacancy', '[a-z0-9\-]+')
+        ->name('resend');
+});
+
 // Route untuk Semua Role
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
@@ -105,15 +139,15 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // Route Service Type
     Route::prefix('internal/services/service_type')->name('service_type.')->group(function () {
         Route::get('/', [ServiceTypeController::class, 'index'])
-        ->name('index');
+            ->name('index');
         Route::post('/store', [ServiceTypeController::class, 'store'])
-        ->name('store');
+            ->name('store');
         Route::get('/edit/{id}', [ServiceTypeController::class, 'edit'])
-        ->name('edit');
+            ->name('edit');
         Route::put('/update/{id}', [ServiceTypeController::class, 'update'])
-        ->name('update');
+            ->name('update');
         Route::delete('/delete/{id}', [ServiceTypeController::class, 'destroy'])
-        ->name('destroy');
+            ->name('destroy');
     });
 
     // Route Services
@@ -174,6 +208,75 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::delete('/delete/{id}', [CoverageLocationController::class, 'destroy'])
             ->name('destroy')
             ->middleware('permission:delete_coverage');
+    });
+
+    Route::prefix('internal/career')->name('career.')->group(function () {
+        Route::get('/', [CareerDashboardController::class, 'index'])
+            ->name('dashboard')
+            ->middleware('permission:view_career_dashboard');
+
+        Route::prefix('vacancies')->name('vacancies.')->group(function () {
+            Route::get('/', [MonoVacancyController::class, 'index'])
+                ->name('index')
+                ->middleware('permission:view_vacancies');
+            Route::post('/store', [MonoVacancyController::class, 'store'])
+                ->name('store')
+                ->middleware('permission:create_vacancies');
+            Route::get('/edit/{id}', [MonoVacancyController::class, 'edit'])
+                ->name('edit')
+                ->middleware('permission:view_vacancies');
+            Route::put('/update/{id}', [MonoVacancyController::class, 'update'])
+                ->name('update')
+                ->middleware('permission:edit_vacancies');
+            Route::post('/{id}/publish', [MonoVacancyController::class, 'publish'])
+                ->name('publish')
+                ->middleware('permission:publish_vacancies');
+            Route::post('/{id}/close', [MonoVacancyController::class, 'close'])
+                ->name('close')
+                ->middleware('permission:close_vacancies');
+            Route::post('/{id}/archive', [MonoVacancyController::class, 'archive'])
+                ->name('archive')
+                ->middleware('permission:archive_vacancies');
+            Route::post('/{id}/duplicate', [MonoVacancyController::class, 'duplicate'])
+                ->name('duplicate')
+                ->middleware('permission:create_vacancies');
+            Route::delete('/delete/{id}', [MonoVacancyController::class, 'destroy'])
+                ->name('destroy')
+                ->middleware('permission:edit_vacancies');
+        });
+
+        Route::prefix('applications')->name('applications.')->group(function () {
+            Route::get('/', [MonoApplicationController::class, 'index'])
+                ->name('index')
+                ->middleware('permission:view_applications');
+            Route::get('/{id}', [MonoApplicationController::class, 'show'])
+                ->name('show')
+                ->middleware('permission:view_applications');
+            Route::post('/{id}/transition', [MonoApplicationController::class, 'transition'])
+                ->name('transition')
+                ->middleware('permission:change_application_status|reject_applications');
+            Route::post('/{id}/assign', [MonoApplicationController::class, 'assign'])
+                ->name('assign')
+                ->middleware('permission:assign_applications');
+            Route::post('/{id}/notes', [MonoApplicationController::class, 'storeNote'])
+                ->name('notes.store')
+                ->middleware('permission:create_application_notes');
+            Route::delete('/{id}/notes/{noteId}', [MonoApplicationController::class, 'destroyNote'])
+                ->name('notes.destroy')
+                ->middleware('permission:delete_application_notes');
+            Route::get('/{id}/documents/{documentId}', [MonoApplicationController::class, 'downloadDocument'])
+                ->name('documents.download')
+                ->middleware('permission:download_candidate_documents');
+        });
+
+        Route::prefix('candidates')->name('candidates.')->group(function () {
+            Route::get('/', [MonoCandidateController::class, 'index'])
+                ->name('index')
+                ->middleware('permission:view_candidates');
+            Route::get('/{id}', [MonoCandidateController::class, 'show'])
+                ->name('show')
+                ->middleware('permission:view_candidates');
+        });
     });
 
     Route::prefix('internal/consultation')->name('consultation.')->group(function () {

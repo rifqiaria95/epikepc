@@ -5,13 +5,14 @@ namespace App\Http\Controllers\Mono;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ConsultationRequestStoreRequest;
 use App\Models\ConsultationRequest;
+use App\Queries\Internal\InternalSummaryQuery;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class ConsultationRequestController extends Controller
 {
-    public function index(Request $request)
+    public function index(Request $request, InternalSummaryQuery $summary)
     {
         if ($request->ajax()) {
             $consultations = ConsultationRequest::forAdminListing();
@@ -25,7 +26,7 @@ class ConsultationRequestController extends Controller
                         default => 'bg-label-warning',
                     };
 
-                    return '<span class="badge ' . $class . '">' . e($row->status_label) . '</span>';
+                    return '<span class="badge '.$class.'">'.e($row->status_label).'</span>';
                 })
                 ->addColumn('created_by_name', fn ($row) => optional($row->createdBy)->name ?? '-')
                 ->addColumn('aksi', fn () => '')
@@ -34,7 +35,9 @@ class ConsultationRequestController extends Controller
                 ->toJson();
         }
 
-        return view('internal.consultation.index');
+        return view('internal.consultation.index', [
+            'stats' => $summary->cards('consultation'),
+        ]);
     }
 
     public function store(ConsultationRequestStoreRequest $request)

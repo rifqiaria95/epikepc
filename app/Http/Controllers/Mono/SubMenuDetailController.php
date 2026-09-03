@@ -2,19 +2,20 @@
 
 namespace App\Http\Controllers\Mono;
 
-use Illuminate\Http\Request;
-use App\Models\SubMenuDetail;
-use App\Models\MenuGroup;
-use App\Models\MenuDetail;
 use App\Http\Controllers\Controller;
+use App\Models\MenuDetail;
+use App\Models\MenuGroup;
+use App\Models\SubMenuDetail;
+use App\Queries\Internal\InternalSummaryQuery;
+use Illuminate\Http\Request;
 
 class SubMenuDetailController extends Controller
 {
-    public function index(Request $request)
+    public function index(Request $request, InternalSummaryQuery $summary)
     {
         // Menampilkan Data pegawai
         $subMenuDetail = SubMenuDetail::with('menuGroup', 'menuDetail', 'menuDetail.menuGroup');
-        $menuGroup  = MenuGroup::with('menuDetails')->get();
+        $menuGroup = MenuGroup::with('menuDetails')->get();
         $menuDetail = MenuDetail::with('menuGroup')->get();
         // dd($pegawai);
         if ($request->ajax()) {
@@ -27,6 +28,7 @@ class SubMenuDetailController extends Controller
                 })
                 ->addColumn('aksi', function ($data) {
                     $button = '';
+
                     return $button;
                 })
                 ->rawColumns(['menu_group_id', 'menu_detail_id', 'aksi'])
@@ -34,7 +36,12 @@ class SubMenuDetailController extends Controller
                 ->toJson();
         }
 
-        return view('internal/sub_menu_details.index', compact(['subMenuDetail', 'menuGroup', 'menuDetail']));
+        return view('internal/sub_menu_details.index', [
+            'subMenuDetail' => $subMenuDetail,
+            'menuGroup' => $menuGroup,
+            'menuDetail' => $menuDetail,
+            'stats' => $summary->cards('sub_menu_details'),
+        ]);
     }
 
     public function store(Request $request)
@@ -42,7 +49,7 @@ class SubMenuDetailController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'icon' => 'nullable|string',
-            'order' => 'nullable|integer'
+            'order' => 'nullable|integer',
         ]);
 
         $menu = SubMenuDetail::create($request->all());
@@ -50,7 +57,7 @@ class SubMenuDetailController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Menu added successfully!',
-            'menu'    => $menu
+            'menu' => $menu,
         ]);
     }
 
@@ -58,24 +65,23 @@ class SubMenuDetailController extends Controller
     {
         $menuDetail = SubMenuDetail::find($id);
 
-        if (!$menuDetail) {
+        if (! $menuDetail) {
             return response()->json([
                 'success' => false,
-                'message' => 'Data not found'
+                'message' => 'Data not found',
             ], 404);
         }
 
         return response()->json([
             'success' => true,
-            'menuDetail' => $menuDetail
+            'menuDetail' => $menuDetail,
         ]);
     }
-
 
     public function update(Request $request, $id)
     {
         $request->validate([
-            'name' => 'required|string|max:255'
+            'name' => 'required|string|max:255',
         ]);
 
         $menuDetail = SubMenuDetail::findOrFail($id);
@@ -83,7 +89,7 @@ class SubMenuDetailController extends Controller
 
         return response()->json([
             'success' => true,
-            'message' => 'Menu updated successfully!'
+            'message' => 'Menu updated successfully!',
         ]);
     }
 
@@ -106,14 +112,15 @@ class SubMenuDetailController extends Controller
 
         if ($menu_detail) {
             $menu_detail->delete();
+
             return response()->json([
-                'status'    => 200,
-                'message'   => 'Sub menu detail deleted successfully'
+                'status' => 200,
+                'message' => 'Sub menu detail deleted successfully',
             ]);
         } else {
             return response()->json([
-                'status'    => 404,
-                'errors'    => 'Error! Sub menu detail data not found'
+                'status' => 404,
+                'errors' => 'Error! Sub menu detail data not found',
             ]);
         }
     }

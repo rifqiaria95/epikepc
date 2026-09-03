@@ -7,6 +7,7 @@ use App\Http\Requests\ServiceRequest;
 use App\Models\Service;
 use App\Models\ServiceDetail;
 use App\Models\ServiceType;
+use App\Queries\Internal\InternalSummaryQuery;
 use App\Services\FileStorageService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -15,11 +16,9 @@ use Illuminate\Support\Facades\DB;
 
 class ServicesController extends Controller
 {
-    public function __construct(protected FileStorageService $fileStorageService)
-    {
-    }
+    public function __construct(protected FileStorageService $fileStorageService) {}
 
-    public function index(Request $request)
+    public function index(Request $request, InternalSummaryQuery $summary)
     {
         $serviceTypes = ServiceType::query()
             ->select(['id', 'name'])
@@ -41,14 +40,9 @@ class ServicesController extends Controller
                 ->toJson();
         }
 
-        $baseQuery = Service::query()->withoutTrashed();
-
         return view('internal.services.index', [
-            'service_type'     => $serviceTypes,
-            'totalServices'    => (clone $baseQuery)->count(),
-            'withImage'        => (clone $baseQuery)->whereNotNull('image')->where('image', '!=', '')->count(),
-            'withType'         => (clone $baseQuery)->whereNotNull('service_type_id')->count(),
-            'recentServices'   => (clone $baseQuery)->where('created_at', '>=', now()->subDays(30))->count(),
+            'service_type' => $serviceTypes,
+            'stats' => $summary->cards('services'),
         ]);
     }
 
@@ -106,7 +100,7 @@ class ServicesController extends Controller
             DB::commit();
 
             return response()->json([
-                'status'  => 200,
+                'status' => 200,
                 'message' => 'Service deleted successfully.',
             ]);
         } catch (\Throwable $e) {
@@ -125,7 +119,7 @@ class ServicesController extends Controller
 
             $service = $id
                 ? Service::query()->withoutTrashed()->findOrFail($id)
-                : new Service();
+                : new Service;
 
             $validated = $request->validated();
 
@@ -136,7 +130,7 @@ class ServicesController extends Controller
                 );
 
                 if (! $uploadResult['success']) {
-                    throw new \RuntimeException('Failed to upload image: ' . $uploadResult['error']);
+                    throw new \RuntimeException('Failed to upload image: '.$uploadResult['error']);
                 }
 
                 if ($service->exists && $service->image) {
@@ -162,9 +156,9 @@ class ServicesController extends Controller
             DB::commit();
 
             return response()->json([
-                'status'  => 200,
+                'status' => 200,
                 'message' => $message,
-                'data'    => $service->load(['serviceType:id,name', 'serviceDetails']),
+                'data' => $service->load(['serviceType:id,name', 'serviceDetails']),
             ]);
         } catch (\Throwable $e) {
             DB::rollBack();
@@ -187,13 +181,13 @@ class ServicesController extends Controller
             }
 
             ServiceDetail::create([
-                'service_id'  => $service->id,
-                'title'       => $detail['title'],
-                'subtitle'    => $detail['subtitle'] ?? '',
-                'price'       => $detail['price'] ?? 0,
+                'service_id' => $service->id,
+                'title' => $detail['title'],
+                'subtitle' => $detail['subtitle'] ?? '',
+                'price' => $detail['price'] ?? 0,
                 'description' => $detail['description'] ?? '',
-                'created_by'  => Auth::id(),
-                'updated_by'  => Auth::id(),
+                'created_by' => Auth::id(),
+                'updated_by' => Auth::id(),
             ]);
         }
     }
@@ -201,9 +195,9 @@ class ServicesController extends Controller
     private function errorResponse(\Throwable $e): JsonResponse
     {
         return response()->json([
-            'status'  => 500,
+            'status' => 500,
             'message' => 'A server error occurred.',
-            'error'   => $e->getMessage(),
+            'error' => $e->getMessage(),
         ], 500);
     }
 }

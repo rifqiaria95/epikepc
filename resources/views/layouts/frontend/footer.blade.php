@@ -45,6 +45,9 @@
                         <a class="link d-inline-flex align-items-center" href="{{ route('frontend.news.index') }}">News</a>
                     </li>
                     <li class="list-item">
+                        <a class="link d-inline-flex align-items-center" href="{{ route('frontend.careers.index') }}">Careers</a>
+                    </li>
+                    <li class="list-item">
                         <a class="link d-inline-flex align-items-center" href="{{ route('frontend.team.index') }}">Team</a>
                     </li>
                     <li class="list-item">
@@ -64,11 +67,11 @@
             </div>
         </div>
         <div class="footer_secondary col-12 d-flex flex-wrap align-items-center justify-content-center justify-content-md-between">
-            <p class="footer_secondary-copyright">
-                <span>&copy; {{ date('Y') }} EPIKEPC</span>
+            <p class="footer_secondary-copyright" style="font-size: 12px;">
+                <span>&copy; {{ date('Y') }} PT Energi Persada Inti Konstruksi</span>
                 <span>All rights reserved</span>
             </p>
-            <ul class="socials d-flex align-items-center justify-content-start socials--alt">
+            <ul class="socials d-flex align-items-center justify-content-start socials--alt" style="font-size: 12px;">
                 <li class="socials_item">
                     <a class="socials_item-link" href="#" target="_blank" rel="noopener noreferrer"><i class="icon-facebook"></i></a>
                 </li>
