@@ -91,10 +91,23 @@
             }
         ],
         order: [[4, 'asc']],
-        dom: '<"row"<"col-md-6"l><"col-md-6"f>>rtip',
+        dom:
+            '<"row me-2"' +
+            '<"col-md-2"<"me-3"l>>' +
+            '<"col-md-10"<"dt-action-buttons text-xl-end text-lg-start text-md-end text-start d-flex align-items-center justify-content-end flex-md-row flex-column mb-3 mb-md-0"fB>>' +
+            '>t' +
+            '<"row mx-2"' +
+            '<"col-sm-12 col-md-6"i>' +
+            '<"col-sm-12 col-md-6"p>' +
+            '>',
+        language: {
+            sLengthMenu: '_MENU_',
+            search: '',
+            searchPlaceholder: 'Search..'
+        },
         buttons: can('create_certificates') ? [{
-            text: '<i class="ti ti-plus me-1"></i>Add Certificate',
-            className: 'btn btn-primary',
+            text: '<i class="ti ti-plus me-0 me-sm-1 ti-xs"></i><span class="d-none d-sm-inline-block">Add Certificate</span>',
+            className: 'add-new btn btn-primary waves-effect waves-light mx-3',
             action: function () { openModal(); }
         }] : []
     });

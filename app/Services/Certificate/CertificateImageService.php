@@ -174,7 +174,6 @@ class CertificateImageService
 
         imagecopyresampled($target, $source, 0, 0, 0, 0, $targetWidth, $targetHeight, $width, $height);
 
-        $disk = config('certificates.disk');
         $thumbDir = config('certificates.thumbnail_directory');
         $filename = Str::random(40).'.webp';
         $thumbPath = 'uploads/'.date('Y/m').'/'.$thumbDir.'/'.$filename;
@@ -198,7 +197,8 @@ class CertificateImageService
             return null;
         }
 
-        $stored = Storage::disk($disk)->put($thumbPath, file_get_contents($temp), 'public');
+        // Same local public disk as FileStorageService (not FILESYSTEM_DISK / gcs).
+        $stored = Storage::disk('public')->put($thumbPath, file_get_contents($temp), 'public');
         @unlink($temp);
 
         return $stored ? $thumbPath : null;

@@ -1,7 +1,8 @@
 <?php
 
 return [
-    'disk' => env('CERTIFICATE_UPLOAD_DISK', env('FILESYSTEM_DISK', 'public')),
+    // Match FileStorageService / other CMS uploads (local public disk).
+    'disk' => env('CERTIFICATE_UPLOAD_DISK', 'public'),
 
     'upload_directory' => 'certificate/images',
 

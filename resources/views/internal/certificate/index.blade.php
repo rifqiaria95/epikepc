@@ -95,11 +95,11 @@
                                         <label class="form-label" for="expires_at">Expiry date</label>
                                         <input type="date" class="form-control" id="expires_at" name="expires_at">
                                     </div>
-                                    <div class="col-md-8">
+                                    <div class="col-md-6">
                                         <label class="form-label" for="credential_url">Credential URL</label>
                                         <input type="url" class="form-control" id="credential_url" name="credential_url" placeholder="https://">
                                     </div>
-                                    <div class="col-md-4">
+                                    <div class="col-md-6">
                                         <label class="form-label" for="display_order">Display order</label>
                                         <input type="number" class="form-control" id="display_order" name="display_order" min="1">
                                     </div>
