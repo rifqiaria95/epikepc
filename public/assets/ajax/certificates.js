@@ -56,23 +56,37 @@
                 orderable: false,
                 searchable: false,
                 render: function (id, type, row) {
-                    var html = '<div class="d-flex gap-1 flex-wrap">';
+                    var items = '';
+                    var statusText = (row.status || '').toString();
+                    var isPublished = statusText.indexOf('Published') !== -1 || statusText.indexOf('PUBLISHED') !== -1;
+
                     if (can('edit_certificates')) {
-                        html += '<button type="button" class="btn btn-sm btn-icon btn-label-primary btn-edit" data-id="' + id + '"><i class="ti ti-edit"></i></button>';
+                        items += '<a href="javascript:;" class="dropdown-item btn-edit" data-id="' + id + '"><i class="ti ti-edit ti-md me-1"></i>Edit</a>';
                     }
                     if (can('publish_certificates')) {
-                        if (row.status && row.status.indexOf('Published') === -1 && row.status.indexOf('PUBLISHED') === -1) {
-                            html += '<button type="button" class="btn btn-sm btn-icon btn-label-success btn-publish" data-id="' + id + '" title="Publish"><i class="ti ti-upload"></i></button>';
-                        } else if (row.status && row.status.indexOf('Published') !== -1) {
-                            html += '<button type="button" class="btn btn-sm btn-icon btn-label-warning btn-unpublish" data-id="' + id + '" title="Unpublish"><i class="ti ti-download"></i></button>';
+                        if (!isPublished) {
+                            items += '<a href="javascript:;" class="dropdown-item btn-publish" data-id="' + id + '"><i class="ti ti-upload ti-md me-1"></i>Publish</a>';
+                        } else {
+                            items += '<a href="javascript:;" class="dropdown-item btn-unpublish" data-id="' + id + '"><i class="ti ti-download ti-md me-1"></i>Unpublish</a>';
                         }
-                        html += '<button type="button" class="btn btn-sm btn-icon btn-label-secondary btn-archive" data-id="' + id + '" title="Archive"><i class="ti ti-archive"></i></button>';
+                        items += '<a href="javascript:;" class="dropdown-item btn-archive" data-id="' + id + '"><i class="ti ti-archive ti-md me-1"></i>Archive</a>';
                     }
                     if (can('delete_certificates')) {
-                        html += '<button type="button" class="btn btn-sm btn-icon btn-label-danger btn-delete" data-id="' + id + '"><i class="ti ti-trash"></i></button>';
+                        items += '<a href="javascript:;" class="dropdown-item btn-delete text-danger" data-id="' + id + '"><i class="ti ti-trash ti-md me-1"></i>Delete</a>';
                     }
-                    html += '</div>';
-                    return html;
+
+                    if (!items) {
+                        return '';
+                    }
+
+                    return (
+                        '<div class="d-flex align-items-center">' +
+                        '<a href="javascript:;" class="btn btn-icon btn-text-secondary waves-effect waves-light rounded-pill dropdown-toggle hide-arrow" data-bs-toggle="dropdown" aria-expanded="false">' +
+                        '<i class="ti ti-dots-vertical ti-md"></i>' +
+                        '</a>' +
+                        '<div class="dropdown-menu dropdown-menu-end m-0">' + items + '</div>' +
+                        '</div>'
+                    );
                 }
             }
         ],
