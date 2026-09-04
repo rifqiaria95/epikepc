@@ -44,6 +44,7 @@ class InternalSummaryQuery
             'sub_menu_details' => $this->subMenuDetailCards(),
             'knowledge' => $this->knowledgeCards(),
             'kategori_galeri' => $this->kategoriGaleriCards(),
+            'certificates' => $this->certificateCards(),
             'trash' => $this->trashCards(),
             default => throw new InvalidArgumentException("Unknown internal summary page [{$page}]."),
         };
@@ -128,6 +129,27 @@ class InternalSummaryQuery
             ['key' => 'with_image', 'label' => 'With Image', 'hint' => 'Memiliki foto', 'icon' => 'ti-camera', 'color' => 'info'],
             ['key' => 'recent', 'label' => 'Recent', 'hint' => '30 hari terakhir', 'icon' => 'ti-clock', 'color' => 'warning'],
         ], $this->castCounts($row, ['total', 'with_category', 'with_image', 'recent']));
+    }
+
+    /** @return array<int, array{label: string, value: string, hint?: string, icon: string, color: string}> */
+    public function certificateCards(): array
+    {
+        $recent = $this->recentSince();
+        $row = DB::table('certificates')
+            ->whereNull('deleted_at')
+            ->selectRaw('COUNT(*) as total')
+            ->selectRaw("SUM(CASE WHEN status = 'PUBLISHED' THEN 1 ELSE 0 END) as published")
+            ->selectRaw("SUM(CASE WHEN status = 'DRAFT' THEN 1 ELSE 0 END) as draft")
+            ->selectRaw('SUM(CASE WHEN is_featured = true THEN 1 ELSE 0 END) as featured')
+            ->selectRaw('SUM(CASE WHEN created_at >= ? THEN 1 ELSE 0 END) as recent', [$recent])
+            ->first();
+
+        return $this->present([
+            ['key' => 'total', 'label' => 'Total Certificates', 'hint' => 'Semua sertifikat', 'icon' => 'ti-certificate', 'color' => 'primary'],
+            ['key' => 'published', 'label' => 'Published', 'hint' => 'Tampil di homepage', 'icon' => 'ti-eye', 'color' => 'success'],
+            ['key' => 'draft', 'label' => 'Draft', 'hint' => 'Belum dipublikasikan', 'icon' => 'ti-pencil', 'color' => 'warning'],
+            ['key' => 'featured', 'label' => 'Featured', 'hint' => 'Sorotan', 'icon' => 'ti-star', 'color' => 'info'],
+        ], $this->castCounts($row, ['total', 'published', 'draft', 'featured']));
     }
 
     /** @return array<int, array{label: string, value: string, hint?: string, icon: string, color: string}> */

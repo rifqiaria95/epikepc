@@ -5,10 +5,12 @@ namespace App\Providers;
 use App\Contracts\MalwareScannerInterface;
 use App\Http\View\Composers\FrontendMenuComposer;
 use App\Http\View\Composers\MenuComposer;
+use App\Models\Certificate;
 use App\Models\Career\Candidate;
 use App\Models\Career\JobApplication;
 use App\Models\Career\JobApplicationDocument;
 use App\Models\Career\JobVacancy;
+use App\Policies\CertificatePolicy;
 use App\Policies\CandidatePolicy;
 use App\Policies\JobApplicationDocumentPolicy;
 use App\Policies\JobApplicationPolicy;
@@ -67,6 +69,7 @@ class AppServiceProvider extends ServiceProvider
             return 'Kolom '.ucfirst(str_replace('_', ' ', $attribute)).' wajib diisi!';
         });
 
+        Gate::policy(Certificate::class, CertificatePolicy::class);
         Gate::policy(JobVacancy::class, JobVacancyPolicy::class);
         Gate::policy(JobApplication::class, JobApplicationPolicy::class);
         Gate::policy(Candidate::class, CandidatePolicy::class);

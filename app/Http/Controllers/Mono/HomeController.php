@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Mono;
 
 use App\Http\Controllers\Controller;
 use App\Models\About;
+use App\Models\Certificate;
 use App\Models\CompanyJourney;
 use App\Models\CompanyMilestone;
 use App\Models\Galeri;
@@ -13,6 +14,7 @@ use App\Models\Pricing;
 use App\Models\Project;
 use App\Models\Service;
 use App\Models\Testimoni;
+use App\Queries\Certificate\CertificateHomepageQuery;
 use App\Services\FileStorageService;
 use App\Services\ProjectMapService;
 
@@ -23,6 +25,7 @@ class HomeController extends Controller
     public function __construct(
         FileStorageService $fileStorageService,
         protected ProjectMapService $projectMapService,
+        protected CertificateHomepageQuery $certificateHomepage,
     ) {
         $this->fileStorageService = $fileStorageService;
     }
@@ -117,6 +120,8 @@ class HomeController extends Controller
 
         $companyMilestones = CompanyMilestone::forHomepage()->get();
 
+        $certificates = $this->certificateHomepage->publishedItems();
+
         return view('index', compact(
             'about',
             'testimonials',
@@ -128,7 +133,8 @@ class HomeController extends Controller
             'galleryItems',
             'teamMembers',
             'companyJourney',
-            'companyMilestones'
+            'companyMilestones',
+            'certificates',
         ));
     }
 }

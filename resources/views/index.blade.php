@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="{{ asset('frontend/css/board-slider.css') }}" />
     <link rel="stylesheet" href="{{ asset('frontend/css/indonesia-map.css') }}" />
     <link rel="stylesheet" href="{{ asset('frontend/css/company-journey.css') }}" />
+    <link rel="stylesheet" href="{{ asset('frontend/css/certificate-gallery.css') }}?v={{ @filemtime(public_path('frontend/css/certificate-gallery.css')) ?: time() }}" />
     <link rel="stylesheet" href="{{ asset('frontend/css/leaflet.min.css') }}" />
 @endpush
 
@@ -277,6 +278,8 @@
                 }
             </script>
         </section>
+
+        @include('partials.frontend.certificate-gallery')
 
         {{-- ===== GALLERY ===== --}}
         <section class="gallery section">
@@ -1041,6 +1044,11 @@
             </div>
         </section>
     </main>
+
+    {{-- Stub element so index_alt.min.js does not throw when optional sliders are absent --}}
+    <ul class="feedback_slider" hidden aria-hidden="true" style="display:none!important">
+        <li class="feedback_slider-slide"><div class="feedback_slider-slide_wrapper"></div></li>
+    </ul>
 @endsection
 
 @push('scripts')
@@ -1056,4 +1064,5 @@
     <script src="{{ asset('frontend/js/leaflet.min.js') }}"></script>
     <script src="{{ asset('frontend/js/indonesia-map.js') }}"></script>
     <script src="{{ asset('frontend/js/company-journey.js') }}"></script>
+    <script src="{{ asset('frontend/js/certificate-gallery.js') }}?v={{ @filemtime(public_path('frontend/js/certificate-gallery.js')) ?: time() }}"></script>
 @endpush

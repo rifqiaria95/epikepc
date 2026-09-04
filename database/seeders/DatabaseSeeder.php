@@ -34,6 +34,9 @@ class DatabaseSeeder extends Seeder
             CareerPermissionSeeder::class,
             CareerMenuSeeder::class,
             CareerDemoSeeder::class,
+            CertificatePermissionSeeder::class,
+            CertificateMenuSeeder::class,
+            CertificateDemoSeeder::class,
         ]);
     }
 }

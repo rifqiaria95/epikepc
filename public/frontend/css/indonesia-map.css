@@ -165,7 +165,7 @@
 }
 
 .proj-map__placeholder-title {
-    font-family: "Archivo", sans-serif;
+    font-family: "SF UI Display", "SF Pro Display", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     font-size: 1rem;
     font-weight: 700;
     color: #fff;
@@ -229,7 +229,7 @@
     display: inline-flex;
     align-items: center;
     gap: 6px;
-    font-family: "Archivo", sans-serif;
+    font-family: "SF UI Display", "SF Pro Display", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     font-size: 0.65rem;
     font-weight: 700;
     padding: 5px 11px;
@@ -265,7 +265,7 @@
 
 /* Title */
 .proj-map__detail-title {
-    font-family: "Archivo", sans-serif;
+    font-family: "SF UI Display", "SF Pro Display", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     font-size: clamp(1.0625rem, 2.2vw, 1.375rem);
     font-weight: 700;
     color: #fff;

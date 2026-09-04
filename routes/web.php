@@ -17,6 +17,7 @@ use App\Http\Controllers\Mono\Career\ApplicationController as MonoApplicationCon
 use App\Http\Controllers\Mono\Career\CandidateController as MonoCandidateController;
 use App\Http\Controllers\Mono\Career\CareerDashboardController;
 use App\Http\Controllers\Mono\Career\VacancyController as MonoVacancyController;
+use App\Http\Controllers\Mono\CertificateController;
 use App\Http\Controllers\Mono\ConsultationRequestController as MonoConsultationRequestController;
 use App\Http\Controllers\Mono\CoverageLocationController;
 use App\Http\Controllers\Mono\DashboardController;
@@ -431,6 +432,37 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::delete('/delete/{id}', [TestimoniController::class, 'destroy'])
             ->name('destroy')
             ->middleware('permission:delete_testimoni');
+    });
+
+    // Route Certificates
+    Route::prefix('internal/certificates')->name('certificates.')->group(function () {
+        Route::get('/', [CertificateController::class, 'index'])
+            ->name('index')
+            ->middleware('permission:view_certificates');
+        Route::post('/store', [CertificateController::class, 'store'])
+            ->name('store')
+            ->middleware('permission:create_certificates');
+        Route::get('/edit/{id}', [CertificateController::class, 'edit'])
+            ->name('edit')
+            ->middleware('permission:edit_certificates');
+        Route::put('/update/{id}', [CertificateController::class, 'update'])
+            ->name('update')
+            ->middleware('permission:edit_certificates');
+        Route::delete('/delete/{id}', [CertificateController::class, 'destroy'])
+            ->name('destroy')
+            ->middleware('permission:delete_certificates');
+        Route::post('/{id}/publish', [CertificateController::class, 'publish'])
+            ->name('publish')
+            ->middleware('permission:publish_certificates');
+        Route::post('/{id}/unpublish', [CertificateController::class, 'unpublish'])
+            ->name('unpublish')
+            ->middleware('permission:publish_certificates');
+        Route::post('/{id}/archive', [CertificateController::class, 'archive'])
+            ->name('archive')
+            ->middleware('permission:publish_certificates');
+        Route::post('/reorder', [CertificateController::class, 'reorder'])
+            ->name('reorder')
+            ->middleware('permission:reorder_certificates');
     });
 
     // Route User

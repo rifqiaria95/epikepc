@@ -20,13 +20,18 @@ document.addEventListener('DOMContentLoaded', () => {
     initThumbSliderNav();
     setBackground('.hero_thumbs-thumb_inner', '.hero_thumbs-thumb');
 
-    initTinySlider({
-        container: '.feedback_slider',
-        items: 1,
-        mode: 'gallery',
-        nav: true,
-        controls: false,
-        speed: 500
-    });
-    drawProcessSteps();
+    if (document.querySelector('.feedback_slider')) {
+        initTinySlider({
+            container: '.feedback_slider',
+            items: 1,
+            mode: 'gallery',
+            nav: true,
+            controls: false,
+            speed: 500
+        });
+    }
+
+    if (document.querySelector('.process_steps')) {
+        drawProcessSteps();
+    }
 })

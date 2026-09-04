@@ -18,5 +18,6 @@ $lightgray: #E9E6E6;
 $black: #000810;
 $blackalt: #202C38;
 
-$bodyFont: "Roboto", sans-serif;
-$accentFont: "Archivo", sans-serif;
+$frontendFont: "SF UI Display", "SF Pro Display", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+$bodyFont: $frontendFont;
+$accentFont: $frontendFont;

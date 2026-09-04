@@ -38,16 +38,16 @@
 }
 
 @mixin archExtra() {
-  font-family: "Archivo", sans-serif;
+  font-family: "SF UI Display", "SF Pro Display", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   font-weight: 800;
 }
 
 @mixin archBold() {
-  font-family: "Archivo", sans-serif;
+  font-family: "SF UI Display", "SF Pro Display", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   font-weight: 700;
 }
 
 @mixin archSemi() {
-  font-family: "Archivo", sans-serif;
+  font-family: "SF UI Display", "SF Pro Display", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   font-weight: 600;
 }

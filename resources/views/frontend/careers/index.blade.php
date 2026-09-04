@@ -11,6 +11,7 @@
 @push('styles')
     <link rel="stylesheet" href="{{ asset('frontend/css/projects.min.css') }}" />
     <style>
+        .career-section { padding: 40px 0 80px; }
         .career-filters { margin: 32px 0 48px; padding: 24px; background: #f7f9fc; border: 1px solid #e5e9f2; }
         .career-filters .field, .career-filters select.field { width: 100%; border: 1px solid #d9dee8; background: #fff; padding: 12px 14px; font-size: 15px; color: #202C38; }
         .career-filters .field:focus, .career-filters select.field:focus { border-color: #ffdf08; outline: none; }
@@ -64,7 +65,7 @@
 @endsection
 
 @section('content')
-    <main class="projects section">
+    <main class="projects section career-section">
         <div class="container">
             <div class="section_header" data-aos="fade-up">
                 <span class="subtitle">Careers</span>

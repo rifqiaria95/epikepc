@@ -35,5 +35,6 @@ it('exposes cards for all internal cms listing pages', function (string $page) {
     'sub_menu_details',
     'knowledge',
     'kategori_galeri',
+    'certificates',
     'trash',
 ]);

@@ -1,0 +1,513 @@
+/*
+ * Certificate section — mosaic layout referenced from hero-section-migas.html,
+ * re-skinned with EPIKEPC's existing typography and colors (Archivo headings,
+ * #FFdf08 yellow highlight, #253C74 navy, #000810 ink). Section stays open
+ * (no outer card) and blends with the homepage background.
+ */
+
+.cert-section {
+    position: relative;
+    padding: 90px 0 40px;
+    background: transparent;
+    overflow: hidden;
+}
+
+/* Tighten the handoff into the homepage Gallery section. */
+.cert-section + .gallery.section {
+    padding-top: 40px;
+}
+
+@media screen and (min-width: 991.98px) {
+    .cert-section + .gallery.section {
+        padding-top: 60px;
+    }
+}
+
+/* ---------- Stage: mosaic track + centered copy ---------- */
+
+.cert-stage {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+}
+
+.cert-mask {
+    display: none;
+    pointer-events: none;
+}
+
+.cert-center,
+.cert-center[data-aos],
+.cert-center.aos-animate,
+.cert-center[data-aos].aos-animate {
+    position: relative;
+    z-index: 3;
+    width: 100%;
+    max-width: 640px;
+    margin: 0 auto;
+    text-align: center;
+    /* No interactive elements live in here; let clicks pass through to the
+       certificate thumbnails that visually sit underneath on desktop.
+       Specificity must beat AOS: [data-aos].aos-animate { pointer-events: auto }. */
+    pointer-events: none;
+}
+
+.cert-center__title {
+    font-family: Archivo, sans-serif;
+    font-weight: 700;
+    font-size: clamp(1.875rem, 4vw, 2.875rem);
+    line-height: 1.2;
+    color: #000810;
+    margin: 0;
+}
+
+.cert-center__desc {
+    margin-top: 16px;
+    color: #666;
+    font-size: 0.9375rem;
+    line-height: 1.75;
+}
+
+.cert-viewport {
+    position: relative;
+    z-index: 1;
+    height: 220px;
+    overflow: hidden;
+    cursor: grab;
+    touch-action: pan-y;
+    outline: none;
+}
+
+.cert-viewport.is-dragging {
+    cursor: grabbing;
+}
+
+.cert-viewport:focus-visible {
+    outline: 2px solid #ffdf08;
+    outline-offset: 4px;
+}
+
+.cert-track {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    height: 100%;
+    padding: 0 4px;
+    will-change: transform;
+}
+
+/* ---------- Thumbnails ---------- */
+
+.cert-thumb {
+    position: relative;
+    flex: 0 0 auto;
+    width: 130px;
+    border: 0;
+    background: none;
+    padding: 0;
+    cursor: pointer;
+    user-select: none;
+}
+
+@media (min-width: 480px) {
+    .cert-thumb {
+        width: 150px;
+    }
+}
+
+@media (min-width: 640px) {
+    .cert-thumb {
+        width: 172px;
+    }
+}
+
+.cert-thumb-frame {
+    position: relative;
+    aspect-ratio: 3 / 4;
+    border-radius: 8px;
+    overflow: hidden;
+    background: #fff;
+    box-shadow: 0 14px 26px -16px rgba(0, 8, 16, 0.18), 0 2px 6px rgba(0, 8, 16, 0.06);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px;
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.cert-thumb-frame img {
+    max-width: 100%;
+    max-height: 100%;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+    display: block;
+}
+
+.cert-thumb:hover .cert-thumb-frame {
+    transform: translateY(-4px);
+    box-shadow: 0 18px 32px -14px rgba(0, 8, 16, 0.22);
+}
+
+.cert-thumb:focus-visible {
+    outline: none;
+}
+
+.cert-thumb:focus-visible .cert-thumb-frame {
+    outline: 3px solid #ffdf08;
+    outline-offset: 3px;
+}
+
+/* Broken image safety: hide the whole thumb elegantly, never a gray box */
+.cert-thumb.is-broken {
+    display: none;
+}
+
+/* ---------- Desktop mosaic: overlay copy + organic vertical stagger ---------- */
+
+@media (min-width: 768px) {
+    .cert-stage {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: clamp(380px, 42vw, 460px);
+    }
+
+    .cert-mask {
+        display: block;
+        position: absolute;
+        inset: 0;
+        z-index: 2;
+        background: radial-gradient(ellipse 460px 320px at center, #fff 0%, #fff 36%, rgba(255, 255, 255, 0) 72%);
+    }
+
+    .cert-viewport {
+        position: absolute;
+        inset: 0;
+        height: 100%;
+        padding: 0 clamp(16px, 4vw, 40px);
+    }
+
+    /* Centered via flexbox on .cert-stage (not transform), so it never
+       conflicts with AOS's own transform on [data-aos] entrance animation. */
+    .cert-center,
+    .cert-center[data-aos],
+    .cert-center.aos-animate,
+    .cert-center[data-aos].aos-animate {
+        position: relative;
+        z-index: 3;
+        width: min(84vw, 460px);
+        margin: 0;
+        pointer-events: none;
+    }
+
+    .cert-track > .cert-thumb:nth-child(6n+1) {
+        transform: translateY(-22px);
+    }
+
+    .cert-track > .cert-thumb:nth-child(6n+2) {
+        transform: translateY(26px);
+    }
+
+    .cert-track > .cert-thumb:nth-child(6n+3) {
+        transform: translateY(0);
+    }
+
+    .cert-track > .cert-thumb:nth-child(6n+4) {
+        transform: translateY(-14px);
+    }
+
+    .cert-track > .cert-thumb:nth-child(6n+5) {
+        transform: translateY(18px);
+    }
+
+    .cert-track > .cert-thumb:nth-child(6n+6) {
+        transform: translateY(-6px);
+    }
+}
+
+/* ---------- Controls: arrows + dots ---------- */
+
+.cert-controls {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    margin-top: 24px;
+}
+
+.cert-controls[hidden] {
+    display: none !important;
+}
+
+.cert-arrow {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    border: 1px solid #e2e6ee;
+    background: transparent;
+    color: #000810;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: border-color 0.15s ease, background-color 0.15s ease;
+}
+
+.cert-arrow:hover {
+    border-color: #ffdf08;
+    background: #fff9db;
+}
+
+.cert-arrow:focus-visible {
+    outline: 2px solid #253c74;
+    outline-offset: 2px;
+}
+
+.cert-arrow:disabled {
+    opacity: 0.3;
+    cursor: default;
+}
+
+.cert-arrow svg {
+    width: 16px;
+    height: 16px;
+}
+
+.cert-dots {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.cert-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #e2e6ee;
+    border: 0;
+    padding: 0;
+    cursor: pointer;
+    transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+.cert-dot[aria-current="true"] {
+    background: #ffdf08;
+    transform: scale(1.3);
+}
+
+.cert-dot:focus-visible {
+    outline: 2px solid #253c74;
+    outline-offset: 2px;
+}
+
+.cert-section__live {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+    padding: 0;
+    margin: -1px;
+}
+
+/* ---------- Lightbox ---------- */
+/* Mounted on document.body by JS so it escapes page stacking contexts and
+   paints above .header_navbar (z-index: 100000 in index2.css). */
+
+.cert-lightbox {
+    position: fixed;
+    inset: 0;
+    z-index: 1000001;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 64px 20px 28px;
+    background: rgba(0, 8, 16, 0.92);
+    box-sizing: border-box;
+}
+
+.cert-lightbox.is-open {
+    display: flex;
+}
+
+.cert-lightbox__inner {
+    position: relative;
+    width: min(68vw, 300px);
+    max-height: min(72vh, 520px);
+    display: flex;
+    flex-direction: column;
+}
+
+.cert-lightbox__close {
+    position: absolute;
+    top: -14px;
+    right: -14px;
+    z-index: 2;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: 1px solid rgba(255, 255, 255, 0.35);
+    background: #000810;
+    color: #fff;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35);
+    transition: border-color 0.15s ease, background-color 0.15s ease;
+}
+
+@media (max-width: 480px) {
+    .cert-lightbox__close {
+        top: -12px;
+        right: 0;
+    }
+}
+
+.cert-lightbox__close:hover {
+    border-color: #ffdf08;
+    background: #0a1424;
+}
+
+.cert-lightbox__close:focus-visible {
+    outline: 2px solid #ffdf08;
+    outline-offset: 2px;
+}
+
+.cert-lightbox__close svg {
+    width: 16px;
+    height: 16px;
+}
+
+.cert-lightbox__nav {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    background: rgba(0, 8, 16, 0.55);
+    color: #fff;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: border-color 0.15s ease, background-color 0.15s ease;
+}
+
+.cert-lightbox__nav:hover {
+    border-color: #ffdf08;
+    background: rgba(0, 8, 16, 0.8);
+}
+
+.cert-lightbox__nav:focus-visible {
+    outline: 2px solid #ffdf08;
+    outline-offset: 2px;
+}
+
+.cert-lightbox__nav:disabled {
+    opacity: 0.25;
+    cursor: default;
+}
+
+.cert-lightbox__nav svg {
+    width: 16px;
+    height: 16px;
+}
+
+.cert-lightbox__prev {
+    left: -6px;
+}
+
+.cert-lightbox__next {
+    right: -6px;
+}
+
+@media (min-width: 720px) {
+    .cert-lightbox__prev {
+        left: -48px;
+    }
+
+    .cert-lightbox__next {
+        right: -48px;
+    }
+}
+
+.cert-lightbox__viewport {
+    overflow: hidden;
+    border-radius: 12px;
+    background: #fff;
+    touch-action: pan-y;
+    flex: 0 1 auto;
+    max-height: min(56vh, 400px);
+}
+
+.cert-lightbox__track {
+    display: flex;
+    height: 100%;
+    transition: transform 0.4s cubic-bezier(0.22, 0.68, 0.36, 1);
+}
+
+.cert-lightbox__slide {
+    position: relative;
+    flex: 0 0 100%;
+    width: 100%;
+    max-height: min(56vh, 400px);
+    aspect-ratio: 3 / 4;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #fff;
+    padding: 12px;
+    box-sizing: border-box;
+}
+
+.cert-lightbox__slide img {
+    max-width: 100%;
+    max-height: min(52vh, 376px);
+    width: auto;
+    height: auto;
+    object-fit: contain;
+    display: block;
+}
+
+.cert-lightbox__caption {
+    margin-top: 12px;
+    flex-shrink: 0;
+    text-align: center;
+}
+
+.cert-lightbox__title {
+    font-size: 15px;
+    font-weight: 600;
+    color: #fff;
+}
+
+.cert-lightbox__meta {
+    margin-top: 3px;
+    font-size: 12.5px;
+    color: rgba(255, 255, 255, 0.65);
+}
+
+.cert-lightbox__counter {
+    margin-top: 4px;
+    font-size: 11px;
+    color: rgba(255, 255, 255, 0.5);
+    font-variant-numeric: tabular-nums;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .cert-track,
+    .cert-thumb-frame,
+    .cert-lightbox__track {
+        transition: none !important;
+    }
+}

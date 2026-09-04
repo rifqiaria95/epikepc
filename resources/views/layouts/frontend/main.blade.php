@@ -7,7 +7,7 @@
     <title>@yield('title', 'EPIKEPC')</title>
     <meta name="description" content="@yield('meta_description', 'Trusted engineering, construction, and infrastructure services provider.')">
     @yield('meta')
-    <link rel="shortcut icon" type="image/x-icon" href="{{ asset('frontend/img/logo-2.png') }}">
+    <link rel="shortcut icon" type="image/x-icon" href="{{ asset('frontend/img/logo-3.png') }}">
     <link rel="stylesheet preload" as="style" href="{{ asset('frontend/css/preload.min.css') }}" />
     <link rel="stylesheet preload" as="style" href="{{ asset('frontend/css/libs.min.css') }}" />
     {{-- Shared header_extension deco styles (same as About) --}}
@@ -40,6 +40,7 @@
         }
     </style>
     @stack('styles')
+    <link rel="stylesheet" href="{{ asset('frontend/css/frontend-fonts.css') }}" />
 </head>
 <body>
     @include('layouts.frontend.header')
