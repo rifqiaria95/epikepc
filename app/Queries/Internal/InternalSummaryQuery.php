@@ -368,8 +368,8 @@ class InternalSummaryQuery
         $row = DB::table('users')
             ->whereNull('deleted_at')
             ->selectRaw('COUNT(*) as total')
-            ->selectRaw('SUM(CASE WHEN active = true THEN 1 ELSE 0 END) as active')
-            ->selectRaw('SUM(CASE WHEN active = false THEN 1 ELSE 0 END) as inactive')
+            ->selectRaw('SUM(CASE WHEN active = 1 THEN 1 ELSE 0 END) as active')
+            ->selectRaw('SUM(CASE WHEN active = 0 THEN 1 ELSE 0 END) as inactive')
             ->selectRaw('SUM(CASE WHEN created_at >= ? THEN 1 ELSE 0 END) as recent', [$recent])
             ->first();
 
