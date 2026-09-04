@@ -159,7 +159,7 @@
 @endsection
 @section('script')
 <script>
-    window.userPermissions = @json(auth()->user()->getAllPermissions()->pluck('name'));
+    window.userPermissions = @json(auth()->user()->getAllPermissions()->pluck('name')->values());
 </script>
 <script src="{{ asset('assets/vendor/libs/moment/moment.js') }}"></script>
 <script src="{{ asset('assets/vendor/libs/select2/select2.js') }}"></script>

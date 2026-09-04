@@ -210,9 +210,10 @@ $(document).ready(function () {
                 name: 'aksi',
                 render: function (data, type, full, meta) {
                     let userPermissions = window.userPermissions || [];
-                    let canEdit         = userPermissions.includes("edit_user");
-                    let canShow         = userPermissions.includes("show_user");
-                    let canDelete       = userPermissions.includes("delete_user");
+                    // Permissions follow menu name "User Management".
+                    let canEdit   = userPermissions.includes('edit_user_management');
+                    let canShow   = userPermissions.includes('show_user_management');
+                    let canDelete = userPermissions.includes('delete_user_management');
 
                     return (
                         '<div class="d-flex align-items-center">' +
