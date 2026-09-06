@@ -6,6 +6,7 @@
     <div class="container-xxl flex-grow-1 container-p-y">
         @include('internal.partials.stat-cards', ['stats' => $stats])
 
+        <!-- Filters -->
         <div class="card">
             <div class="card-header border-bottom">
                 <h5 class="card-title mb-0">Filters</h5>
