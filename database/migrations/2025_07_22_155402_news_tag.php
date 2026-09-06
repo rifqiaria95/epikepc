@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->uuid('news_id');
             $table->foreign('news_id')->references('id')->on('news');
-            $table->foreignId('tags_id')->constrained('tags');
+            $table->foreignId('tag_id')->constrained('tags');
             $table->softDeletes();
             $table->timestamps();
         });
