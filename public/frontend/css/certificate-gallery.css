@@ -72,7 +72,7 @@
 .cert-viewport {
     position: relative;
     z-index: 1;
-    height: 220px;
+    height: 260px;
     overflow: hidden;
     cursor: grab;
     touch-action: pan-y;
@@ -91,8 +91,10 @@
 .cert-track {
     display: flex;
     align-items: center;
-    gap: 18px;
+    gap: 20px;
     height: 100%;
+    width: max-content;
+    max-width: none;
     padding: 0 4px;
     will-change: transform;
 }
@@ -102,7 +104,7 @@
 .cert-thumb {
     position: relative;
     flex: 0 0 auto;
-    width: 130px;
+    width: 150px;
     border: 0;
     background: none;
     padding: 0;
@@ -112,13 +114,19 @@
 
 @media (min-width: 480px) {
     .cert-thumb {
-        width: 150px;
+        width: 172px;
     }
 }
 
 @media (min-width: 640px) {
     .cert-thumb {
-        width: 172px;
+        width: 200px;
+    }
+}
+
+@media (min-width: 992px) {
+    .cert-thumb {
+        width: 220px;
     }
 }
 
@@ -171,7 +179,7 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        height: clamp(380px, 42vw, 460px);
+        height: clamp(420px, 46vw, 520px);
     }
 
     .cert-mask {

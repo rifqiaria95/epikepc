@@ -45,7 +45,7 @@
 
         this.index = 0;
         this.slideStep = 0;
-        this.gap = 18;
+        this.gap = 20;
         this.reducedMotion = prefersReducedMotion();
         this.threshold = this.config.gesture_threshold_px || 50;
         this.drag = null;
@@ -128,6 +128,13 @@
             this.slideStep = 0;
             return;
         }
+
+        var style = window.getComputedStyle(this.track);
+        var gap = parseFloat(style.columnGap || style.gap);
+        if (!isNaN(gap) && gap > 0) {
+            this.gap = gap;
+        }
+
         this.slideStep = visible[0].getBoundingClientRect().width + this.gap;
         this.buildDots();
     };
@@ -146,6 +153,23 @@
 
     CertificateGallery.prototype.clampIndex = function (i) {
         return Math.min(Math.max(i, 0), this.maxIndex());
+    };
+
+    // Keep the certificate group optically centered when every thumb fits
+    // inside the viewport; otherwise scroll from the left like a carousel.
+    CertificateGallery.prototype.settledOffset = function () {
+        var trackWidth = this.track ? this.track.scrollWidth : 0;
+        var viewportWidth = this.viewport ? this.viewport.clientWidth : 0;
+
+        if (!trackWidth || !viewportWidth) {
+            return 0;
+        }
+
+        if (trackWidth <= viewportWidth + 1) {
+            return Math.round((viewportWidth - trackWidth) / 2);
+        }
+
+        return -this.index * this.slideStep;
     };
 
     CertificateGallery.prototype.buildDots = function () {
@@ -190,7 +214,7 @@
         this.track.style.transition = withTransition && !this.reducedMotion
             ? 'transform .45s cubic-bezier(.22,.68,.36,1)'
             : 'none';
-        this.track.style.transform = 'translateX(' + (-this.index * this.slideStep) + 'px)';
+        this.track.style.transform = 'translateX(' + this.settledOffset() + 'px)';
 
         if (this.dotsHost) {
             var dots = this.dotsHost.querySelectorAll('.cert-dot');
@@ -261,10 +285,11 @@
             if (!thumb || e.button === 2) {
                 return;
             }
+            var base = self.settledOffset();
             self.drag = {
                 startX: e.clientX,
-                base: -self.index * self.slideStep,
-                current: -self.index * self.slideStep,
+                base: base,
+                current: base,
                 moved: false,
                 captured: false,
                 pointerId: e.pointerId,

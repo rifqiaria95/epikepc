@@ -223,10 +223,9 @@
 
                     <span class="subtitle">Who we are</span>
                     <h2 class="title">
-                        Pulvinar elementum integer enim neque volutpat ac. Amet dictum sit amet justo donec enim diam vulputate ut.
-                        Egestas sed sed risus pretium quam. Viverra accumsan in nisl nisi scelerisque eu
+                        Driven by our commitment to Excellence, Professionalism, Integrity, and Safety, EPIK consistently delivers high-quality solutions that meet international standards while prioritizing operational efficiency, environmental sustainability, and occupational health and safety.
                     </h2>
-                    <span class="author">Benjamin Miller</span>
+                    <span class="author">Epik EPC</span>
                 </div>
             </div>
         </section>
