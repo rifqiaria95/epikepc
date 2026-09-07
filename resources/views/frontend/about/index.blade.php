@@ -53,6 +53,17 @@
             background: transparent;
         }
 
+        /* Body copy: full justify (flush left + right edges) */
+        .hero.section .hero_header .text,
+        .about-vision-mission .text-wrapper .text,
+        .quote_header .title,
+        .features_card-description {
+            text-align: justify;
+            text-justify: inter-word;
+            hyphens: auto;
+            -webkit-hyphens: auto;
+        }
+
         /* Vision & Mission – mobile layout fix */
         .about-vision-mission .services_slider-slide {
             gap: 28px;

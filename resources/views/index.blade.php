@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="{{ asset('frontend/css/index2.min.css') }}" />
     <link rel="stylesheet" href="{{ asset('frontend/css/board-slider.css') }}" />
     <link rel="stylesheet" href="{{ asset('frontend/css/indonesia-map.css') }}" />
-    <link rel="stylesheet" href="{{ asset('frontend/css/company-journey.css') }}" />
+    <link rel="stylesheet" href="{{ asset('frontend/css/company-journey.css') }}?v={{ @filemtime(public_path('frontend/css/company-journey.css')) ?: time() }}" />
     <link rel="stylesheet" href="{{ asset('frontend/css/certificate-gallery.css') }}?v={{ @filemtime(public_path('frontend/css/certificate-gallery.css')) ?: time() }}" />
     <link rel="stylesheet" href="{{ asset('frontend/css/instagram-widget.css') }}?v={{ @filemtime(public_path('frontend/css/instagram-widget.css')) ?: time() }}" />
     <link rel="stylesheet" href="{{ asset('frontend/css/leaflet.min.css') }}" />

@@ -26,6 +26,10 @@
     line-height: 1.75;
     color: rgba(255, 255, 255, 0.65);
     margin: 0;
+    text-align: justify;
+    text-justify: inter-word;
+    hyphens: auto;
+    -webkit-hyphens: auto;
 }
 
 /* ── Video ───────────────────────────────────────────── */
@@ -438,6 +442,10 @@
     line-height: 1.65;
     color: rgba(255, 255, 255, 0.58);
     margin: 0;
+    text-align: justify;
+    text-justify: inter-word;
+    hyphens: auto;
+    -webkit-hyphens: auto;
 }
 
 /* ── Connector (stem) ────────────────────────────────── */
