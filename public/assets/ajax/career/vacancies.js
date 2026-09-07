@@ -62,7 +62,12 @@ $(document).ready(function () {
             },
             error: function (xhr) {
                 var errors = (xhr.responseJSON && xhr.responseJSON.errors) || {};
-                alert(Object.values(errors).flat().join('\n') || (xhr.responseJSON && xhr.responseJSON.message) || 'Gagal menyimpan');
+                var message = Object.values(errors).flat().join('\n') || (xhr.responseJSON && xhr.responseJSON.message) || 'Gagal menyimpan';
+                if (window.EpikSwal) {
+                    window.EpikSwal.error(message, 'Gagal menyimpan');
+                } else {
+                    alert(message);
+                }
             }
         });
     });
@@ -120,11 +125,31 @@ function editVacancy(id) {
 }
 
 function careerAction(url) {
-    if (!confirm('Lanjutkan tindakan ini?')) return;
-    $.post(url, { _token: $('meta[name="csrf-token"]').attr('content') }, function (res) {
-        $('#TableVacancies').DataTable().ajax.reload();
-        if (window.toastr) toastr.success(res.message);
-    }).fail(function (xhr) {
-        alert((xhr.responseJSON && xhr.responseJSON.message) || 'Gagal');
+    var ask = window.EpikSwal
+        ? window.EpikSwal.confirm({
+            title: 'Lanjutkan?',
+            text: 'Lanjutkan tindakan ini?',
+            confirmButtonText: 'Lanjutkan',
+            cancelButtonText: 'Batal'
+        })
+        : Promise.resolve(window.confirm('Lanjutkan tindakan ini?'));
+
+    ask.then(function (ok) {
+        if (!ok) return;
+        $.post(url, { _token: $('meta[name="csrf-token"]').attr('content') }, function (res) {
+            $('#TableVacancies').DataTable().ajax.reload();
+            if (window.EpikSwal) {
+                window.EpikSwal.notify(res.message || 'Berhasil', 'success');
+            } else if (window.toastr) {
+                toastr.success(res.message);
+            }
+        }).fail(function (xhr) {
+            var msg = (xhr.responseJSON && xhr.responseJSON.message) || 'Gagal';
+            if (window.EpikSwal) {
+                window.EpikSwal.error(msg);
+            } else {
+                alert(msg);
+            }
+        });
     });
 }

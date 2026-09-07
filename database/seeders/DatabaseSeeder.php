@@ -37,6 +37,8 @@ class DatabaseSeeder extends Seeder
             CertificatePermissionSeeder::class,
             CertificateMenuSeeder::class,
             CertificateDemoSeeder::class,
+            InstagramPermissionSeeder::class,
+            InstagramMenuSeeder::class,
         ]);
     }
 }

@@ -2,9 +2,8 @@
 
 namespace App\Console\Commands;
 
-use Illuminate\Console\Command;
 use App\Services\FileStorageService;
-use App\Models\News;
+use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Storage;
 
 class MigrateFilesToStorage extends Command
@@ -46,21 +45,22 @@ class MigrateFilesToStorage extends Command
      */
     public function handle()
     {
-        $model = $this->option('model') ?? 'News';
+        $model = $this->option('model') ?? 'Galeri';
         $field = $this->option('field') ?? 'thumbnail';
         $dryRun = $this->option('dry-run');
 
         $this->info("Memulai migrasi file untuk model: {$model}");
         $this->info("Field: {$field}");
-        $this->info("Dry run: " . ($dryRun ? 'Ya' : 'Tidak'));
-        $this->info("Storage disk: " . config('filesystems.default'));
+        $this->info('Dry run: '.($dryRun ? 'Ya' : 'Tidak'));
+        $this->info('Storage disk: '.config('filesystems.default'));
         $this->newLine();
 
         try {
             $modelClass = "App\\Models\\{$model}";
-            
-            if (!class_exists($modelClass)) {
+
+            if (! class_exists($modelClass)) {
                 $this->error("Model {$modelClass} not found!");
+
                 return 1;
             }
 
@@ -70,6 +70,7 @@ class MigrateFilesToStorage extends Command
 
             if ($records->isEmpty()) {
                 $this->warn("Tidak ada record dengan field {$field} yang perlu dimigrasi.");
+
                 return 0;
             }
 
@@ -85,36 +86,38 @@ class MigrateFilesToStorage extends Command
 
             foreach ($records as $record) {
                 $oldPath = $record->{$field};
-                
+
                 // Skip jika sudah berupa URL or path object storage
                 if ($this->isAlreadyInStorage($oldPath)) {
                     $skippedCount++;
                     $progressBar->advance();
+
                     continue;
                 }
 
                 // Cek apakah file local masih ada
-                $localPath = public_path('images/' . $oldPath);
-                if (!file_exists($localPath)) {
+                $localPath = public_path('images/'.$oldPath);
+                if (! file_exists($localPath)) {
                     $this->error("File not found: {$localPath}");
                     $errorCount++;
                     $progressBar->advance();
+
                     continue;
                 }
 
-                if (!$dryRun) {
+                if (! $dryRun) {
                     // Tentukan path baru di object storage
-                    $newPath = 'uploads/' . date('Y/m') . '/news/thumbnails/' . basename($oldPath);
-                    
+                    $newPath = 'uploads/'.date('Y/m').'/migrated/'.basename($oldPath);
+
                     // Migrasi file
                     $result = $this->fileStorageService->migrateToCloud($oldPath, $newPath);
-                    
+
                     if ($result['success']) {
                         // Update database dengan path baru
                         $record->update([$field => $newPath]);
                         $successCount++;
                     } else {
-                        $this->error("Failed to migrate file {$oldPath}: " . $result['error']);
+                        $this->error("Failed to migrate file {$oldPath}: ".$result['error']);
                         $errorCount++;
                     }
                 } else {
@@ -128,28 +131,26 @@ class MigrateFilesToStorage extends Command
             $this->newLine(2);
 
             // Tampilkan hasil
-            $this->info("Hasil migrasi:");
+            $this->info('Hasil migrasi:');
             $this->info("- Success: {$successCount}");
             $this->info("- Error: {$errorCount}");
             $this->info("- Dilewati: {$skippedCount}");
 
             if ($dryRun) {
-                $this->warn("Ini adalah dry run. File belum benar-benar dimigrasi.");
+                $this->warn('Ini adalah dry run. File belum benar-benar dimigrasi.');
             }
 
             return 0;
 
         } catch (\Exception $e) {
-            $this->error("An error occurred: " . $e->getMessage());
+            $this->error('An error occurred: '.$e->getMessage());
+
             return 1;
         }
     }
 
     /**
      * Cek apakah path sudah berada di object storage
-     *
-     * @param string $path
-     * @return bool
      */
     private function isAlreadyInStorage(string $path): bool
     {

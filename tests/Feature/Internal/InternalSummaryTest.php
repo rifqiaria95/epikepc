@@ -19,9 +19,6 @@ it('exposes cards for all internal cms listing pages', function (string $page) {
     'about',
     'galeri',
     'service_types',
-    'kategori',
-    'tags',
-    'news',
     'pricing',
     'coverage',
     'testimoni',
@@ -36,5 +33,6 @@ it('exposes cards for all internal cms listing pages', function (string $page) {
     'knowledge',
     'kategori_galeri',
     'certificates',
+    'instagram',
     'trash',
 ]);

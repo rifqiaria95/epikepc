@@ -18,7 +18,6 @@ class SyncSeedMedia extends Command
      */
     private array $directories = [
         'gallery',
-        'news',
         'projects',
         'services',
         'about',

@@ -17,9 +17,8 @@ class MenuSeeder extends Seeder
         $groups = [
             ['name' => 'Content', 'icon' => 'layout-grid', 'order' => 1, 'jenis_menu' => 1],
             ['name' => 'Company', 'icon' => 'building', 'order' => 2, 'jenis_menu' => 2],
-            ['name' => 'News', 'icon' => 'news', 'order' => 3, 'jenis_menu' => 3],
-            ['name' => 'Marketing', 'icon' => 'speakerphone', 'order' => 4, 'jenis_menu' => 4],
-            ['name' => 'Admin', 'icon' => 'lock-heart', 'order' => 5, 'jenis_menu' => 7],
+            ['name' => 'Marketing', 'icon' => 'speakerphone', 'order' => 3, 'jenis_menu' => 4],
+            ['name' => 'Admin', 'icon' => 'lock-heart', 'order' => 4, 'jenis_menu' => 7],
         ];
 
         $menuGroups = [];
@@ -39,11 +38,6 @@ class MenuSeeder extends Seeder
             ['name' => 'Company Journey', 'route' => '/frontend/profile/about', 'status' => 1, 'order' => 1, 'group' => 'Company'],
             ['name' => 'Team', 'route' => '/frontend/organisasi', 'status' => 1, 'order' => 2, 'group' => 'Company'],
             ['name' => 'Testimonials', 'route' => '/frontend/testimoni', 'status' => 1, 'order' => 3, 'group' => 'Company'],
-
-            // News
-            ['name' => 'News', 'route' => '/frontend/news', 'status' => 1, 'order' => 1, 'group' => 'News'],
-            ['name' => 'Categories', 'route' => '/frontend/news/kategori', 'status' => 1, 'order' => 2, 'group' => 'News'],
-            ['name' => 'Tags', 'route' => '/frontend/news/tag', 'status' => 1, 'order' => 3, 'group' => 'News'],
 
             // Marketing
             ['name' => 'Pricing', 'route' => '/frontend/pricing', 'status' => 1, 'order' => 1, 'group' => 'Marketing'],

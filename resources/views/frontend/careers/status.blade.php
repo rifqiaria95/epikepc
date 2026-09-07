@@ -37,7 +37,7 @@
                 </ul>
             @endif
             @if ($allowWithdrawal && !in_array($public['public_status_code'], ['HIRED','REJECTED','WITHDRAWN','EXPIRED'], true))
-                <form method="POST" action="{{ route('frontend.careers.withdraw', $token) }}" onsubmit="return confirm('Tarik lamaran ini?');">
+                <form id="formWithdraw" method="POST" action="{{ route('frontend.careers.withdraw', $token) }}">
                     @csrf
                     <button class="btn btn--static" type="submit">Tarik lamaran</button>
                 </form>
@@ -45,3 +45,34 @@
         </div>
     </main>
 @endsection
+
+@push('styles')
+    <link rel="stylesheet" href="{{ asset('assets/vendor/libs/sweetalert2/sweetalert2.css') }}" />
+@endpush
+
+@push('scripts')
+    <script src="{{ asset('assets/vendor/libs/sweetalert2/sweetalert2.js') }}"></script>
+    <script src="{{ asset('assets/js/epik-swal.js') }}"></script>
+    <script>
+        (function () {
+            var form = document.getElementById('formWithdraw');
+            if (!form) return;
+            form.addEventListener('submit', function (e) {
+                e.preventDefault();
+                var ask = window.EpikSwal
+                    ? window.EpikSwal.confirm({
+                        title: 'Tarik lamaran?',
+                        text: 'Lamaran ini akan ditarik dan tidak dapat dilanjutkan.',
+                        confirmButtonText: 'Tarik lamaran',
+                        cancelButtonText: 'Batal',
+                        danger: true
+                    })
+                    : Promise.resolve(window.confirm('Tarik lamaran ini?'));
+
+                ask.then(function (ok) {
+                    if (ok) form.submit();
+                });
+            });
+        })();
+    </script>
+@endpush

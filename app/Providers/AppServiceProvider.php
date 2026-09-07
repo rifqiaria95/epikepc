@@ -5,13 +5,15 @@ namespace App\Providers;
 use App\Contracts\MalwareScannerInterface;
 use App\Http\View\Composers\FrontendMenuComposer;
 use App\Http\View\Composers\MenuComposer;
-use App\Models\Certificate;
 use App\Models\Career\Candidate;
 use App\Models\Career\JobApplication;
 use App\Models\Career\JobApplicationDocument;
 use App\Models\Career\JobVacancy;
-use App\Policies\CertificatePolicy;
+use App\Models\Certificate;
+use App\Models\InstagramSetting;
 use App\Policies\CandidatePolicy;
+use App\Policies\CertificatePolicy;
+use App\Policies\InstagramSettingPolicy;
 use App\Policies\JobApplicationDocumentPolicy;
 use App\Policies\JobApplicationPolicy;
 use App\Policies\JobVacancyPolicy;
@@ -70,6 +72,7 @@ class AppServiceProvider extends ServiceProvider
         });
 
         Gate::policy(Certificate::class, CertificatePolicy::class);
+        Gate::policy(InstagramSetting::class, InstagramSettingPolicy::class);
         Gate::policy(JobVacancy::class, JobVacancyPolicy::class);
         Gate::policy(JobApplication::class, JobApplicationPolicy::class);
         Gate::policy(Candidate::class, CandidatePolicy::class);
@@ -90,6 +93,13 @@ class AppServiceProvider extends ServiceProvider
 
         RateLimiter::for('career-resend', function (Request $request) {
             return Limit::perMinutes(60, 5)->by('career-resend:'.$request->ip());
+        });
+
+        RateLimiter::for('instagram-sync', function (Request $request) {
+            return Limit::perMinutes(10, 5)->by('instagram-sync:'.($request->user()?->id ?: $request->ip()));
+        });
+        RateLimiter::for('instagram-publish', function (Request $request) {
+            return Limit::perMinutes(10, 10)->by('instagram-publish:'.($request->user()?->id ?: $request->ip()));
         });
     }
 }

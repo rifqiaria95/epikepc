@@ -28,9 +28,6 @@ class InternalSummaryQuery
             'about' => $this->aboutCards(),
             'galeri' => $this->galeriCards(),
             'service_types' => $this->serviceTypeCards(),
-            'kategori' => $this->kategoriCards(),
-            'tags' => $this->tagCards(),
-            'news' => $this->newsCards(),
             'pricing' => $this->pricingCards(),
             'coverage' => $this->coverageCards(),
             'testimoni' => $this->testimoniCards(),
@@ -45,6 +42,7 @@ class InternalSummaryQuery
             'knowledge' => $this->knowledgeCards(),
             'kategori_galeri' => $this->kategoriGaleriCards(),
             'certificates' => $this->certificateCards(),
+            'instagram' => $this->instagramCards(),
             'trash' => $this->trashCards(),
             default => throw new InvalidArgumentException("Unknown internal summary page [{$page}]."),
         };
@@ -153,6 +151,24 @@ class InternalSummaryQuery
     }
 
     /** @return array<int, array{label: string, value: string, hint?: string, icon: string, color: string}> */
+    public function instagramCards(): array
+    {
+        $row = DB::table('instagram_media')
+            ->selectRaw('COUNT(*) as total')
+            ->selectRaw('SUM(CASE WHEN is_story = ? THEN 1 ELSE 0 END) as feed', [false])
+            ->selectRaw('SUM(CASE WHEN is_story = ? AND (expires_at IS NULL OR expires_at > ?) THEN 1 ELSE 0 END) as stories', [true, now()])
+            ->selectRaw('SUM(CASE WHEN is_story = ? AND is_visible = ? THEN 1 ELSE 0 END) as visible_feed', [false, true])
+            ->first();
+
+        return $this->present([
+            ['key' => 'total', 'label' => 'Snapshot Items', 'hint' => 'Semua media tersimpan', 'icon' => 'ti-brand-instagram', 'color' => 'primary'],
+            ['key' => 'feed', 'label' => 'Feed', 'hint' => 'Postingan feed', 'icon' => 'ti-layout-grid', 'color' => 'info'],
+            ['key' => 'visible_feed', 'label' => 'Visible Feed', 'hint' => 'Tampil di homepage', 'icon' => 'ti-eye', 'color' => 'success'],
+            ['key' => 'stories', 'label' => 'Active Stories', 'hint' => 'Belum kedaluwarsa', 'icon' => 'ti-circle-dotted', 'color' => 'warning'],
+        ], $this->castCounts($row, ['total', 'feed', 'visible_feed', 'stories']));
+    }
+
+    /** @return array<int, array{label: string, value: string, hint?: string, icon: string, color: string}> */
     public function serviceTypeCards(): array
     {
         $recent = $this->recentSince();
@@ -181,79 +197,6 @@ class InternalSummaryQuery
             ['key' => 'it_types', 'label' => 'IT Types', 'hint' => 'Kategori IT', 'icon' => 'ti-code', 'color' => 'info'],
             ['key' => 'recent', 'label' => 'Recent', 'hint' => '30 hari terakhir', 'icon' => 'ti-clock', 'color' => 'warning'],
         ], $metrics);
-    }
-
-    /** @return array<int, array{label: string, value: string, hint?: string, icon: string, color: string}> */
-    public function kategoriCards(): array
-    {
-        $recent = $this->recentSince();
-        $usedIds = DB::table('category_news')->distinct()->pluck('category_id');
-
-        $row = DB::table('kategori')
-            ->whereNull('deleted_at')
-            ->selectRaw('COUNT(*) as total')
-            ->selectRaw('SUM(CASE WHEN created_at >= ? THEN 1 ELSE 0 END) as recent', [$recent])
-            ->first();
-
-        $metrics = $this->castCounts($row, ['total', 'recent']);
-        $metrics['used'] = $usedIds->isEmpty()
-            ? 0
-            : (int) DB::table('kategori')->whereNull('deleted_at')->whereIn('id', $usedIds)->count();
-        $metrics['unused'] = max(0, $metrics['total'] - $metrics['used']);
-
-        return $this->present([
-            ['key' => 'total', 'label' => 'Total Kategori', 'hint' => 'Semua kategori berita', 'icon' => 'ti-category', 'color' => 'primary'],
-            ['key' => 'used', 'label' => 'Digunakan', 'hint' => 'Terhubung ke berita', 'icon' => 'ti-link', 'color' => 'success'],
-            ['key' => 'unused', 'label' => 'Belum Digunakan', 'hint' => 'Tanpa berita', 'icon' => 'ti-unlink', 'color' => 'secondary'],
-            ['key' => 'recent', 'label' => 'Recent', 'hint' => '30 hari terakhir', 'icon' => 'ti-clock', 'color' => 'warning'],
-        ], $metrics);
-    }
-
-    /** @return array<int, array{label: string, value: string, hint?: string, icon: string, color: string}> */
-    public function tagCards(): array
-    {
-        $recent = $this->recentSince();
-        $usedIds = DB::table('news_tag')->distinct()->pluck('tag_id');
-
-        $row = DB::table('tags')
-            ->whereNull('deleted_at')
-            ->selectRaw('COUNT(*) as total')
-            ->selectRaw('SUM(CASE WHEN created_at >= ? THEN 1 ELSE 0 END) as recent', [$recent])
-            ->first();
-
-        $metrics = $this->castCounts($row, ['total', 'recent']);
-        $metrics['used'] = $usedIds->isEmpty()
-            ? 0
-            : (int) DB::table('tags')->whereNull('deleted_at')->whereIn('id', $usedIds)->count();
-        $metrics['unused'] = max(0, $metrics['total'] - $metrics['used']);
-
-        return $this->present([
-            ['key' => 'total', 'label' => 'Total Tags', 'hint' => 'Semua tag berita', 'icon' => 'ti-tags', 'color' => 'primary'],
-            ['key' => 'used', 'label' => 'Digunakan', 'hint' => 'Terhubung ke berita', 'icon' => 'ti-link', 'color' => 'success'],
-            ['key' => 'unused', 'label' => 'Belum Digunakan', 'hint' => 'Tanpa berita', 'icon' => 'ti-unlink', 'color' => 'secondary'],
-            ['key' => 'recent', 'label' => 'Recent', 'hint' => '30 hari terakhir', 'icon' => 'ti-clock', 'color' => 'warning'],
-        ], $metrics);
-    }
-
-    /** @return array<int, array{label: string, value: string, hint?: string, icon: string, color: string}> */
-    public function newsCards(): array
-    {
-        $recent = $this->recentSince();
-        $row = DB::table('news')
-            ->whereNull('deleted_at')
-            ->selectRaw('COUNT(*) as total')
-            ->selectRaw("SUM(CASE WHEN status = 'published' THEN 1 ELSE 0 END) as published")
-            ->selectRaw("SUM(CASE WHEN status = 'draft' THEN 1 ELSE 0 END) as draft")
-            ->selectRaw("SUM(CASE WHEN status = 'archived' THEN 1 ELSE 0 END) as archived")
-            ->selectRaw('SUM(CASE WHEN created_at >= ? THEN 1 ELSE 0 END) as recent', [$recent])
-            ->first();
-
-        return $this->present([
-            ['key' => 'total', 'label' => 'Total News', 'hint' => 'Semua berita', 'icon' => 'ti-news', 'color' => 'primary'],
-            ['key' => 'published', 'label' => 'Published', 'hint' => 'Sudah dipublikasikan', 'icon' => 'ti-world', 'color' => 'success'],
-            ['key' => 'draft', 'label' => 'Draft', 'hint' => 'Belum dipublikasikan', 'icon' => 'ti-file-pencil', 'color' => 'warning'],
-            ['key' => 'recent', 'label' => 'Recent', 'hint' => '30 hari terakhir', 'icon' => 'ti-clock', 'color' => 'info'],
-        ], $this->castCounts($row, ['total', 'published', 'draft', 'recent']));
     }
 
     /** @return array<int, array{label: string, value: string, hint?: string, icon: string, color: string}> */

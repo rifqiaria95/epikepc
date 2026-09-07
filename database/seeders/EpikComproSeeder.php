@@ -4,7 +4,6 @@ namespace Database\Seeders;
 
 use App\Models\Galeri;
 use App\Models\KategoriGaleri;
-use App\Models\News;
 use App\Models\Pricing;
 use App\Models\Testimoni;
 use App\Models\User;
@@ -26,7 +25,6 @@ class EpikComproSeeder extends Seeder
         }
 
         $this->seedGallery($userId);
-        $this->seedNews($userId);
         $this->seedTestimonials($userId);
         $this->deactivateLegacyPricing($userId);
 
@@ -61,11 +59,11 @@ class EpikComproSeeder extends Seeder
             Galeri::updateOrCreate(
                 ['title' => $item['title'], 'kategori_galeri_id' => $category->id],
                 [
-                    'subtitle'    => 'Project ' . $item['year'],
+                    'subtitle' => 'Project '.$item['year'],
                     'description' => 'Project documentation from PT EPIK company profile portfolio.',
-                    'image'       => $this->copyComproImageToStorage($item['image'], 'gallery'),
-                    'created_by'  => $userId,
-                    'updated_by'  => $userId,
+                    'image' => $this->copyComproImageToStorage($item['image'], 'gallery'),
+                    'created_by' => $userId,
+                    'updated_by' => $userId,
                 ]
             );
 
@@ -76,58 +74,6 @@ class EpikComproSeeder extends Seeder
             ->where('kategori_galeri_id', $category->id)
             ->whereNotIn('title', $seededTitles)
             ->delete();
-    }
-
-    private function seedNews(int $userId): void
-    {
-        $articles = [
-            [
-                'title' => 'EPIK Completes Kendal Industrial Zone Pipeline EPC',
-                'slug' => 'epik-completes-kendal-industrial-zone-pipeline-epc',
-                'summary' => 'PT EPIK successfully completed 8 km pipeline construction including HDD works at PGN Kendal Industrial Zone.',
-                'content' => "PT Energi Persada Inti Konstruksi (EPIK) has completed EPC pipeline construction at PGN Kendal Industrial Zone, covering 8 kilometers of pipeline scope with HDD auger boring for obstacle crossings.\n\nThe project strengthens gas supply infrastructure for industrial customers in Central Java and demonstrates EPIK's integrated EPC execution capability.",
-            ],
-            [
-                'title' => 'Batam Gas Infrastructure Project Completed by EPIK',
-                'slug' => 'batam-gas-infrastructure-project-completed-by-epik',
-                'summary' => 'Customer attachment gas infrastructure in Batam Sekupang and Batu Ampar completed with pipeline, MRS, HDD, and hot tapping scopes.',
-                'content' => "EPIK completed EPC gas infrastructure works for customer attachment areas in Batam, including pipeline installation in Sekupang and Batu Ampar, two MRS units, HDD crossings, and hot tapping execution.\n\nThe project supports PGN's gas network expansion strategy in the Riau Islands.",
-            ],
-            [
-                'title' => 'LNG Tank Revitalization Project at Perta Arun Gas',
-                'slug' => 'lng-tank-revitalization-project-at-perta-arun-gas',
-                'summary' => 'EPIK delivers EPC revitalization of double-wall LNG tanks with full mechanical, electrical, piping, and civil scopes.',
-                'content' => "PT EPIK completed construction revitalization works for LNG tanks at PT Perta Arun Gas, covering double-wall tank systems, mechanical, electrical, piping, instrument, and civil engineering scopes.\n\nThe project enhances asset reliability and operational safety for LNG storage facilities.",
-            ],
-            [
-                'title' => 'EPIK Expands Biomethane Injection Facility EPC Portfolio',
-                'slug' => 'epik-expands-biomethane-injection-facility-epc-portfolio',
-                'summary' => 'New EPC project for biomethane injection point and alternative gas supply sources on PGN pipeline networks.',
-                'content' => "EPIK is executing EPC works for biomethane injection point facilities and alternative supply sources on PGN gas pipeline networks.\n\nThe project includes civil, electrical, instrument, and piping scopes supporting Indonesia's energy transition and gas network diversification.",
-            ],
-        ];
-
-        $seededSlugs = [];
-
-        foreach ($articles as $article) {
-            News::updateOrCreate(
-                ['slug' => $article['slug']],
-                [
-                    'title'        => $article['title'],
-                    'content'      => $article['content'],
-                    'summary'      => $article['summary'],
-                    'thumbnail'    => $this->copyComproImageToStorage('image78.png', 'news'),
-                    'status'       => 'published',
-                    'published_at' => now()->subDays(rand(5, 60)),
-                    'author_id'    => $userId,
-                    'created_by'   => $userId,
-                ]
-            );
-
-            $seededSlugs[] = $article['slug'];
-        }
-
-        News::query()->whereNotIn('slug', $seededSlugs)->update(['status' => 'draft']);
     }
 
     private function seedTestimonials(int $userId): void
@@ -164,7 +110,7 @@ class EpikComproSeeder extends Seeder
 
         foreach ($items as $item) {
             Testimoni::create(array_merge($item, [
-                'gambar'     => null,
+                'gambar' => null,
                 'created_by' => $userId,
                 'updated_by' => $userId,
             ]));
@@ -174,7 +120,7 @@ class EpikComproSeeder extends Seeder
     private function deactivateLegacyPricing(int $userId): void
     {
         Pricing::query()->update([
-            'is_active'  => false,
+            'is_active' => false,
             'updated_by' => $userId,
         ]);
     }

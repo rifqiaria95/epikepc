@@ -42,9 +42,6 @@
                         <a class="link d-inline-flex align-items-center" href="{{ route('frontend.projects.index') }}">Projects</a>
                     </li>
                     <li class="list-item">
-                        <a class="link d-inline-flex align-items-center" href="{{ route('frontend.news.index') }}">News</a>
-                    </li>
-                    <li class="list-item">
                         <a class="link d-inline-flex align-items-center" href="{{ route('frontend.careers.index') }}">Careers</a>
                     </li>
                     <li class="list-item">
@@ -73,13 +70,7 @@
             </p>
             <ul class="socials d-flex align-items-center justify-content-start socials--alt" style="font-size: 12px;">
                 <li class="socials_item">
-                    <a class="socials_item-link" href="#" target="_blank" rel="noopener noreferrer"><i class="icon-facebook"></i></a>
-                </li>
-                <li class="socials_item">
-                    <a class="socials_item-link" href="#" target="_blank" rel="noopener noreferrer"><i class="icon-instagram"></i></a>
-                </li>
-                <li class="socials_item">
-                    <a class="socials_item-link" href="#" target="_blank" rel="noopener noreferrer"><i class="icon-twitter"></i></a>
+                    <a class="socials_item-link" href="https://www.instagram.com/epikepc/" target="_blank" rel="noopener noreferrer"><i class="icon-instagram"></i></a>
                 </li>
                 <li class="socials_item">
                     <a class="socials_item-link" href="https://wa.me/{{ preg_replace('/[^0-9]/', '', $contact['phone']) }}" target="_blank" rel="noopener noreferrer"><i class="icon-whatsapp"></i></a>

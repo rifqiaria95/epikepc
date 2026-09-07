@@ -129,21 +129,43 @@
         return fetch(url, { method: 'POST', headers: {'X-Requested-With': 'XMLHttpRequest', 'Accept': 'application/json'}, body: new FormData(form) })
             .then(function (r) { return r.json().then(function (j) { if (!r.ok) throw j; return j; }); });
     }
+    function fail(err) {
+        var msg = err.message || 'Gagal';
+        if (window.EpikSwal) {
+            window.EpikSwal.error(msg);
+        } else {
+            alert(msg);
+        }
+    }
+    function ask(message) {
+        if (window.EpikSwal) {
+            return window.EpikSwal.confirm({
+                title: 'Konfirmasi',
+                text: message,
+                confirmButtonText: 'Ya',
+                cancelButtonText: 'Batal'
+            });
+        }
+        return Promise.resolve(window.confirm(message));
+    }
+
     var t = document.getElementById('formTransition');
     if (t) t.addEventListener('submit', function (e) {
         e.preventDefault();
-        if (!confirm('Ubah status lamaran ini?')) return;
-        post(@json(route('career.applications.transition', $application->id)), t).then(function () { location.reload(); }).catch(function (err) { alert(err.message || 'Gagal'); });
+        ask('Ubah status lamaran ini?').then(function (ok) {
+            if (!ok) return;
+            post(@json(route('career.applications.transition', $application->id)), t).then(function () { location.reload(); }).catch(fail);
+        });
     });
     var a = document.getElementById('formAssign');
     if (a) a.addEventListener('submit', function (e) {
         e.preventDefault();
-        post(@json(route('career.applications.assign', $application->id)), a).then(function () { location.reload(); }).catch(function (err) { alert(err.message || 'Gagal'); });
+        post(@json(route('career.applications.assign', $application->id)), a).then(function () { location.reload(); }).catch(fail);
     });
     var n = document.getElementById('formNote');
     if (n) n.addEventListener('submit', function (e) {
         e.preventDefault();
-        post(@json(route('career.applications.notes.store', $application->id)), n).then(function () { location.reload(); }).catch(function (err) { alert(err.message || 'Gagal'); });
+        post(@json(route('career.applications.notes.store', $application->id)), n).then(function () { location.reload(); }).catch(fail);
     });
 })();
 </script>

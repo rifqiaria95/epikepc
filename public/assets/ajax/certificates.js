@@ -168,13 +168,27 @@
     });
 
     $(document).on('click', '.btn-delete', function () {
-        if (!confirm('Delete this certificate?')) return;
         var id = $(this).data('id');
-        $.ajax({
-            url: window.certificateRoutes.destroy + '/' + id,
-            type: 'DELETE',
-            success: function () { table.ajax.reload(null, false); },
-            error: function (xhr) { alert(xhr.responseJSON?.message || 'Delete failed'); }
+        var ask = window.EpikSwal
+            ? window.EpikSwal.confirm({
+                title: 'Delete certificate?',
+                text: 'This certificate will be removed from the CMS.',
+                confirmButtonText: 'Delete',
+                danger: true
+            })
+            : Promise.resolve(window.confirm('Delete this certificate?'));
+
+        ask.then(function (ok) {
+            if (!ok) return;
+            $.ajax({
+                url: window.certificateRoutes.destroy + '/' + id,
+                type: 'DELETE',
+                success: function () { table.ajax.reload(null, false); },
+                error: function (xhr) {
+                    var msg = xhr.responseJSON?.message || 'Delete failed';
+                    window.EpikSwal ? window.EpikSwal.error(msg) : alert(msg);
+                }
+            });
         });
     });
 
@@ -190,7 +204,10 @@
 
     function postAction(url) {
         $.post(url, function () { table.ajax.reload(null, false); })
-            .fail(function (xhr) { alert(xhr.responseJSON?.message || 'Action failed'); });
+            .fail(function (xhr) {
+                var msg = xhr.responseJSON?.message || 'Action failed';
+                window.EpikSwal ? window.EpikSwal.error(msg) : alert(msg);
+            });
     }
 
     $('#image').on('change', function () {
@@ -227,9 +244,11 @@
             error: function (xhr) {
                 if (xhr.status === 422) {
                     showErrors(xhr.responseJSON?.errors);
-                    alert(xhr.responseJSON?.message || 'Validation failed');
+                    var msg = xhr.responseJSON?.message || 'Validation failed';
+                    window.EpikSwal ? window.EpikSwal.warning(msg) : alert(msg);
                 } else {
-                    alert(xhr.responseJSON?.message || 'Save failed');
+                    var fail = xhr.responseJSON?.message || 'Save failed';
+                    window.EpikSwal ? window.EpikSwal.error(fail) : alert(fail);
                 }
             }
         });

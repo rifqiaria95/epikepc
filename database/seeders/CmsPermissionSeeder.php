@@ -16,7 +16,6 @@ class CmsPermissionSeeder extends Seeder
         'services',
         'galeri',
         'profile',
-        'news',
         'organisasi',
         'testimoni',
         'pricing',
@@ -37,7 +36,7 @@ class CmsPermissionSeeder extends Seeder
         $permissions[] = 'show_galeri';
 
         $superadmin = Role::firstOrCreate(['name' => 'superadmin']);
-        $admin      = Role::firstOrCreate(['name' => 'admin']);
+        $admin = Role::firstOrCreate(['name' => 'admin']);
 
         foreach ($permissions as $name) {
             $permission = Permission::firstOrCreate(['name' => $name]);

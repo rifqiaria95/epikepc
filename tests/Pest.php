@@ -19,7 +19,7 @@ pest()->extend(TestCase::class)
     ->in('Feature');
 
 pest()->extend(TestCase::class)
-    ->in('Unit/Career', 'Unit/Menu');
+    ->in('Unit/Career', 'Unit/Menu', 'Unit/Instagram');
 
 /*
 |--------------------------------------------------------------------------

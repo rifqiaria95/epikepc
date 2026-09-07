@@ -437,7 +437,14 @@ $(document).ready(function () {
 
                     $('#TableUser').DataTable().ajax.reload(null, false);
                 } else {
-                    alert(res.errors);
+                    var errMsg = res.errors || 'Something went wrong, please try again.';
+                    if (window.EpikSwal) {
+                        window.EpikSwal.error(errMsg);
+                    } else if (window.toastr) {
+                        toastr.error(errMsg);
+                    } else {
+                        alert(errMsg);
+                    }
                 }
             },
             error: function (xhr) {

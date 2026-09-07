@@ -7,7 +7,6 @@ use App\Http\Controllers\Frontend\ContactController as FrontendContactController
 use App\Http\Controllers\Frontend\CoverageController as FrontendCoverageController;
 use App\Http\Controllers\Frontend\FaqController as FrontendFaqController;
 use App\Http\Controllers\Frontend\GalleryController as FrontendGalleryController;
-use App\Http\Controllers\Frontend\NewsController as FrontendNewsController;
 use App\Http\Controllers\Frontend\ProjectController as FrontendProjectController;
 use App\Http\Controllers\Frontend\ServicesController as FrontendServicesController;
 use App\Http\Controllers\Frontend\TeamController as FrontendTeamController;
@@ -23,12 +22,11 @@ use App\Http\Controllers\Mono\CoverageLocationController;
 use App\Http\Controllers\Mono\DashboardController;
 use App\Http\Controllers\Mono\GaleriController;
 use App\Http\Controllers\Mono\HomeController;
-use App\Http\Controllers\Mono\KategoriController;
+use App\Http\Controllers\Mono\InstagramController;
 use App\Http\Controllers\Mono\KategoriGaleriController;
 use App\Http\Controllers\Mono\KnowledgeController;
 use App\Http\Controllers\Mono\MenuDetailController;
 use App\Http\Controllers\Mono\MenuGroupController;
-use App\Http\Controllers\Mono\NewsController;
 use App\Http\Controllers\Mono\OrganisasiController;
 use App\Http\Controllers\Mono\PermissionController;
 use App\Http\Controllers\Mono\PricingController;
@@ -37,7 +35,6 @@ use App\Http\Controllers\Mono\RolePermissionController;
 use App\Http\Controllers\Mono\ServicesController as MonoServicesController;
 use App\Http\Controllers\Mono\ServiceTypeController;
 use App\Http\Controllers\Mono\SubMenuDetailController;
-use App\Http\Controllers\Mono\TagController;
 use App\Http\Controllers\Mono\TestimoniController;
 use App\Http\Controllers\Mono\UserController;
 use Illuminate\Support\Facades\Route;
@@ -46,8 +43,6 @@ Route::get('/', [HomeController::class, 'index']);
 
 // Frontend Routes
 Route::get('/about', [FrontendAboutController::class, 'index'])->name('frontend.about.index');
-Route::get('/news', [FrontendNewsController::class, 'index'])->name('frontend.news.index');
-Route::get('/news/{slug}', [FrontendNewsController::class, 'show'])->name('news.show');
 Route::get('/team', [FrontendTeamController::class, 'index'])->name('frontend.team.index');
 Route::get('/gallery', [FrontendGalleryController::class, 'index'])->name('frontend.gallery.index');
 Route::get('/faq', [FrontendFaqController::class, 'index'])->name('frontend.faq.index');
@@ -118,24 +113,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // Analytics API routes
     Route::get('/api/analytics', [DashboardController::class, 'getAnalytics'])->name('analytics.get');
     Route::post('/api/analytics/track', [DashboardController::class, 'trackAnalytics'])->name('analytics.track');
-
-    // Route Kategori
-    Route::prefix('internal/news/kategori')->name('kategori.')->group(function () {
-        Route::get('/', [KategoriController::class, 'index'])->name('index');
-        Route::post('/store', [KategoriController::class, 'store'])->name('store');
-        Route::get('/edit/{id}', [KategoriController::class, 'edit'])->name('edit');
-        Route::put('/update/{id}', [KategoriController::class, 'update'])->name('update');
-        Route::delete('/delete/{id}', [KategoriController::class, 'destroy'])->name('destroy');
-    });
-
-    // Route Tag
-    Route::prefix('internal/news/tag')->name('tag.')->group(function () {
-        Route::get('/', [TagController::class, 'index'])->name('index');
-        Route::post('/store', [TagController::class, 'store'])->name('store');
-        Route::get('/edit/{id}', [TagController::class, 'edit'])->name('edit');
-        Route::put('/update/{id}', [TagController::class, 'update'])->name('update');
-        Route::delete('/delete/{id}', [TagController::class, 'destroy'])->name('destroy');
-    });
 
     // Route Service Type
     Route::prefix('internal/services/service_type')->name('service_type.')->group(function () {
@@ -298,23 +275,43 @@ Route::middleware(['auth', 'verified'])->group(function () {
             ->middleware('permission:delete_consultation');
     });
 
-    // Route News
-    Route::prefix('internal/news')->name('news.')->group(function () {
-        Route::get('/', [NewsController::class, 'index'])
+    Route::prefix('internal/instagram')->name('instagram.')->group(function () {
+        Route::get('/', [InstagramController::class, 'index'])
             ->name('index')
-            ->middleware('permission:view_news');
-        Route::post('/store', [NewsController::class, 'store'])
-            ->name('store')
-            ->middleware('permission:create_news');
-        Route::get('/edit/{id:uuid}', [NewsController::class, 'edit'])
-            ->name('edit')
-            ->middleware('permission:edit_news');
-        Route::put('/update/{id}', [NewsController::class, 'update'])
-            ->name('update')
-            ->middleware('permission:edit_news');
-        Route::delete('/delete/{id}', [NewsController::class, 'destroy'])
-            ->name('destroy')
-            ->middleware('permission:delete_news');
+            ->middleware('permission:view_instagram');
+        Route::put('/settings', [InstagramController::class, 'updateSettings'])
+            ->name('settings')
+            ->middleware('permission:manage_instagram');
+        Route::patch('/media/{id}/visibility', [InstagramController::class, 'toggle'])
+            ->name('visibility')
+            ->middleware('permission:manage_instagram');
+        Route::post('/reorder', [InstagramController::class, 'reorder'])
+            ->name('reorder')
+            ->middleware('permission:manage_instagram');
+        Route::post('/sync', [InstagramController::class, 'sync'])
+            ->name('sync')
+            ->middleware(['permission:sync_instagram', 'throttle:instagram-sync']);
+        Route::post('/highlights', [InstagramController::class, 'storeHighlight'])
+            ->name('highlights.store')
+            ->middleware('permission:manage_instagram');
+        Route::put('/highlights/{id}', [InstagramController::class, 'updateHighlight'])
+            ->name('highlights.update')
+            ->middleware('permission:manage_instagram');
+        Route::delete('/highlights/{id}', [InstagramController::class, 'destroyHighlight'])
+            ->name('highlights.destroy')
+            ->middleware('permission:manage_instagram');
+        Route::patch('/highlights/{id}/visibility', [InstagramController::class, 'toggleHighlight'])
+            ->name('highlights.visibility')
+            ->middleware('permission:manage_instagram');
+        Route::post('/posts', [InstagramController::class, 'storePost'])
+            ->name('posts.store')
+            ->middleware(['permission:publish_instagram|manage_instagram', 'throttle:instagram-publish']);
+        Route::post('/posts/{id}/cancel', [InstagramController::class, 'cancelPost'])
+            ->name('posts.cancel')
+            ->middleware('permission:publish_instagram|manage_instagram');
+        Route::post('/posts/{id}/publish', [InstagramController::class, 'retryPost'])
+            ->name('posts.publish')
+            ->middleware(['permission:publish_instagram|manage_instagram', 'throttle:instagram-publish']);
     });
 
     // Route Company (Journey + Milestones)

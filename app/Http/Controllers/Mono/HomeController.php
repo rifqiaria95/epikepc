@@ -4,11 +4,9 @@ namespace App\Http\Controllers\Mono;
 
 use App\Http\Controllers\Controller;
 use App\Models\About;
-use App\Models\Certificate;
 use App\Models\CompanyJourney;
 use App\Models\CompanyMilestone;
 use App\Models\Galeri;
-use App\Models\News;
 use App\Models\Organisasi;
 use App\Models\Pricing;
 use App\Models\Project;
@@ -16,7 +14,9 @@ use App\Models\Service;
 use App\Models\Testimoni;
 use App\Queries\Certificate\CertificateHomepageQuery;
 use App\Services\FileStorageService;
+use App\Services\Instagram\InstagramFeedService;
 use App\Services\ProjectMapService;
+use Illuminate\View\View;
 
 class HomeController extends Controller
 {
@@ -26,20 +26,21 @@ class HomeController extends Controller
         FileStorageService $fileStorageService,
         protected ProjectMapService $projectMapService,
         protected CertificateHomepageQuery $certificateHomepage,
+        protected InstagramFeedService $instagramFeed,
     ) {
         $this->fileStorageService = $fileStorageService;
     }
 
     /**
-     * Display homepage with about, published news, and testimonials
+     * Display homepage with about, testimonials, and Instagram snapshot.
      *
-     * @return \Illuminate\View\View
+     * @return View
      */
     public function index()
     {
         // Get about data
         $about = About::withoutTrashed()->latest()->first();
-        
+
         // Process about image URL
         if ($about) {
             if ($about->image) {
@@ -52,7 +53,7 @@ class HomeController extends Controller
                 $about->image_url = asset('frontend/img/bg-img/shape1.jpg');
             }
         }
-        
+
         // Get testimonials for homepage
         $testimonials = Testimoni::forHomepage()->get();
 
@@ -68,8 +69,11 @@ class HomeController extends Controller
         // Map markers + counts from DB (single optimized payload, no N+1)
         $projectMap = $this->projectMapService->buildFrontendPayload('category');
 
-        // Get news for homepage
-        $news = News::forHomepage()->get();
+        try {
+            $instagram = $this->instagramFeed->widget();
+        } catch (\Throwable) {
+            $instagram = ['enabled' => false];
+        }
 
         // Get gallery items for homepage section
         $galleryItems = Galeri::query()
@@ -129,7 +133,7 @@ class HomeController extends Controller
             'pricingPlans',
             'projects',
             'projectMap',
-            'news',
+            'instagram',
             'galleryItems',
             'teamMembers',
             'companyJourney',
