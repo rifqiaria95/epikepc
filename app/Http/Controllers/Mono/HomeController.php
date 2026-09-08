@@ -63,8 +63,8 @@ class HomeController extends Controller
         // Get pricing plans for homepage (eager-loaded to avoid N+1)
         $pricingPlans = Pricing::forHomepage()->get();
 
-        // Top 4 portfolio projects by value (highest first)
-        $projects = Project::forHomepage(4)->get();
+        // Top portfolio projects by value (highest first)
+        $projects = Project::forHomepage(6)->get();
 
         // Map markers + counts from DB (single optimized payload, no N+1)
         $projectMap = $this->projectMapService->buildFrontendPayload('category');

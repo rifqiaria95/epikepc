@@ -170,9 +170,9 @@ class Project extends Model
 
     /**
      * Query published projects for homepage display.
-     * Defaults to the 4 largest portfolio projects.
+     * Defaults to the 6 largest portfolio projects.
      */
-    public function scopeForHomepage(Builder $query, int $limit = 4): Builder
+    public function scopeForHomepage(Builder $query, int $limit = 6): Builder
     {
         return $query
             ->select([

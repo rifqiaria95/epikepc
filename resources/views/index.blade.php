@@ -416,7 +416,7 @@
                     <!-- Teameline head -->
                     <div class="c-journey__tl-head">
                         <div>
-                            <span class="c-journey__tl-eyebrow">{{ $companyJourney->timeline_subtitle ?? 'Project History' }}</span>
+                            <span class="c-journey__tl-eyebrow">{{ $companyJourney->timeline_subtitle ?? '' }}</span>
                             <h3 class="c-journey__tl-title">{{ $companyJourney->timeline_title ?? 'Project Journey' }}</h3>
                         </div>
                         <div class="c-journey__tl-controls">
