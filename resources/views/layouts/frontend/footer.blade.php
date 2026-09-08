@@ -1,10 +1,52 @@
 @php
     $contact = config('frontend_contact');
 @endphp
+<style>
+    .footer_main--compact {
+        justify-content: flex-start !important;
+        gap: 40px 56px;
+    }
+
+    .footer_main--compact .footer_main-block--brand {
+        max-width: 300px;
+        flex: 0 1 300px;
+    }
+
+    .footer_main--compact .footer_main-block--contact,
+    .footer_main--compact .footer_main-block--company {
+        flex: 0 0 auto;
+    }
+
+    .footer_main--compact .footer_company-nav {
+        display: flex;
+        align-items: flex-start;
+        column-gap: 40px;
+    }
+
+    .footer_main--compact .footer_company-nav .footer_main-block_nav {
+        min-width: 7.5rem;
+        margin: 0;
+    }
+
+    @media (max-width: 767.98px) {
+        .footer_main--compact {
+            gap: 32px 24px;
+        }
+
+        .footer_main--compact .footer_main-block--brand {
+            max-width: 100%;
+            flex-basis: 100%;
+        }
+
+        .footer_main--compact .footer_company-nav {
+            column-gap: 28px;
+        }
+    }
+</style>
 <footer class="footer primary-bg">
     <div class="container">
-        <div class="footer_main d-flex flex-wrap justify-content-md-between col-12">
-            <div class="footer_main-block col-sm-12 col-xl-auto">
+        <div class="footer_main footer_main--compact d-flex flex-wrap col-12">
+            <div class="footer_main-block footer_main-block--brand col-sm-12 col-xl-auto">
                 <figure class="logo-box">
                     <a href="{{ url('/') }}">
                         <img src="{{ asset('frontend/img/logo-3.png') }}" alt="EPIKEPC" style="width: 180px;">
@@ -14,7 +56,7 @@
                     A trusted engineering and construction company delivering quality infrastructure solutions across Indonesia.
                 </p>
             </div>
-            <div class="footer_main-block col-12 col-sm-6 col-md-auto">
+            <div class="footer_main-block footer_main-block--contact col-12 col-sm-6 col-md-auto">
                 <h4 class="footer_main-block_title">Contact</h4>
                 <div class="group-wrapper d-flex justify-content-start">
                     <i class="icon-call icon"></i>
@@ -29,38 +71,32 @@
                     </div>
                 </div>
             </div>
-            <div class="footer_main-block col-12 col-sm-6 col-md-auto">
+            <div class="footer_main-block footer_main-block--company col-12 col-sm-6 col-md-auto">
                 <h4 class="footer_main-block_title">Company</h4>
-                <ul class="footer_main-block_nav">
-                    <li class="list-item">
-                        <a class="link d-inline-flex align-items-center" href="{{ route('frontend.about.index') }}">About</a>
-                    </li>
-                    <li class="list-item">
-                        <a class="link d-inline-flex align-items-center" href="{{ route('frontend.services.index') }}">Services</a>
-                    </li>
-                    <li class="list-item">
-                        <a class="link d-inline-flex align-items-center" href="{{ route('frontend.projects.index') }}">Projects</a>
-                    </li>
-                    <li class="list-item">
-                        <a class="link d-inline-flex align-items-center" href="{{ route('frontend.careers.index') }}">Careers</a>
-                    </li>
-                    <li class="list-item">
-                        <a class="link d-inline-flex align-items-center" href="{{ route('frontend.team.index') }}">Team</a>
-                    </li>
-                    <li class="list-item">
-                        <a class="link d-inline-flex align-items-center" href="{{ route('frontend.gallery.index') }}">Gallery</a>
-                    </li>
-                </ul>
-            </div>
-            <div class="footer_main-block col-12 col-md-auto">
-                <h4 class="footer_main-block_title">Newsletter</h4>
-                <p class="footer_main-block_subtitle footer_main-block_subtitle--newsletter">
-                    Get the latest updates on our projects and services.
-                </p>
-                <form class="footer_main-block_form d-flex flex-wrap flex-sm-nowrap" data-type="newsletter" action="#" method="POST" name="newsletterForm" id="newsletterForm">
-                    <input class="field required" name="newsletterEmail" id="newsletterEmail" type="email" placeholder="Email" data-type="email" />
-                    <button class="btn btn--submit btn--static" type="submit">Subscribe</button>
-                </form>
+                <div class="footer_company-nav">
+                    <ul class="footer_main-block_nav">
+                        <li class="list-item">
+                            <a class="link d-inline-flex align-items-center" href="{{ route('frontend.about.index') }}">About</a>
+                        </li>
+                        <li class="list-item">
+                            <a class="link d-inline-flex align-items-center" href="{{ route('frontend.services.index') }}">Services</a>
+                        </li>
+                        <li class="list-item">
+                            <a class="link d-inline-flex align-items-center" href="{{ route('frontend.projects.index') }}">Projects</a>
+                        </li>
+                    </ul>
+                    <ul class="footer_main-block_nav">
+                        <li class="list-item">
+                            <a class="link d-inline-flex align-items-center" href="{{ route('frontend.careers.index') }}">Careers</a>
+                        </li>
+                        <li class="list-item">
+                            <a class="link d-inline-flex align-items-center" href="{{ route('frontend.team.index') }}">Team</a>
+                        </li>
+                        <li class="list-item">
+                            <a class="link d-inline-flex align-items-center" href="{{ route('frontend.gallery.index') }}">Gallery</a>
+                        </li>
+                    </ul>
+                </div>
             </div>
         </div>
         <div class="footer_secondary col-12 d-flex flex-wrap align-items-center justify-content-center justify-content-md-between">
