@@ -416,8 +416,8 @@
                     <!-- Teameline head -->
                     <div class="c-journey__tl-head">
                         <div>
-                            <span class="c-journey__tl-eyebrow">{{ $companyJourney->timeline_subtitle ?? 'Company History' }}</span>
-                            <h3 class="c-journey__tl-title">{{ $companyJourney->timeline_title ?? 'Our Milestones' }}</h3>
+                            <span class="c-journey__tl-eyebrow">{{ $companyJourney->timeline_subtitle ?? 'Project History' }}</span>
+                            <h3 class="c-journey__tl-title">{{ $companyJourney->timeline_title ?? 'Project Milestones' }}</h3>
                         </div>
                         <div class="c-journey__tl-controls">
                             <button class="c-journey__tl-btn" data-tl-prev aria-label="Previous milestones">

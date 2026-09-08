@@ -27,6 +27,7 @@ class DatabaseSeeder extends Seeder
             ServiceSeeder::class,
             ProjectSeeder::class,
             CompanyJourneySeeder::class,
+            ProjectMilestoneSeeder::class,
             EpikComproSeeder::class,
             ConsultationPermissionSeeder::class,
             CoveragePermissionSeeder::class,

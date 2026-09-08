@@ -1,6 +1,25 @@
 @extends('layouts.main')
 @section('css')
 <link rel="stylesheet" href="{{ asset('/assets/vendor/libs/@form-validation/form-validation.css') }}" />
+<style>
+    /* Keep DataTables search and Add Milestone button from touching */
+    #TableMilestones_wrapper .dt-action-buttons {
+        gap: 1rem !important;
+    }
+
+    #TableMilestones_wrapper .dt-action-buttons .dt-buttons,
+    #TableMilestones_wrapper .dt-action-buttons > .ms-md-3 {
+        margin-left: 1rem !important;
+    }
+
+    @media (max-width: 767.98px) {
+        #TableMilestones_wrapper .dt-action-buttons .dt-buttons,
+        #TableMilestones_wrapper .dt-action-buttons > .ms-md-3 {
+            margin-left: 0 !important;
+            margin-top: 0.75rem !important;
+        }
+    }
+</style>
 @endsection
 @section('content')
 <div class="container-xxl flex-grow-1 container-p-y">
@@ -223,5 +242,5 @@
 <script src="{{ asset('assets/vendor/libs/@form-validation/popular.js') }}"></script>
 <script src="{{ asset('assets/vendor/libs/@form-validation/bootstrap5.js') }}"></script>
 <script src="{{ asset('assets/vendor/libs/@form-validation/auto-focus.js') }}"></script>
-<script src="{{ asset('assets/ajax/about.js') }}"></script>
+<script src="{{ asset('assets/ajax/about.js') }}?v={{ @filemtime(public_path('assets/ajax/about.js')) ?: time() }}"></script>
 @endsection

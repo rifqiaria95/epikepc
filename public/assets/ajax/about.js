@@ -85,7 +85,12 @@ $(document).ready(function () {
         dom:
             '<"row me-2"' +
             '<"col-md-2"<"me-3"l>>' +
-            '<"col-md-10"<"dt-action-buttons text-xl-end text-lg-start text-md-end text-start d-flex align-items-center justify-content-end flex-md-row flex-column mb-3 mb-md-0"fB>>' +
+            '<"col-md-10"' +
+                '<"dt-action-buttons text-xl-end text-lg-start text-md-end text-start d-flex align-items-center justify-content-end flex-md-row flex-column mb-3 mb-md-0 gap-3"' +
+                    'f' +
+                    '<"ms-md-3 ms-0"B>' +
+                '>' +
+            '>' +
             '>t' +
             '<"row mx-2"' +
             '<"col-sm-12 col-md-6"i>' +
