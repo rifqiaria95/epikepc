@@ -15,6 +15,7 @@ class CompanyMilestoneRequest extends FormRequest
     {
         return [
             'year'        => 'required|string|max:10',
+            'month'       => 'nullable|integer|min:1|max:12',
             'title'       => 'required|string|max:255',
             'description' => 'required|string',
             'sort_order'  => 'nullable|integer|min:0',

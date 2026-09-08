@@ -109,7 +109,7 @@ class AboutController extends Controller
         try {
             $milestone = CompanyMilestone::query()
                 ->withoutTrashed()
-                ->select(['id', 'year', 'title', 'description', 'sort_order', 'is_active'])
+                ->select(['id', 'year', 'month', 'title', 'description', 'sort_order', 'is_active'])
                 ->findOrFail($id);
 
             return response()->json([
@@ -153,11 +153,12 @@ class AboutController extends Controller
     {
         $query = CompanyMilestone::query()
             ->withoutTrashed()
-            ->select(['id', 'year', 'title', 'description', 'sort_order', 'is_active', 'created_at'])
+            ->select(['id', 'year', 'month', 'title', 'description', 'sort_order', 'is_active', 'created_at'])
             ->with(['creator:id,name']);
 
         return datatables()->of($query)
             ->addColumn('created_by_name', fn ($row) => $row->creator?->name ?? '-')
+            ->addColumn('period', fn ($row) => $row->period_label ?: '-')
             ->editColumn('is_active', function ($row) {
                 return $row->is_active
                     ? '<span class="badge bg-label-success">Active</span>'
@@ -181,6 +182,7 @@ class AboutController extends Controller
 
             $validated = $request->validated();
             $validated['is_active'] = $request->boolean('is_active', true);
+            $validated['month'] = $request->filled('month') ? (int) $request->input('month') : null;
 
             if ($milestone->exists) {
                 $validated['updated_by'] = Auth::id();

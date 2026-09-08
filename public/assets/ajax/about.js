@@ -140,7 +140,7 @@ $(document).ready(function () {
                     return buttons;
                 }
             },
-            { data: 'year', name: 'year' },
+            { data: 'period', name: 'year', orderable: true, searchable: true },
             { data: 'title', name: 'title' },
             { data: 'description', name: 'description' },
             { data: 'sort_order', name: 'sort_order' },
@@ -153,6 +153,7 @@ $(document).ready(function () {
         clearFormErrors('#formMilestone');
         $('#formMilestone')[0].reset();
         $('#milestone_id').val('');
+        $('#month').val('');
         $('#milestone_is_active').prop('checked', true);
         $('#milestone-modal-title').text('Add Milestone');
         $('#milestoneModal').modal('show');
@@ -172,6 +173,7 @@ $(document).ready(function () {
 
                 const milestone = response.milestone;
                 $('#milestone_id').val(milestone.id);
+                $('#month').val(milestone.month || '');
                 $('#year').val(milestone.year);
                 $('#milestone_title').val(milestone.title);
                 $('#milestone_description').val(milestone.description);

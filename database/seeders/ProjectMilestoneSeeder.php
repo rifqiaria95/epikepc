@@ -127,10 +127,11 @@ class ProjectMilestoneSeeder extends Seeder
         CompanyMilestone::query()->forceDelete();
 
         foreach ($projects as $index => $project) {
-            $year = Carbon::parse($project['project_date'])->format('Y');
+            $date = Carbon::parse($project['project_date']);
 
             CompanyMilestone::create([
-                'year' => $year,
+                'year' => $date->format('Y'),
+                'month' => (int) $date->format('n'),
                 'title' => $project['title'],
                 'description' => sprintf(
                     '%s Client: %s.',

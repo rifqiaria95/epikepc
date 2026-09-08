@@ -168,7 +168,7 @@
                                 <tr>
                                     <th>#</th>
                                     <th>Actions</th>
-                                    <th>Year</th>
+                                    <th>Period</th>
                                     <th>Title</th>
                                     <th>Description</th>
                                     <th>Order</th>
@@ -196,17 +196,40 @@
                 <div class="modal-body">
                     <input type="hidden" name="milestone_id" id="milestone_id">
                     <div class="row">
-                        <div class="col-md-4 mb-4">
+                        <div class="col-md-3 mb-4">
+                            <label class="form-label" for="month">Month</label>
+                            <select class="form-select" id="month" name="month">
+                                <option value="">—</option>
+                                @foreach ([
+                                    1 => 'January',
+                                    2 => 'February',
+                                    3 => 'March',
+                                    4 => 'April',
+                                    5 => 'May',
+                                    6 => 'June',
+                                    7 => 'July',
+                                    8 => 'August',
+                                    9 => 'September',
+                                    10 => 'October',
+                                    11 => 'November',
+                                    12 => 'December',
+                                ] as $monthNumber => $monthName)
+                                    <option value="{{ $monthNumber }}">{{ $monthName }}</option>
+                                @endforeach
+                            </select>
+                            <div class="text-danger small" id="month-error"></div>
+                        </div>
+                        <div class="col-md-3 mb-4">
                             <label class="form-label" for="year">Year</label>
                             <input type="text" class="form-control" id="year" name="year" placeholder="2005" maxlength="10">
                             <div class="text-danger small" id="year-error"></div>
                         </div>
-                        <div class="col-md-4 mb-4">
+                        <div class="col-md-3 mb-4">
                             <label class="form-label" for="sort_order">Order</label>
                             <input type="number" class="form-control" id="sort_order" name="sort_order" min="0" placeholder="1">
                             <div class="text-danger small" id="sort_order-error"></div>
                         </div>
-                        <div class="col-md-4 mb-4">
+                        <div class="col-md-3 mb-4">
                             <div class="form-check form-switch mt-4">
                                 <input class="form-check-input" type="checkbox" id="milestone_is_active" name="is_active" value="1" checked>
                                 <label class="form-check-label" for="milestone_is_active">Active</label>

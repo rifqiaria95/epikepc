@@ -417,7 +417,7 @@
                     <div class="c-journey__tl-head">
                         <div>
                             <span class="c-journey__tl-eyebrow">{{ $companyJourney->timeline_subtitle ?? 'Project History' }}</span>
-                            <h3 class="c-journey__tl-title">{{ $companyJourney->timeline_title ?? 'Project Milestones' }}</h3>
+                            <h3 class="c-journey__tl-title">{{ $companyJourney->timeline_title ?? 'Project Journey' }}</h3>
                         </div>
                         <div class="c-journey__tl-controls">
                             <button class="c-journey__tl-btn" data-tl-prev aria-label="Previous milestones">
@@ -450,13 +450,13 @@
                             @foreach($companyMilestones as $milestone)
                             <div class="c-journey__item" data-tl-item>
                                 <div class="c-journey__card">
-                                    <span class="c-journey__card-badge">{{ $milestone->year }}</span>
+                                    <span class="c-journey__card-badge">{{ $milestone->period_label }}</span>
                                     <h4 class="c-journey__card-title">{{ $milestone->title }}</h4>
                                     <p class="c-journey__card-text">{{ $milestone->description }}</p>
                                 </div>
                                 <div class="c-journey__stem" aria-hidden="true"></div>
                                 <div class="c-journey__dot" aria-hidden="true"></div>
-                                <span class="c-journey__year">{{ $milestone->year }}</span>
+                                <span class="c-journey__year">{{ $milestone->period_label }}</span>
                             </div>
                             @endforeach
 

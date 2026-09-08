@@ -502,15 +502,16 @@
     margin-top: 10px;
     font-size: 0.6875rem;
     font-weight: 700;
-    letter-spacing: 0.07em;
+    letter-spacing: 0.04em;
     color: rgba(255, 255, 255, 0.35);
-    height: 24px;
-    line-height: 24px;
+    min-height: 24px;
+    line-height: 1.2;
     white-space: nowrap;
     transition: color 0.25s;
     flex-shrink: 0;
     /* extra bottom padding counted in line offset */
     padding-bottom: 16px;
+    text-align: center;
 }
 
 .c-journey__item.is-active .c-journey__year,
