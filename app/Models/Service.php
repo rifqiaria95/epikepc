@@ -97,6 +97,11 @@ class Service extends Model
             ->withoutTrashed()
             ->with([
                 'serviceType:id,name,slug',
+                'serviceDetails' => function ($detailQuery) {
+                    $detailQuery
+                        ->select(['id', 'service_id', 'title', 'subtitle', 'price', 'description'])
+                        ->orderBy('id');
+                },
                 'serviceFeatures' => function ($featureQuery) {
                     $featureQuery
                         ->select(['id', 'service_id', 'feature', 'sort_order'])

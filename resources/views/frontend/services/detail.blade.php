@@ -257,7 +257,7 @@
 
 @section('header_extension')
     @include('partials.frontend.header-extension', [
-        'subtitle' => 'Building communities',
+        'subtitle' => 'Service detail',
         'title'    => $service->title,
         'items'    => [
             ['label' => 'Home', 'url' => url('/')],
@@ -268,19 +268,13 @@
 @endsection
 
 @section('content')
-    @php
-        $subServices = method_exists($service, 'getSubServices')
-            ? $service->getSubServices()
-            : ($service->subServices ?? collect());
-        $subServices = $subServices ?? collect();
-    @endphp
     <!-- SINGLE SERVICE CONTENT START -->
     <main>
         <section class="tabs section">
             <div class="container">
                 <div class="tabs_header section_header d-flex flex-wrap flex-lg-nowrap align-items-lg-end justify-content-xl-between">
                     <div class="tabs_header-wrapper">
-                        <span class="subtitle" data-aos="fade-down">{{ $service->title }}</span>
+                        <span class="subtitle" data-aos="fade-down">{{ $service->serviceType?->name ?? 'Our Services' }}</span>
                         <h2 class="title" data-aos="fade-right">
                             We Provide
                             <span class="highlight">{{ $service->title }}</span>
@@ -291,12 +285,12 @@
                     </p>
                 </div>
                 <div class="tabs_services d-md-flex">
-                    @if ($subServices && count($subServices) > 0)
+                    @if ($subServices->isNotEmpty())
                         <div class="tabs_services-triggers d-md-flex flex-column">
                             @foreach ($subServices as $i => $sub)
                                 <h4 class="tabs_services-triggers_trigger d-flex align-items-center {{ $i === 0 ? 'active' : '' }}"
                                     data-id="{{ str_pad($i + 1, 2, '0', STR_PAD_LEFT) }}">
-                                    {{ $sub['title'] ?? ($sub->title ?? 'Sub-services ' . ($i + 1)) }}
+                                    {{ $sub->title }}
                                 </h4>
                             @endforeach
                         </div>
@@ -307,24 +301,30 @@
                                     <div class="img-wrapper">
                                         <picture>
                                             <source
-                                                data-srcset="{{ ($sub['image_url'] ?? $sub->image_url ?? null) ?: ($service->detail_image_url ?: asset('frontend/img/placeholder.jpg')) }}"
-                                                srcset="{{ ($sub['image_url'] ?? $sub->image_url ?? null) ?: ($service->detail_image_url ?: asset('frontend/img/placeholder.jpg')) }}"
+                                                data-srcset="{{ $service->detail_image_url }}"
+                                                srcset="{{ $service->detail_image_url }}"
                                                 type="image/webp"
                                             />
                                             <img
                                                 class="lazy"
-                                                data-src="{{ ($sub['image_url'] ?? $sub->image_url ?? null) ?: ($service->detail_image_url ?: asset('frontend/img/placeholder.jpg')) }}"
-                                                src="{{ ($sub['image_url'] ?? $sub->image_url ?? null) ?: ($service->detail_image_url ?: asset('frontend/img/placeholder.jpg')) }}"
-                                                alt="{{ $sub['title'] ?? $sub->title ?? 'Sub-services' }}"
+                                                data-src="{{ $service->detail_image_url }}"
+                                                src="{{ $service->detail_image_url }}"
+                                                alt="{{ $sub->title }}"
                                             />
                                         </picture>
                                     </div>
                                     <div class="text-wrapper d-flex flex-column">
                                         <div class="main d-sm-flex flex-md-column flex-lg-row align-items-center justify-content-between">
+                                            <div>
+                                                <h4 class="mb-1">{{ $sub->title }}</h4>
+                                                @if ($sub->subtitle)
+                                                    <p class="mb-0 text-muted">{{ $sub->subtitle }}</p>
+                                                @endif
+                                            </div>
                                             <a class="main_btn btn" href="{{ route('frontend.contact.index') }}">Consultation</a>
                                         </div>
                                         <div class="description">
-                                            <p class="text">{{ $sub['description'] ?? ($sub->description ?? '') }}</p>
+                                            <p class="text">{{ $sub->description }}</p>
                                         </div>
                                     </div>
                                 </div>
@@ -336,14 +336,14 @@
                                 <div class="img-wrapper">
                                     <picture>
                                         <source
-                                            data-srcset="{{ $service->detail_image_url ?: ($service->image_url ?: asset('frontend/img/placeholder.jpg')) }}"
-                                            srcset="{{ $service->detail_image_url ?: ($service->image_url ?: asset('frontend/img/placeholder.jpg')) }}"
+                                            data-srcset="{{ $service->detail_image_url }}"
+                                            srcset="{{ $service->detail_image_url }}"
                                             type="image/webp"
                                         />
                                         <img
                                             class="lazy"
-                                            data-src="{{ $service->detail_image_url ?: ($service->image_url ?: asset('frontend/img/placeholder.jpg')) }}"
-                                            src="{{ $service->detail_image_url ?: ($service->image_url ?: asset('frontend/img/placeholder.jpg')) }}"
+                                            data-src="{{ $service->detail_image_url }}"
+                                            src="{{ $service->detail_image_url }}"
                                             alt="{{ $service->title }}"
                                         />
                                     </picture>
@@ -365,15 +365,15 @@
         <section class="process section primary-bg">
             <div class="container d-flex flex-wrap justify-content-between align-items-end">
                 <div class="process_header section_header">
-                    <span class="subtitle">Better process</span>
+                    <span class="subtitle">How we work</span>
                     <h2 class="title">
                         The Process of Working
-                        <span class="highlight"> with Us </span>
+                        <span class="highlight"> with EPIK </span>
                     </h2>
                 </div>
                 <p class="process_text">
-                    Dapibus ultrices in iaculis nunc sed augue lacus viverra vitae. Vehicula ipsum a arcu cursus vitae congue mauris.
-                    Enim facilisis gravida neque convallis a cras
+                    A clear delivery rhythm — from consultation and engineering review to construction, commissioning,
+                    and handover — keeps every EPIK project aligned with safety, quality, and schedule commitments.
                 </p>
             </div>
             <div class="container-fluid process_fluid p-0">
@@ -385,9 +385,9 @@
                                 <span class="progress-marker_spot--underlay"></span>
                             </div>
                             <div class="process_steps-step_wrapper">
-                                <h4 class="title">Leave a request on the website</h4>
+                                <h4 class="title">Project consultation &amp; scope review</h4>
                                 <p class="description">
-                                    In arcu cursus euismod quis viverra nibh cras pulvinar mattis. Cras adipiscing enim eu turpis
+                                    We clarify objectives, site conditions, and technical requirements with your team to define a workable delivery plan.
                                 </p>
                             </div>
                         </li>
@@ -397,9 +397,9 @@
                                 <span class="progress-marker_spot--underlay"></span>
                             </div>
                             <div class="process_steps-step_wrapper">
-                                <h4 class="title">Сalculation of the cost of the service</h4>
+                                <h4 class="title">Engineering &amp; commercial alignment</h4>
                                 <p class="description">
-                                    Habitant morbi tristique senectus et netus et malesuada fames. Cursus sit amet dictum
+                                    Constructability review, material planning, and schedule estimation ensure scope, cost, and HSE expectations stay aligned.
                                 </p>
                             </div>
                         </li>
@@ -409,8 +409,10 @@
                                 <span class="progress-marker_spot--underlay"></span>
                             </div>
                             <div class="process_steps-step_wrapper">
-                                <h4 class="title">Signing of a contract</h4>
-                                <p class="description">Etiam dignissim diam quis enim lobortis scelerisque fermentum dui faucibus</p>
+                                <h4 class="title">Contract &amp; mobilization</h4>
+                                <p class="description">
+                                    After agreement, we mobilize people, equipment, and procurement so site readiness matches the execution plan.
+                                </p>
                             </div>
                         </li>
                         <li class="process_steps-step progress-step">
@@ -419,9 +421,9 @@
                                 <span class="progress-marker_spot--underlay"></span>
                             </div>
                             <div class="process_steps-step_wrapper">
-                                <h4 class="title">Execution of works</h4>
+                                <h4 class="title">Execution, testing &amp; handover</h4>
                                 <p class="description">
-                                    Ridiculus mus mauris vitae ultricies. Imperdiet proin fermentum leo vel orci porta
+                                    Field construction, quality checks, and commissioning are completed with clear reporting through to safe operational handover.
                                 </p>
                             </div>
                         </li>
@@ -551,10 +553,10 @@
                 class="container d-lg-flex flex-wrap flex-xl-nowrap justify-content-start align-items-start justify-content-xl-between"
             >
                 <div class="faq_header section_header col-lg-12 col-xl-auto">
-                    <span class="subtitle">Dealing with your worries</span>
+                    <span class="subtitle">Common questions</span>
                     <h2 class="title">
-                        If Your Question Is Not Here
-                        <span class="highlight">Contact Us</span>
+                        Still Have Questions?
+                        <span class="highlight">Talk to EPIK</span>
                     </h2>
                     <p class="text">
                         Looking for clarity on EPC scope, project delivery, or how EPIK supports oil &amp; gas infrastructure works?
