@@ -212,7 +212,23 @@
 
     $('#image').on('change', function () {
         var file = this.files && this.files[0];
+        var maxBytes = 5 * 1024 * 1024;
+        var tooLargeMsg = 'Gambar yang diupload melebihi 5 MB';
+
+        $('#image').removeClass('is-invalid');
+        $('#image-error').text('');
+
         if (!file) return;
+
+        if (file.size > maxBytes) {
+            this.value = '';
+            $('#image').addClass('is-invalid');
+            $('#image-error').text(tooLargeMsg);
+            $('#image-preview').addClass('d-none').attr('src', '');
+            window.EpikSwal ? window.EpikSwal.warning(tooLargeMsg) : alert(tooLargeMsg);
+            return;
+        }
+
         var reader = new FileReader();
         reader.onload = function (e) {
             $('#image-preview').removeClass('d-none').attr('src', e.target.result);
@@ -223,6 +239,16 @@
     $('#formCertificate').on('submit', function (e) {
         e.preventDefault();
         clearErrors();
+
+        var imageInput = document.getElementById('image');
+        var maxBytes = 5 * 1024 * 1024;
+        var tooLargeMsg = 'Gambar yang diupload melebihi 5 MB';
+        if (imageInput && imageInput.files && imageInput.files[0] && imageInput.files[0].size > maxBytes) {
+            showErrors({ image: [tooLargeMsg] });
+            window.EpikSwal ? window.EpikSwal.warning(tooLargeMsg) : alert(tooLargeMsg);
+            return;
+        }
+
         var id = $('#certificate-id').val();
         var formData = new FormData(this);
         if (!$('#is_featured').is(':checked')) formData.delete('is_featured');
@@ -242,9 +268,14 @@
                 table.ajax.reload(null, false);
             },
             error: function (xhr) {
-                if (xhr.status === 422) {
+                if (xhr.status === 422 || xhr.status === 413) {
                     showErrors(xhr.responseJSON?.errors);
-                    var msg = xhr.responseJSON?.message || 'Validation failed';
+                    var msg = xhr.responseJSON?.message || (xhr.status === 413
+                        ? 'Gambar yang diupload melebihi 5 MB'
+                        : 'Validation failed');
+                    if (xhr.status === 413 && !xhr.responseJSON?.errors) {
+                        showErrors({ image: [msg] });
+                    }
                     window.EpikSwal ? window.EpikSwal.warning(msg) : alert(msg);
                 } else {
                     var fail = xhr.responseJSON?.message || 'Save failed';

@@ -162,26 +162,63 @@ $(document).ready(function () {
     });
 
     // ─── Image preview helper ─────────────────────────────────────────────────
+    var MAX_IMAGE_BYTES = 5 * 1024 * 1024;
+    var IMAGE_FIELDS = ['image', 'image_secondary', 'image_tertiary'];
+    var IMAGE_TOO_LARGE_MSG = 'Gambar yang diupload melebihi 5 MB';
+
     function previewImage(inputId, previewId) {
         $('#' + inputId).on('change', function () {
             var file = this.files[0];
-            if (file) {
-                var reader = new FileReader();
-                reader.onload = function (e) {
-                    $('#' + previewId).html(
-                        '<img src="' + e.target.result + '" alt="Preview" style="max-width:100%;max-height:120px;border-radius:4px;margin-top:6px;">'
-                    );
-                };
-                reader.readAsDataURL(file);
-            } else {
+            var $input = $(this);
+
+            $input.removeClass('is-invalid');
+            $('#' + inputId + '-error').text('');
+
+            if (!file) {
                 $('#' + previewId).html('');
+                return;
             }
+
+            if (file.size > MAX_IMAGE_BYTES) {
+                $input.val('').addClass('is-invalid');
+                $('#' + inputId + '-error').text(IMAGE_TOO_LARGE_MSG);
+                $('#' + previewId).html('');
+                toastr.warning(IMAGE_TOO_LARGE_MSG);
+                return;
+            }
+
+            var reader = new FileReader();
+            reader.onload = function (e) {
+                $('#' + previewId).html(
+                    '<img src="' + e.target.result + '" alt="Preview" style="max-width:100%;max-height:120px;border-radius:4px;margin-top:6px;">'
+                );
+            };
+            reader.readAsDataURL(file);
         });
     }
 
     previewImage('image', 'image-preview');
     previewImage('image_secondary', 'image_secondary-preview');
     previewImage('image_tertiary', 'image_tertiary-preview');
+
+    function validateImageSizes() {
+        var hasError = false;
+
+        IMAGE_FIELDS.forEach(function (field) {
+            var input = document.getElementById(field);
+            if (!input || !input.files || !input.files[0]) {
+                return;
+            }
+
+            if (input.files[0].size > MAX_IMAGE_BYTES) {
+                $('#' + field).addClass('is-invalid');
+                $('#' + field + '-error').text(IMAGE_TOO_LARGE_MSG);
+                hasError = true;
+            }
+        });
+
+        return !hasError;
+    }
 
     // ─── Form submit (store / update) ────────────────────────────────────────
     $('#formProject').on('submit', function (e) {
@@ -193,6 +230,12 @@ $(document).ready(function () {
 
         clearErrors();
         saveTinyMCE();
+
+        if (!validateImageSizes()) {
+            toastr.warning(IMAGE_TOO_LARGE_MSG);
+            submitBtn.html(origText).prop('disabled', false);
+            return;
+        }
 
         var id      = $('#id').val();
         var formData = new FormData(this);
@@ -227,7 +270,7 @@ $(document).ready(function () {
             },
             error: function (xhr) {
                 if (xhr.status === 422) {
-                    var errors = xhr.responseJSON.errors;
+                    var errors = (xhr.responseJSON && xhr.responseJSON.errors) || {};
                     $.each(errors, function (key, value) {
                         var inputKey = key.replace(/\./g, '_');
                         $('#' + inputKey).addClass('is-invalid');
@@ -236,9 +279,21 @@ $(document).ready(function () {
                             setTinyMCEError(key, true);
                         }
                     });
-                    toastr.warning('Please review the form fields.');
+                    var firstError = Object.values(errors).flat()[0];
+                    toastr.warning(firstError || 'Please review the form fields.');
+                } else if (xhr.status === 413) {
+                    var oversizedMsg = (xhr.responseJSON && xhr.responseJSON.message) || IMAGE_TOO_LARGE_MSG;
+                    IMAGE_FIELDS.forEach(function (field) {
+                        var input = document.getElementById(field);
+                        if (input && input.files && input.files[0]) {
+                            $('#' + field).addClass('is-invalid');
+                            $('#' + field + '-error').text(oversizedMsg);
+                        }
+                    });
+                    toastr.warning(oversizedMsg);
                 } else {
-                    toastr.error('Failed to save data.');
+                    var failMsg = (xhr.responseJSON && xhr.responseJSON.message) || 'Failed to save data.';
+                    toastr.error(failMsg);
                 }
             },
             complete: function () {

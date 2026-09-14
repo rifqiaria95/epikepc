@@ -41,7 +41,8 @@ class CertificateStoreRequest extends FormRequest
             'credential_url.url' => 'Credential URL harus berupa alamat HTTP atau HTTPS yang valid.',
             'credential_url.regex' => 'Credential URL harus berupa alamat HTTP atau HTTPS yang valid.',
             'image.mimes' => 'Format gambar harus JPEG, PNG, atau WebP.',
-            'image.max' => 'Ukuran gambar sertifikat maksimal '.(config('certificates.max_file_size_kb') / 1024).' MB.',
+            'image.max' => 'Gambar yang diupload melebihi 5 MB',
+            'image.uploaded' => 'Gambar yang diupload melebihi 5 MB',
             'display_order.min' => 'Urutan tampilan harus berupa angka positif.',
         ];
     }

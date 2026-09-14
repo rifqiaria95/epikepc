@@ -59,12 +59,17 @@ class CertificateImageService
     protected function validate(UploadedFile $file): array
     {
         if (! $file->isValid()) {
+            $errorCode = $file->getError();
+            if (in_array($errorCode, [UPLOAD_ERR_INI_SIZE, UPLOAD_ERR_FORM_SIZE], true)) {
+                return ['success' => false, 'error' => 'Gambar yang diupload melebihi 5 MB'];
+            }
+
             return ['success' => false, 'error' => 'File upload tidak valid.'];
         }
 
         $maxKb = (int) config('certificates.max_file_size_kb');
         if ($file->getSize() > $maxKb * 1024) {
-            return ['success' => false, 'error' => 'Ukuran gambar sertifikat maksimal '.($maxKb / 1024).' MB.'];
+            return ['success' => false, 'error' => 'Gambar yang diupload melebihi 5 MB'];
         }
 
         $extension = strtolower($file->getClientOriginalExtension());
