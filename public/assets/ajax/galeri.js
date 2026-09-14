@@ -319,6 +319,11 @@ $(document).ready(function () {
         // Trigger TinyMCE to save content to textarea
         if (tinymce.get('description')) {
             tinymce.get('description').save();
+            var plainDescription = $('<div>').html(tinymce.get('description').getContent({ format: 'text' })).text().trim();
+            if (!plainDescription) {
+                tinymce.get('description').setContent('');
+                $('#description').val('');
+            }
         }
 
         let formData = new FormData(this);

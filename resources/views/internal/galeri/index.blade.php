@@ -97,8 +97,8 @@
                                                         </div>
                                                         <div class="col-xl-12 mb-6">
                                                             <label class="form-label"
-                                                                for="description">Description</label>
-                                                            <textarea class="form-control" id="description" placeholder="Enter deskripsi galeri..." name="description"
+                                                                for="description">Description <span class="text-muted fw-normal">(optional)</span></label>
+                                                            <textarea class="form-control" id="description" placeholder="Enter deskripsi galeri (opsional)..." name="description"
                                                                 aria-label="Description" rows="10"></textarea>
                                                             <div class="text-danger small" id="description-error"></div>
                                                         </div>

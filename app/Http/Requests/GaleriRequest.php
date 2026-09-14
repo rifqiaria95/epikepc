@@ -24,9 +24,18 @@ class GaleriRequest extends FormRequest
         return [
             'title'              => 'required|string|max:255',
             'subtitle'           => 'required|string|max:255',
-            'description'        => 'required|string',
+            'description'        => 'nullable|string',
             'image'              => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'kategori_galeri_id' => 'required|exists:kategori_galeri,id',
         ];
+    }
+
+    protected function prepareForValidation(): void
+    {
+        $plain = trim(strip_tags((string) $this->input('description', '')));
+
+        if ($plain === '') {
+            $this->merge(['description' => null]);
+        }
     }
 }
