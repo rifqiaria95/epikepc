@@ -34,15 +34,9 @@ class ProjectController extends Controller
             return datatables()->of($projects)
                 ->addColumn('created_by_name', fn ($row) => optional($row->createdBy)->name ?? '-')
                 ->addColumn('updated_by_name', fn ($row) => optional($row->updatedBy)->name ?? '-')
-                ->editColumn('image', function ($row) {
-                    if ($row->image) {
-                        $url = $this->fileStorageService->getFileUrl($row->image);
-
-                        return '<img src="'.$url.'" alt="Project Image" style="width:50px;height:50px;object-fit:cover;border-radius:4px;">';
-                    }
-
-                    return '<span class="text-muted">-</span>';
-                })
+                ->editColumn('image', fn ($row) => $row->image
+                    ? $this->fileStorageService->getFileUrl($row->image)
+                    : null)
                 ->editColumn('status', function ($row) {
                     $status = $row->status instanceof ProjectStatus
                         ? $row->status
@@ -62,7 +56,7 @@ class ProjectController extends Controller
                 ->editColumn('project_date', fn ($row) => $row->project_date?->format('d M Y') ?? '-')
                 ->addColumn('image_url', fn ($row) => $row->image ? $this->fileStorageService->getFileUrl($row->image) : null)
                 ->addColumn('aksi', fn ($row) => '')
-                ->rawColumns(['image', 'status', 'is_published', 'aksi'])
+                ->rawColumns(['status', 'is_published', 'aksi'])
                 ->addIndexColumn()
                 ->toJson();
         }
