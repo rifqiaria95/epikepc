@@ -24,6 +24,9 @@
                         <a class="link link--single {{ request()->is('services*') ? 'current' : '' }}" href="{{ route('frontend.services.index') }}" data-page="services">Services</a>
                     </li>
                     <li class="list-item">
+                        <a class="link link--single {{ request()->is('gallery*') ? 'current' : '' }}" href="{{ route('frontend.gallery.index') }}" data-page="gallery">Gallery</a>
+                    </li>
+                    <li class="list-item">
                         <a class="link link--single {{ request()->is('careers*') ? 'current' : '' }}" href="{{ route('frontend.careers.index') }}" data-page="careers">Careers</a>
                     </li>
                     <li class="list-item">
